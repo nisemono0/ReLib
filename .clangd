@@ -1,0 +1,7 @@
+CompileFlags:
+  Remove: [-mno-direct-extern-access]
+Diagnostics:
+    MissingIncludes: None
+    UnusedIncludes: None
+CompileFlags:
+    CompilationDatabase: "build"
