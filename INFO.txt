@@ -1,0 +1,43 @@
+// info.json format
+{
+    "gallery_info": {
+        "title": "Single (basename if not found)",
+        "tags": {
+            "artist": [
+                "Multiple"
+            ],
+            "parody": [
+                "Multiple"
+            ],
+            "circle": [
+                "Multiple"
+            ],
+            "magazine": [
+                "Multiple"
+            ],
+            "event": [
+                "Multiple"
+            ],
+            "publisher": [
+                "Multiple"
+            ],
+            "other": [
+                "Multiple"
+            ]
+        }
+    }
+}
+
+// Internal Manga obj format
+QString file_hash;
+QString file_path;
+QString file_basename;
+QString title;
+QStringList artist;
+QStringList parody;
+QStringList circle;
+QStringList magazine;
+QStringList event;
+QStringList publisher;
+QStringList tags;
+

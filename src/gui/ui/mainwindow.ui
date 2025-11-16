@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1000</width>
+    <height>700</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>800</width>
+    <height>600</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>ReLib</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayoutSearch" stretch="0,0,0,1">
+      <item>
+       <widget class="QPushButton" name="pushButtonSearch">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="statusTip">
+         <string>Search the database</string>
+        </property>
+        <property name="text">
+         <string>Search</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonRandom">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="statusTip">
+         <string>Select random from view</string>
+        </property>
+        <property name="text">
+         <string>Random</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonRefresh">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="statusTip">
+         <string>Refresh the search</string>
+        </property>
+        <property name="text">
+         <string>Refresh</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEditSearch"/>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QSplitter" name="splitterExplorer">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Orientation::Horizontal</enum>
+      </property>
+      <property name="handleWidth">
+       <number>4</number>
+      </property>
+      <property name="childrenCollapsible">
+       <bool>false</bool>
+      </property>
+      <widget class="LibraryView" name="libraryView">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+       </property>
+      </widget>
+      <widget class="ImageView" name="imageView">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>100</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>300</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="verticalScrollBarPolicy">
+        <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+       </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+       </property>
+       <property name="interactive">
+        <bool>false</bool>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignmentFlag::AlignCenter</set>
+       </property>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1000</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionAddFile"/>
+    <addaction name="actionAddDir"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuLoad">
+    <property name="title">
+     <string>Database</string>
+    </property>
+    <addaction name="actionCreateDatabase"/>
+    <addaction name="separator"/>
+    <addaction name="actionLoadDatabase"/>
+    <addaction name="actionUnloadDatabase"/>
+    <addaction name="separator"/>
+    <addaction name="actionCheckDatabaseHashes"/>
+    <addaction name="actionCheckDatabasePaths"/>
+   </widget>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <widget class="QMenu" name="menuSettingsView">
+     <property name="title">
+      <string>View</string>
+     </property>
+     <addaction name="actionFitInView"/>
+     <addaction name="actionFitToWidth"/>
+     <addaction name="separator"/>
+     <addaction name="actionFreeView"/>
+    </widget>
+    <addaction name="actionScaleImage"/>
+    <addaction name="menuSettingsView"/>
+    <addaction name="actionSearchWhileTyping"/>
+    <addaction name="actionSelectFirstAfterSearch"/>
+    <addaction name="separator"/>
+    <addaction name="actionRememberSettings"/>
+    <addaction name="actionLoadLastDatabase"/>
+   </widget>
+   <widget class="QMenu" name="menuInfo">
+    <property name="title">
+     <string>Info</string>
+    </property>
+    <addaction name="actionShowLogs"/>
+    <addaction name="separator"/>
+    <addaction name="actionShowAbout"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuLoad"/>
+   <addaction name="menuSettings"/>
+   <addaction name="menuInfo"/>
+  </widget>
+  <action name="actionLoadDatabase">
+   <property name="text">
+    <string>Load database</string>
+   </property>
+   <property name="toolTip">
+    <string>Load database</string>
+   </property>
+   <property name="statusTip">
+    <string>Load a database</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionAddDir">
+   <property name="text">
+    <string>Add Directory</string>
+   </property>
+   <property name="statusTip">
+    <string>Add all archives in a directory</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionAddFile">
+   <property name="text">
+    <string>Add File</string>
+   </property>
+   <property name="statusTip">
+    <string>Add a single archive</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+   <property name="statusTip">
+    <string>Exists the program</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionCreateDatabase">
+   <property name="text">
+    <string>Create database</string>
+   </property>
+   <property name="toolTip">
+    <string>Create database</string>
+   </property>
+   <property name="statusTip">
+    <string>Create a new database</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionUnloadDatabase">
+   <property name="text">
+    <string>Unload database</string>
+   </property>
+   <property name="toolTip">
+    <string>Unload database</string>
+   </property>
+   <property name="statusTip">
+    <string>Unload the loaded database</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+U</string>
+   </property>
+  </action>
+  <action name="actionScaleImage">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Scale image to window</string>
+   </property>
+   <property name="statusTip">
+    <string>Enable or disables the image scaling</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionCheckDatabaseHashes">
+   <property name="text">
+    <string>Check database hashes</string>
+   </property>
+   <property name="statusTip">
+    <string>Checks if the paths/hashes in the database match the ones on disk</string>
+   </property>
+  </action>
+  <action name="actionCheckDatabasePaths">
+   <property name="text">
+    <string>Check database paths</string>
+   </property>
+   <property name="statusTip">
+    <string>Checks if the paths in database match the ones on disk</string>
+   </property>
+  </action>
+  <action name="actionShowLogs">
+   <property name="text">
+    <string>Show logs</string>
+   </property>
+   <property name="statusTip">
+    <string>Shows the logs window</string>
+   </property>
+  </action>
+  <action name="actionFitInView">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Fit in view</string>
+   </property>
+   <property name="statusTip">
+    <string>Fits the image in view</string>
+   </property>
+  </action>
+  <action name="actionFitToWidth">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Fit to width</string>
+   </property>
+   <property name="statusTip">
+    <string>Fits the image to width</string>
+   </property>
+  </action>
+  <action name="actionFreeView">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Free view</string>
+   </property>
+   <property name="statusTip">
+    <string>No fit, zoom in and out with scrollwheen and drag with middlebutton</string>
+   </property>
+  </action>
+  <action name="actionSearchWhileTyping">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Search while typing</string>
+   </property>
+   <property name="statusTip">
+    <string>Enable or disables searching while typing in the searchbox</string>
+   </property>
+  </action>
+  <action name="actionSelectFirstAfterSearch">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Select first item after search</string>
+   </property>
+   <property name="statusTip">
+    <string>Enable or disables selecting the first result after search</string>
+   </property>
+  </action>
+  <action name="actionRememberSettings">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Remember settings</string>
+   </property>
+   <property name="statusTip">
+    <string>Remember last used settings</string>
+   </property>
+  </action>
+  <action name="actionLoadLastDatabase">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Load last used DB</string>
+   </property>
+   <property name="statusTip">
+    <string>Load (if possible) the last used database</string>
+   </property>
+  </action>
+  <action name="actionShowAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+   <property name="statusTip">
+    <string>Show about window</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ImageView</class>
+   <extends>QGraphicsView</extends>
+   <header>app/imageview.hpp</header>
+  </customwidget>
+  <customwidget>
+   <class>LibraryView</class>
+   <extends>QListView</extends>
+   <header>app/libraryview.hpp</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
