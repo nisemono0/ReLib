@@ -33,6 +33,7 @@ public:
             const QStringList &publisher,
             const QStringList &tags
          );
+
     // operator== overload to check if 2 Manga obj ar the same
     bool operator==(const Manga &manga) const;
 };
