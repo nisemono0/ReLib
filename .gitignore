@@ -57,4 +57,5 @@ compile_commands.json
 release/
 debug/
 build/
+temp/
 .cache/
