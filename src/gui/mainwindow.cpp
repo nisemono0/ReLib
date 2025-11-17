@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // Ui setup
     this->ui->setupUi(this);
     this->log_dialog = new LogDialog(this);
+    this->manga_info_dialog = new MangaInfoDialog(this);
 
     this->updateUiLock();
 
@@ -65,7 +66,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // TODO: Menubar:Settings
 
     // Menubar:Info
-    connect(this->ui->actionShowLogs, &QAction::triggered, this->log_dialog, &LogDialog::receive_showDialog_request);
+    connect(this->ui->actionShowLogs, &QAction::triggered, this->log_dialog, &LogDialog::receive_showLogDialog_request);
     connect(this->ui->actionShowAbout, &QAction::triggered, this, &MainWindow::actionShowAbout_triggered);
 
     // Buttons
@@ -81,6 +82,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this, &MainWindow::request_clearMangaList, this->ui->libraryView, &LibraryView::receive_clearMangaList_request);
     connect(this, &MainWindow::request_setSearchText, this->ui->libraryView, &LibraryView::receive_setSearchText_request);
     connect(this->ui->libraryView, &LibraryView::send_LibraryView_status, this->library_view_status, &QLabel::setText);
+    connect(this->ui->libraryView, &LibraryView::send_LibraryView_deleteFromDatabase_request, this, &MainWindow::receive_LibraryView_deleteFromDatabse_request);
+    connect(this->ui->libraryView, &LibraryView::request_showMangaInfoDialog, this->manga_info_dialog, &MangaInfoDialog::receive_showMangaInfoDialog_request);
 
     // Thread requests
     connect(this, &MainWindow::request_getFileJsonInfo, this->zip_manager, &ZipManager::receive_getFileJsonInfo_request);
@@ -145,6 +148,7 @@ MainWindow::~MainWindow() {
     delete this->action_scale_slider;
 
     delete this->log_dialog;
+    delete this->manga_info_dialog;
     delete this->ui;
 }
 
@@ -194,6 +198,7 @@ void MainWindow::updateUiLock() {
         this->ui->actionUnloadDatabase->setEnabled(false);
         this->ui->actionCheckDatabaseHashes->setEnabled(false);
         this->ui->actionCheckDatabasePaths->setEnabled(false);
+        this->ui->actionRemoveDeletedEntries->setEnabled(false);
 
         // MainWindow:Buttons
         this->ui->pushButtonSearch->setEnabled(false);
@@ -215,6 +220,7 @@ void MainWindow::updateUiLock() {
         this->ui->actionUnloadDatabase->setEnabled(true);
         this->ui->actionCheckDatabaseHashes->setEnabled(true);
         this->ui->actionCheckDatabasePaths->setEnabled(true);
+        this->ui->actionRemoveDeletedEntries->setEnabled(true);
 
         // MainWindow:Buttons
         this->ui->pushButtonSearch->setEnabled(true);
@@ -267,6 +273,42 @@ void MainWindow::actionAddDir_triggered() {
     }
 }
 
+void MainWindow::actionExit_triggered() {
+    QApplication::quit();
+}
+
+// ZipManager
+void MainWindow::receive_ZipManager_info(const QString &info) {
+    QMessageBox::information(this, QStringLiteral("Add file(s)"), info);
+}
+
+void MainWindow::receive_ZipManager_progress(int progress) {
+    if (this->mainwindow_progress_dialog) {
+        this->mainwindow_progress_dialog->setValue(progress);
+    } else {
+        this->mainwindow_progress_dialog = new QProgressDialog(QStringLiteral("Working on file(s)"), QStringLiteral("Cancel"), 0, 100, this, Qt::FramelessWindowHint);
+        this->mainwindow_progress_dialog->setCursor(Qt::WaitCursor);
+        this->mainwindow_progress_dialog->setAttribute(Qt::WA_DeleteOnClose);
+        this->mainwindow_progress_dialog->setFixedSize(this->mainwindow_progress_dialog->size());
+        this->mainwindow_progress_dialog->show();
+        this->mainwindow_progress_dialog->activateWindow();
+        this->mainwindow_progress_dialog->setValue(progress);
+        // Progress dialog cancel
+        connect(this->mainwindow_progress_dialog, &QProgressDialog::canceled, this, &MainWindow::main_window_progress_dialog_canceled);
+    }
+}
+
+void MainWindow::receive_ZipManager_data(QList<ZipData> data) {
+    QMessageBox::information(this, QStringLiteral("Add file(s)"), QStringLiteral("Files to add in database: %1").arg(QString::number(data.length())));
+    if (this->db_thread->isRunning()) {
+        QMessageBox::information(this, QStringLiteral("Database insert"), QStringLiteral("Action already running"));
+    } else {
+        this->db_thread->start();
+        emit request_insertInDatabase(data);
+    }
+}
+
+// DBManager
 void MainWindow::receive_DBManager_info(const QString &info) {
     QMessageBox::information(this, QStringLiteral("Database"), info);
 }
@@ -315,38 +357,14 @@ void MainWindow::receive_DBManager_data(QList<Manga> data) {
     emit request_setMangaList(data);
 }
 
-void MainWindow::receive_ZipManager_info(const QString &info) {
-    QMessageBox::information(this, QStringLiteral("Add file(s)"), info);
-}
-
-void MainWindow::receive_ZipManager_progress(int progress) {
-    if (this->mainwindow_progress_dialog) {
-        this->mainwindow_progress_dialog->setValue(progress);
-    } else {
-        this->mainwindow_progress_dialog = new QProgressDialog(QStringLiteral("Working on file(s)"), QStringLiteral("Cancel"), 0, 100, this, Qt::FramelessWindowHint);
-        this->mainwindow_progress_dialog->setCursor(Qt::WaitCursor);
-        this->mainwindow_progress_dialog->setAttribute(Qt::WA_DeleteOnClose);
-        this->mainwindow_progress_dialog->setFixedSize(this->mainwindow_progress_dialog->size());
-        this->mainwindow_progress_dialog->show();
-        this->mainwindow_progress_dialog->activateWindow();
-        this->mainwindow_progress_dialog->setValue(progress);
-        // Progress dialog cancel
-        connect(this->mainwindow_progress_dialog, &QProgressDialog::canceled, this, &MainWindow::main_window_progress_dialog_canceled);
-    }
-}
-
-void MainWindow::receive_ZipManager_data(QList<ZipData> data) {
-    QMessageBox::information(this, QStringLiteral("Add file(s)"), QStringLiteral("Files to add in database: %1").arg(QString::number(data.length())));
+// LibraryView
+void MainWindow::receive_LibraryView_deleteFromDatabse_request(QStringList hash_list) {
     if (this->db_thread->isRunning()) {
-        QMessageBox::information(this, QStringLiteral("Database insert"), QStringLiteral("Action already running"));
+        QMessageBox::information(this, QStringLiteral("Delete from database"), QStringLiteral("Action already running"));
     } else {
         this->db_thread->start();
-        emit request_insertInDatabase(data);
+        emit request_deleteFromDatabase(hash_list);
     }
-}
-
-void MainWindow::actionExit_triggered() {
-    QApplication::quit();
 }
 
 // Menubar:Database
@@ -411,18 +429,15 @@ void MainWindow::actionShowAbout_triggered() {
 }
 
 // Buttons
-void MainWindow::pushButtonSearch_clicked(bool checked) {
-    Q_UNUSED(checked);
+void MainWindow::pushButtonSearch_clicked() {
     emit request_setSearchText(this->getSearchText());
 }
 
-void MainWindow::pushButtonRandom_clicked(bool checked) {
-    Q_UNUSED(checked);
+void MainWindow::pushButtonRandom_clicked() {
     qDebug() << "Random button clicked"; // TODO: implement random
 }
 
-void MainWindow::pushButtonRefresh_clicked(bool checked) {
-    Q_UNUSED(checked);
+void MainWindow::pushButtonRefresh_clicked() {
     this->clearSearchText();
     emit request_setSearchText("");
 }

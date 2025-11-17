@@ -2,6 +2,7 @@
 
 #include "ui/ui_mainwindow.h"
 #include "gui/logdialog.hpp"
+#include "gui/mangainfodialog.hpp"
 
 #include "app/imageview.hpp"
 #include "app/libraryview.hpp"
@@ -43,6 +44,8 @@ private:
     QPointer<QProgressDialog> mainwindow_progress_dialog;
     // Logs dialog
     LogDialog *log_dialog;
+    // Manga info dialog
+    MangaInfoDialog *manga_info_dialog;
     // Image scale slider
     QSlider *slider_scale;
     QWidgetAction *action_scale_slider;
@@ -105,6 +108,9 @@ public slots:
     void receive_DBManager_progress(int progress);
     void receive_DBManager_data(QList<Manga> data);
 
+    // LibraryView
+    void receive_LibraryView_deleteFromDatabse_request(QStringList hash_list);
+
 private slots:
     // Menubar:File
     void actionAddFile_triggered();
@@ -124,9 +130,9 @@ private slots:
     void actionShowAbout_triggered();
 
     // Buttons
-    void pushButtonSearch_clicked(bool checked);
-    void pushButtonRandom_clicked(bool checked);
-    void pushButtonRefresh_clicked(bool checked);
+    void pushButtonSearch_clicked();
+    void pushButtonRandom_clicked();
+    void pushButtonRefresh_clicked();
 
     // Search
     void lineEditSearch_returnPressed();

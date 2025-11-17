@@ -26,6 +26,8 @@ LogDialog::LogDialog(QWidget *parent) : QDialog(parent), ui(new Ui::LogDialog) {
     connect(this->ui->clearLogButton, &QPushButton::pressed, this, &LogDialog::clearLogButton_pressed);
     // Log text changed
     connect(this->ui->logPlainTextEdit, &QPlainTextEdit::blockCountChanged, this, &LogDialog::logPlainTextEdit_blockcountchanged);
+    // Close window on close button press
+    connect(this->ui->pushButtonCloseDialog, &QPushButton::clicked, this, &LogDialog::hide);
 }
 
 LogDialog::~LogDialog() {
@@ -33,7 +35,7 @@ LogDialog::~LogDialog() {
     delete this->ui;
 }
 
-void LogDialog::receive_showDialog_request() {
+void LogDialog::receive_showLogDialog_request() {
     if (this->isVisible()) {
         this->activateWindow();
     } else {

@@ -182,6 +182,8 @@
     <addaction name="separator"/>
     <addaction name="actionCheckDatabaseHashes"/>
     <addaction name="actionCheckDatabasePaths"/>
+    <addaction name="separator"/>
+    <addaction name="actionRemoveDeletedEntries"/>
    </widget>
    <widget class="QMenu" name="menuSettings">
     <property name="title">
@@ -422,6 +424,14 @@
    </property>
    <property name="statusTip">
     <string>Show about window</string>
+   </property>
+  </action>
+  <action name="actionRemoveDeletedEntries">
+   <property name="text">
+    <string>Remove deleted entries</string>
+   </property>
+   <property name="statusTip">
+    <string>Removed entries from the database not found on disk (checks file paths)</string>
    </property>
   </action>
  </widget>

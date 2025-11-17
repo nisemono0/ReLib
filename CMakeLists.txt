@@ -15,6 +15,8 @@ qt_add_executable(ReLib
     src/app/librarymodelproxy.hpp
     src/app/libraryview.cpp
     src/app/libraryview.hpp
+    src/base/clipboard.cpp
+    src/base/clipboard.hpp
     src/base/dbmanager.cpp
     src/base/dbmanager.hpp
     src/base/log.cpp
@@ -27,6 +29,8 @@ qt_add_executable(ReLib
     src/gui/logdialog.hpp
     src/gui/mainwindow.cpp
     src/gui/mainwindow.hpp
+    src/gui/mangainfodialog.cpp
+    src/gui/mangainfodialog.hpp
     src/main.cpp
     src/utils/defs.hpp
     src/utils/fs.cpp
@@ -43,6 +47,7 @@ target_sources(ReLib
     PRIVATE
         src/gui/ui/logdialog.ui
         src/gui/ui/mainwindow.ui
+        src/gui/ui/mangainfodialog.ui
 )
 
 target_link_libraries(ReLib

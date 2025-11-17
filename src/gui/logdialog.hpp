@@ -33,7 +33,7 @@ private:
     QTimer *log_timer;
 
 public slots:
-    void receive_showDialog_request();
+    void receive_showLogDialog_request();
 
 private slots:
     // Logdialog buttons
