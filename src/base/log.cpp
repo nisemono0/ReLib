@@ -1,4 +1,5 @@
 #include "base/log.hpp"
+
 #include <QMutexLocker>
 
 void Log::info(const QString &message) {
