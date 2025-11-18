@@ -128,10 +128,17 @@ void LibraryView::receive_setSearchText_request(const QString &search_text) {
     this->library_model_proxy->setSearchText(search_text);
     this->updateLibraryViewStatus();
     // TODO: When implemeting settings add a flag to auto select the first item found if it exists
-    // if (this->library_model_proxy->rowCount() > 0 && this->select_after_search == true && !Utils::Str::isNullOrEmpty(search_text)){
-    //     QModelIndex proxy_first_idx = this->library_model_proxy->index(0, 0);
-    //     this->setCurrentIndex(proxy_first_idx);
+    // if (this->select_first) {
+    //     QModelIndex first_index = this->library_model_proxy->getFirstIndex();
+    //     this->setCurrentIndex(first_index);
     // }
+}
+
+void LibraryView::receive_selectRandomManga_request() {
+    QModelIndex random_index = this->library_model_proxy->getRandomIndex();
+    if (random_index.isValid()) {
+        this->setCurrentIndex(random_index);
+    }
 }
 
 void LibraryView::libraryView_selectionModel_currentChanged(const QModelIndex &current, const QModelIndex &previous) {

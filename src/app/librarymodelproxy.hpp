@@ -14,6 +14,9 @@ public:
 
     void setSearchText(const QString &search_text);
 
+    QModelIndex getFirstIndex();
+    QModelIndex getRandomIndex();
+
 private:
     QCollator *sort_collator;
 

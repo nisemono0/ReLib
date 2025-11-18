@@ -94,6 +94,7 @@ signals:
     void request_setMangaList(QList<Manga> manga_list);
     void request_clearMangaList();
     void request_setSearchText(const QString &search_text);
+    void request_selectRandomManga();
 
 public slots:
     // ZipManager

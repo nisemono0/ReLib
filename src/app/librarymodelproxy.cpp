@@ -1,6 +1,8 @@
 #include "app/librarymodelproxy.hpp"
 #include "app/librarymodel.hpp"
 
+#include <QRandomGenerator>
+
 
 LibraryModelProxy::LibraryModelProxy(QObject *parent) : QSortFilterProxyModel(parent) {
     this->search_text = "";
@@ -28,6 +30,18 @@ void LibraryModelProxy::setSearchText(const QString &search_text) {
     beginFilterChange();
     this->search_text = search_text;
     endFilterChange();
+}
+
+QModelIndex LibraryModelProxy::getFirstIndex() {
+    return this->index(0, 0);
+}
+
+QModelIndex LibraryModelProxy::getRandomIndex() {
+    int total_visible = this->rowCount();
+    if (total_visible > 0) {
+        return this->index(QRandomGenerator::global()->bounded(0, total_visible), 0);
+    }
+    return this->index(0, 0);
 }
 
 bool LibraryModelProxy::searchItemData(const QStringList &search_list, const QStringList &data_list) const {

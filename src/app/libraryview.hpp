@@ -48,7 +48,7 @@ public slots:
     void receive_setMangaList_request(QList<Manga> manga_list);
     void receive_clearMangaList_request();
     void receive_setSearchText_request(const QString &search_text);
-
+    void receive_selectRandomManga_request();
 
 private slots:
     void libraryView_selectionModel_currentChanged(const QModelIndex &current, const QModelIndex &previous);

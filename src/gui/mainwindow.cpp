@@ -81,6 +81,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this, &MainWindow::request_setMangaList, this->ui->libraryView, &LibraryView::receive_setMangaList_request);
     connect(this, &MainWindow::request_clearMangaList, this->ui->libraryView, &LibraryView::receive_clearMangaList_request);
     connect(this, &MainWindow::request_setSearchText, this->ui->libraryView, &LibraryView::receive_setSearchText_request);
+    connect(this, &MainWindow::request_selectRandomManga, this->ui->libraryView, &LibraryView::receive_selectRandomManga_request);
     connect(this->ui->libraryView, &LibraryView::send_LibraryView_status, this->library_view_status, &QLabel::setText);
     connect(this->ui->libraryView, &LibraryView::send_LibraryView_deleteFromDatabase_request, this, &MainWindow::receive_LibraryView_deleteFromDatabse_request);
     connect(this->ui->libraryView, &LibraryView::request_showMangaInfoDialog, this->manga_info_dialog, &MangaInfoDialog::receive_showMangaInfoDialog_request);
@@ -429,7 +430,7 @@ void MainWindow::pushButtonSearch_clicked() {
 }
 
 void MainWindow::pushButtonRandom_clicked() {
-    qDebug() << "Random button clicked"; // TODO: implement random
+    emit request_selectRandomManga();
 }
 
 void MainWindow::pushButtonRefresh_clicked() {
