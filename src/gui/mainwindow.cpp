@@ -67,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // Menubar:Info
     connect(this->ui->actionShowLogs, &QAction::triggered, this->log_dialog, &LogDialog::receive_showLogDialog_request);
-    connect(this->ui->actionShowAbout, &QAction::triggered, this, &MainWindow::actionShowAbout_triggered);
+    connect(this->ui->actionShowAbout, &QAction::triggered, this, &QApplication::aboutQt);
 
     // Buttons
     connect(this->ui->pushButtonSearch, &QPushButton::clicked, this, &MainWindow::pushButtonSearch_clicked);
@@ -422,11 +422,6 @@ void MainWindow::actionCheckDatabasePaths_triggered() {
 }
 
 // TODO: Menubar:Settings
-
-// Menubar:Info
-void MainWindow::actionShowAbout_triggered() {
-    qApp->aboutQt();
-}
 
 // Buttons
 void MainWindow::pushButtonSearch_clicked() {

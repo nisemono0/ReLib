@@ -126,9 +126,6 @@ private slots:
 
     // TODO: Menubar:Settings
 
-    // Menubar:Info
-    void actionShowAbout_triggered();
-
     // Buttons
     void pushButtonSearch_clicked();
     void pushButtonRandom_clicked();
