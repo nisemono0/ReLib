@@ -94,13 +94,13 @@ QList<Manga> DBManager::getAllDatabaseData() {
     return manga_list;
 }
 
-void DBManager::checkDatabaseFilehash(const QPair<QString, QString> &path_hash_pair) {
-    if (Utils::Fs::fileExists(path_hash_pair.first)) {
-        if (Utils::Fs::getSha251FromFile(path_hash_pair.first) != path_hash_pair.second) {
-            Log::warning(QStringLiteral("[Filehash check] [Hashes differ]: %1").arg(path_hash_pair.first));
+void DBManager::checkDatabaseFilehash(const PathHash &file) {
+    if (Utils::Fs::fileExists(file.file_path)) {
+        if (Utils::Fs::getSha251FromFile(file.file_path) != file.file_hash) {
+            Log::warning(QStringLiteral("[Filehash check] [Hashes differ]: %1").arg(file.file_path));
         }
     } else {
-        Log::warning(QStringLiteral("[Filehash check] [File not found]: %1").arg(path_hash_pair.first));
+        Log::warning(QStringLiteral("[Filehash check] [File not found]: %1").arg(file.file_path));
     }
 }
 
@@ -371,18 +371,19 @@ void DBManager::receive_checkDatabaseHashes_request() {
             return;
         }
 
-        QList<QPair<QString, QString>> batch_path_hash_list = QList<QPair<QString, QString>>();
+        QList<PathHash> batch_path_hash_list = QList<PathHash>();
         int current_batch_len = qMin(BatchSize::DBHashCheck, database_data_len - database_data_idx);
         for (int batch_idx = 0; batch_idx < current_batch_len; batch_idx++) {
-            QString database_file_path = database_data[database_data_idx + batch_idx].file_path;
-            QString database_file_hash = database_data[database_data_idx + batch_idx].file_hash;
-            batch_path_hash_list.append(QPair<QString, QString>(database_file_path, database_file_hash));
+            PathHash file;
+            file.file_hash = database_data[database_data_idx + batch_idx].file_hash;
+            file.file_path = database_data[database_data_idx + batch_idx].file_path;
+            batch_path_hash_list.append(file);
             progress = static_cast<int>((database_data_idx + batch_idx + 1) * 100.0 / database_data_len);
         }
 
         // No need to check for results since we only log
-        QtConcurrent::blockingMap(batch_path_hash_list, [this](const QPair<QString, QString> &path_hash_pair) {
-                this->checkDatabaseFilehash(path_hash_pair);
+        QtConcurrent::blockingMap(batch_path_hash_list, [this](const PathHash &file) {
+                this->checkDatabaseFilehash(file);
                 });
 
         emit send_DBManager_progress(progress);

@@ -11,6 +11,11 @@ struct ZipData {
     QJsonDocument info_json;
 };
 
+struct PathHash {
+    QString file_path;
+    QString file_hash;
+};
+
 namespace App {
     static const QString AppName = QStringLiteral("ReLib");
     static const QString Style   = QStringLiteral("Fusion");

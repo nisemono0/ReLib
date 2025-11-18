@@ -9,7 +9,6 @@
 #include <QString>
 #include <QVariantMap>
 #include <QList>
-#include <QPair>
 
 
 class DBManager : public QObject {
@@ -33,7 +32,7 @@ private:
 
     QList<Manga> getAllDatabaseData();
 
-    void checkDatabaseFilehash(const QPair<QString, QString> &path_hash_pair); // TODO: Refactor this to use a struct SoonTM
+    void checkDatabaseFilehash(const PathHash &file);
     void checkDatabaseFilepath(const QString &file_path);
 
 signals:
