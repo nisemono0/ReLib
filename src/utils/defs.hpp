@@ -4,6 +4,12 @@
 #include <QString>
 #include <QJsonDocument>
 
+// Custom data types
+struct ZipData {
+    QString file_hash;
+    QString file_path;
+    QJsonDocument info_json;
+};
 
 namespace App {
     static const QString AppName = QStringLiteral("ReLib");

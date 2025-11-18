@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utils/zip.hpp"
+#include "utils/defs.hpp"
 
 #include <quazip/JlCompress.h>
 #include <quazip/quazipfile.h>
