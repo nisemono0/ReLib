@@ -1,3 +1,0 @@
-TODO:
-    - Start implemeting ImageView
-
