@@ -2,7 +2,6 @@
 
 #include "base/log.hpp"
 
-#include "utils/defs.hpp"
 #include "utils/str.hpp"
 
 #include <QMessageBox>
@@ -95,6 +94,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this, &MainWindow::request_insertInDatabase, this->db_manager, &DBManager::receive_insertIntoDatabase_request);
     connect(this, &MainWindow::request_deleteFromDatabase, this->db_manager, &DBManager::receive_deleteFromDatabase_request);
     connect(this, &MainWindow::request_getAllDatabaseData, this->db_manager, &DBManager::receive_getAllDatabaseData_request);
+    connect(this, &MainWindow::request_getPathHashDatabaseData, this->db_manager, &DBManager::receive_getPathHashDatabaseData_request);
     connect(this, &MainWindow::request_checkDatabaseHashes, this->db_manager, &DBManager::receive_checkDatabaseHashes_request);
     connect(this, &MainWindow::request_checkDatabaseFilepaths, this->db_manager, &DBManager::receive_checkDatabaseFilepaths_request);
 
@@ -107,6 +107,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->db_manager, &DBManager::send_DBManager_unloadDatabase_status, this, &MainWindow::receive_DBManager_unloadDatabase_status);
     connect(this->db_manager, &DBManager::send_DBManager_progress, this, &MainWindow::receive_DBManager_progress);
     connect(this->db_manager, &DBManager::send_DBManager_data, this, &MainWindow::receive_DBManager_data);
+    connect(this->db_manager, &DBManager::send_DBManager_pathhash_data, this, &MainWindow::receive_DBManager_pathhash_data);
 
     // Quit thread when result or info is received
     connect(this->zip_manager, &ZipManager::send_ZipManager_info, this->zip_thread, &QThread::quit);
@@ -114,6 +115,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->db_manager, &DBManager::send_DBManager_info, this->db_thread, &QThread::quit);
     connect(this->db_manager, &DBManager::send_DBManager_unloadDatabase_status, this->db_thread, &QThread::quit);
     connect(this->db_manager, &DBManager::send_DBManager_data, this->db_thread, &QThread::quit);
+    connect(this->db_manager, &DBManager::send_DBManager_pathhash_data, this->db_thread, &QThread::quit);
 }
 
 MainWindow::~MainWindow() {
@@ -249,28 +251,20 @@ const QString MainWindow::getSearchText() {
 }
 
 void MainWindow::actionAddFile_triggered() {
-    if (this->zip_thread->isRunning()) {
-        QMessageBox::information(this, QStringLiteral("Add file"), QStringLiteral("Action already running"));
+    if (this->db_thread->isRunning()) {
+        QMessageBox::information(this, QStringLiteral("Add file"), QStringLiteral("Database busy"));
     } else {
-        QString file_path = this->selectFile(FileDialog::SelectZip);
-        if (Utils::Str::isNullOrEmpty(file_path)) {
-            return;
-        }
-        this->zip_thread->start();
-        emit request_getFileJsonInfo(file_path);
+        this->db_thread->start();
+        emit request_getPathHashDatabaseData(false);
     }
 }
 
 void MainWindow::actionAddDir_triggered() {
-    if (this->zip_thread->isRunning()) {
-        QMessageBox::information(this, QStringLiteral("Add directory"), QStringLiteral("Action already running"));
+    if (this->db_thread->isRunning()) {
+        QMessageBox::information(this, QStringLiteral("Add file"), QStringLiteral("Database busy"));
     } else {
-        QString dir_path = this->selectFile(FileDialog::SelectDir);
-        if (Utils::Str::isNullOrEmpty(dir_path)) {
-            return;
-        }
-        this->zip_thread->start();
-        emit request_getDirJsonInfo(dir_path);
+        this->db_thread->start();
+        emit request_getPathHashDatabaseData(true);
     }
 }
 
@@ -356,6 +350,26 @@ void MainWindow::receive_DBManager_progress(int progress) {
 void MainWindow::receive_DBManager_data(QList<Manga> data) {
     Log::info(QStringLiteral("[DBManager received]: %1").arg(QString::number(data.length())));
     emit request_setMangaList(data);
+}
+
+void MainWindow::receive_DBManager_pathhash_data(QList<PathHash> data, bool is_dir) {
+    if (this->zip_thread->isRunning()) {
+        QMessageBox::information(this, QStringLiteral("Add file(s)"), QStringLiteral("Action already running"));
+    } else if (is_dir == true) {
+        QString dir_path = this->selectFile(FileDialog::SelectDir);
+        if (Utils::Str::isNullOrEmpty(dir_path)) {
+            return;
+        }
+        this->zip_thread->start();
+        emit request_getDirJsonInfo(dir_path, data);
+    } else if (is_dir == false) {
+        QString file_path = this->selectFile(FileDialog::SelectZip);
+        if (Utils::Str::isNullOrEmpty(file_path)) {
+            return;
+        }
+        this->zip_thread->start();
+        emit request_getFileJsonInfo(file_path, data);
+    }
 }
 
 // LibraryView

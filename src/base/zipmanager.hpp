@@ -25,19 +25,15 @@ private:
         ZipData zip_data; // ZipData type
         bool is_error; // True if returns with error
     };
-    ZipManagerInfo getZipInfo(const QString &file_path);
+    ZipManagerInfo getZipInfo(const QString &file_path, const QList<PathHash> &path_hash_list);
 signals:
     void send_ZipManager_info(const QString &status);
     void send_ZipManager_progress(int progress);
     void send_ZipManager_data(QList<ZipData> data);
 
 public slots:
-    void receive_getFileJsonInfo_request(const QString &file_path);
-    // TODO(Maybe):
-    // Make this also take a (file_path, file_hash) pair along the
-    // dir_path and check if any file inside dir_path has the same
-    // (file_path, file_hash) as the one given and skip them if yes
-    void receive_getDirJsonInfo_request(const QString &dir_path);
+    void receive_getFileJsonInfo_request(const QString &file_path, const QList<PathHash> path_hash_list);
+    void receive_getDirJsonInfo_request(const QString &dir_path, const QList<PathHash> path_hash_list);
 
 };
 

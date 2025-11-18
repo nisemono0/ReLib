@@ -21,10 +21,18 @@ ZipManager::~ZipManager() {
 
 }
 
-ZipManager::ZipManagerInfo ZipManager::getZipInfo(const QString &file_path) {
+ZipManager::ZipManagerInfo ZipManager::getZipInfo(const QString &file_path, const QList<PathHash> &path_hash_list) {
     ZipManagerInfo ret_struct;
 
-    QString file_basename = Utils::Fs::getCompleteBaseName(file_path);
+    PathHash path_hash;
+    path_hash.file_path = file_path;
+    path_hash.file_hash = Utils::Fs::getSha251FromFile(file_path);
+
+    if (path_hash_list.contains(path_hash)) {
+        Log::warning(QStringLiteral("[File already in database]: %1").arg(file_path));
+        ret_struct.is_error = true;
+        return ret_struct;
+    }
 
     QJsonDocument json_doc = Utils::Zip::getInfoJsonDocument(file_path);
     if (Utils::Json::isNullOrEmptyJsonDocument(json_doc)) {
@@ -40,22 +48,22 @@ ZipManager::ZipManagerInfo ZipManager::getZipInfo(const QString &file_path) {
 
     ret_struct.zip_data.info_json = json_doc;
     ret_struct.zip_data.file_path = file_path;
-    ret_struct.zip_data.file_hash = Utils::Fs::getSha251FromFile(file_path);
+    ret_struct.zip_data.file_hash = path_hash.file_hash;
     ret_struct.is_error = false;
 
     return ret_struct;
 }
 
-void ZipManager::receive_getFileJsonInfo_request(const QString &file_path) {
+void ZipManager::receive_getFileJsonInfo_request(const QString &file_path, const QList<PathHash> path_hash_list) {
     if (! Utils::Fs::fileExists(file_path)) {
         emit send_ZipManager_info(QStringLiteral("Empty filename"));
         return;
     }
 
-    ZipManagerInfo custom_ret = this->getZipInfo(file_path);
+    ZipManagerInfo custom_ret = this->getZipInfo(file_path, path_hash_list);
 
     if (custom_ret.is_error) {
-        emit send_ZipManager_info(QStringLiteral("Error getting zip info"));
+        emit send_ZipManager_data(QList<ZipData>());
         return;
     }
 
@@ -67,7 +75,7 @@ void ZipManager::receive_getFileJsonInfo_request(const QString &file_path) {
     emit send_ZipManager_data(zip_data_list);
 }
 
-void ZipManager::receive_getDirJsonInfo_request(const QString &dir_path) {
+void ZipManager::receive_getDirJsonInfo_request(const QString &dir_path, const QList<PathHash> path_hash_list) {
     QStringList files_list = Utils::Fs::getDirZipList(dir_path);
     qsizetype files_list_len = files_list.length();
 
@@ -95,8 +103,8 @@ void ZipManager::receive_getDirJsonInfo_request(const QString &dir_path) {
         }
 
         // Start (current_batch_len) concurrent threads getting info.json QJsonObject from zip files
-        auto mapped_batch_results = QtConcurrent::blockingMapped(batch_file_list, [this](const QString &file_path) {
-                return this->getZipInfo(file_path);
+        auto mapped_batch_results = QtConcurrent::blockingMapped(batch_file_list, [this, path_hash_list](const QString &file_path) {
+                return this->getZipInfo(file_path, path_hash_list);
                 });
         for (auto it_custom_ret : mapped_batch_results) {
             if (!it_custom_ret.is_error) {

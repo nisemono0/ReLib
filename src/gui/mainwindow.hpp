@@ -77,8 +77,8 @@ private:
 
 signals:
     // ZipManager
-    void request_getFileJsonInfo(const QString &file_path);
-    void request_getDirJsonInfo(const QString &dir_path);
+    void request_getFileJsonInfo(const QString &file_path, const QList<PathHash> path_hash_list);
+    void request_getDirJsonInfo(const QString &dir_path, const QList<PathHash> path_hash_list);
 
     // DBManager
     void request_createDatabase(const QString &file_path);
@@ -87,6 +87,7 @@ signals:
     void request_insertInDatabase(QList<ZipData> zip_data_list);
     void request_deleteFromDatabase(QStringList hash_list);
     void request_getAllDatabaseData();
+    void request_getPathHashDatabaseData(bool is_dir);
     void request_checkDatabaseHashes();
     void request_checkDatabaseFilepaths();
 
@@ -108,6 +109,7 @@ public slots:
     void receive_DBManager_unloadDatabase_status(bool status);
     void receive_DBManager_progress(int progress);
     void receive_DBManager_data(QList<Manga> data);
+    void receive_DBManager_pathhash_data(QList<PathHash> data, bool is_dir);
 
     // LibraryView
     void receive_LibraryView_deleteFromDatabse_request(QStringList hash_list);

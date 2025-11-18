@@ -68,30 +68,62 @@ QList<Manga> DBManager::getAllDatabaseData() {
 
     QList<Manga> manga_list = QList<Manga>();
 
-    QSqlQuery select_query = QSqlQuery(this->database);
+    QSqlQuery select_all_query = QSqlQuery(this->database);
 
-    if (!select_query.prepare(DBOptions::SelectDBQuery)) {
-        QString prepare_error = select_query.lastError().text();
-        Log::error(QStringLiteral("[DBManager:select:query.prepare] %1").arg(prepare_error));
+    if (!select_all_query.prepare(DBOptions::SelectAllDBQuery)) {
+        QString prepare_error = select_all_query.lastError().text();
+        Log::error(QStringLiteral("[DBManager:select_all:query.prepare] %1").arg(prepare_error));
         return QList<Manga>();
     }
 
-    if (!select_query.exec()) {
-        QString query_error = select_query.lastError().text();
-        Log::error(QStringLiteral("[DBManager:select:exec]: %1").arg(query_error));
+    if (!select_all_query.exec()) {
+        QString query_error = select_all_query.lastError().text();
+        Log::error(QStringLiteral("[DBManager:select_all:exec]: %1").arg(query_error));
         return QList<Manga>();
     }
 
-    while (select_query.next()) {
+    while (select_all_query.next()) {
         ZipData zip_data;
-        zip_data.file_hash = select_query.value(0).toString();
-        zip_data.file_path = select_query.value(1).toString();
-        zip_data.info_json = QJsonDocument::fromJson(select_query.value(2).toByteArray());
+        zip_data.file_hash = select_all_query.value(0).toString();
+        zip_data.file_path = select_all_query.value(1).toString();
+        zip_data.info_json = QJsonDocument::fromJson(select_all_query.value(2).toByteArray());
 
         manga_list.append(Utils::Json::convertJsonInfoToManga(zip_data));
     }
 
     return manga_list;
+}
+
+QList<PathHash> DBManager::getPathHashDatabaseData() {
+    if (!this->isDatabaseLoaded()) {
+        Log::warning(QStringLiteral("[DBManager:getPathHashDatabaseData] Database not loaded"));
+        return QList<PathHash>();
+    }
+
+    QList<PathHash> path_hash_list = QList<PathHash>();
+
+    QSqlQuery select_pathhash_query = QSqlQuery(this->database);
+
+    if (!select_pathhash_query.prepare(DBOptions::SelectAllDBQuery)) {
+        QString prepare_error = select_pathhash_query.lastError().text();
+        Log::error(QStringLiteral("[DBManager:select_pathhash:query.prepare] %1").arg(prepare_error));
+        return QList<PathHash>();
+    }
+
+    if (!select_pathhash_query.exec()) {
+        QString query_error = select_pathhash_query.lastError().text();
+        Log::error(QStringLiteral("[DBManager:select_path:exec]: %1").arg(query_error));
+        return QList<PathHash>();
+    }
+
+    while (select_pathhash_query.next()) {
+        PathHash path_hash;
+        path_hash.file_hash = select_pathhash_query.value(0).toString();
+        path_hash.file_path = select_pathhash_query.value(1).toString();
+        path_hash_list.append(path_hash);
+    }
+
+    return path_hash_list;
 }
 
 void DBManager::checkDatabaseFilehash(const PathHash &file) {
@@ -346,6 +378,10 @@ void DBManager::receive_deleteFromDatabase_request(QStringList hash_list) {
 
 void DBManager::receive_getAllDatabaseData_request() {
     emit send_DBManager_data(this->getAllDatabaseData());
+}
+
+void DBManager::receive_getPathHashDatabaseData_request(bool is_dir) {
+    emit send_DBManager_pathhash_data(this->getPathHashDatabaseData(), is_dir);
 }
 
 void DBManager::receive_checkDatabaseHashes_request() {
