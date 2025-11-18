@@ -1,4 +1,4 @@
-#include "base/zipmanager.hpp"
+#include "base/zipworker.hpp"
 #include "base/log.hpp"
 
 #include "utils/fs.hpp"
@@ -13,16 +13,16 @@
 #include <QVariantMap>
 
 
-ZipManager::ZipManager(QObject *parent) : QObject(parent) {
+ZipWorker::ZipWorker(QObject *parent) : QObject(parent) {
 
 }
 
-ZipManager::~ZipManager() {
+ZipWorker::~ZipWorker() {
 
 }
 
-ZipManager::ZipManagerInfo ZipManager::getZipInfo(const QString &file_path, const QList<PathHash> &path_hash_list) {
-    ZipManagerInfo ret_struct;
+ZipWorker::ZipWorkerInfo ZipWorker::getZipInfo(const QString &file_path, const QList<PathHash> &path_hash_list) {
+    ZipWorkerInfo ret_struct;
 
     PathHash path_hash;
     path_hash.file_path = file_path;
@@ -54,28 +54,28 @@ ZipManager::ZipManagerInfo ZipManager::getZipInfo(const QString &file_path, cons
     return ret_struct;
 }
 
-void ZipManager::receive_getFileJsonInfo_request(const QString &file_path, const QList<PathHash> path_hash_list) {
+void ZipWorker::receive_getFileJsonInfo_request(const QString &file_path, const QList<PathHash> path_hash_list) {
     if (! Utils::Fs::fileExists(file_path)) {
-        emit send_ZipManager_info(QStringLiteral("Empty filename"));
+        emit send_ZipWorker_info(QStringLiteral("Empty filename"));
         return;
     }
 
-    ZipManagerInfo custom_ret = this->getZipInfo(file_path, path_hash_list);
+    ZipWorkerInfo custom_ret = this->getZipInfo(file_path, path_hash_list);
 
     if (custom_ret.is_error) {
-        emit send_ZipManager_data(QList<ZipData>());
+        emit send_ZipWorker_data(QList<ZipData>());
         return;
     }
 
     QList<ZipData> zip_data_list = QList<ZipData>();
 
-    Log::info(QStringLiteral("[ZipManager:Add] %1").arg(custom_ret.zip_data.file_path));
+    Log::info(QStringLiteral("[ZipWorker:Add] %1").arg(custom_ret.zip_data.file_path));
     zip_data_list.append(custom_ret.zip_data);
 
-    emit send_ZipManager_data(zip_data_list);
+    emit send_ZipWorker_data(zip_data_list);
 }
 
-void ZipManager::receive_getDirJsonInfo_request(const QString &dir_path, const QList<PathHash> path_hash_list) {
+void ZipWorker::receive_getDirJsonInfo_request(const QString &dir_path, const QList<PathHash> path_hash_list) {
     QStringList files_list = Utils::Fs::getDirZipList(dir_path);
     qsizetype files_list_len = files_list.length();
 
@@ -85,12 +85,12 @@ void ZipManager::receive_getDirJsonInfo_request(const QString &dir_path, const Q
 
     for (int file_idx = 0; file_idx < files_list_len; file_idx += BatchSize::Zip) {
         if (QThread::currentThread()->isInterruptionRequested()) {
-            emit send_ZipManager_progress(100);
+            emit send_ZipWorker_progress(100);
             // If list is empty send message, otherwise send the list
             if (zip_data_list.isEmpty()) {
-                emit send_ZipManager_info(QStringLiteral("Add dir canceled; Nothing to add"));
+                emit send_ZipWorker_info(QStringLiteral("Add dir canceled; Nothing to add"));
             } else {
-                emit send_ZipManager_data(zip_data_list);
+                emit send_ZipWorker_data(zip_data_list);
             }
             return;
         }
@@ -109,14 +109,14 @@ void ZipManager::receive_getDirJsonInfo_request(const QString &dir_path, const Q
         for (auto it_custom_ret : mapped_batch_results) {
             if (!it_custom_ret.is_error) {
                 zip_data_list.append(it_custom_ret.zip_data);
-                Log::info(QStringLiteral("[ZipManager:Add] %1").arg(it_custom_ret.zip_data.file_path));
+                Log::info(QStringLiteral("[ZipWorker:Add] %1").arg(it_custom_ret.zip_data.file_path));
             }
         }
 
-        emit send_ZipManager_progress(progress);
+        emit send_ZipWorker_progress(progress);
 
     }
 
-    emit send_ZipManager_data(zip_data_list);
+    emit send_ZipWorker_data(zip_data_list);
 }
 

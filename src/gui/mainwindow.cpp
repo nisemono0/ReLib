@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->library_view_status = new QLabel(this);
     this->ui->statusBar->addWidget(this->library_view_status);
     this->library_view_status->setIndent(4);
+    this->image_view_status = new QLabel(this);
+    this->ui->statusBar->addPermanentWidget(this->image_view_status);
     this->setNoDatabaseStatus();
 
     this->action_scale_slider = new QWidgetAction(this->ui->menuSettings);
@@ -42,13 +44,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->actiongroup_view_mode->setExclusive(true);
 
     // Thread setup
-    this->zip_manager = new ZipManager();
+    this->zip_worker = new ZipWorker();
     this->zip_thread = new QThread(this);
-    this->zip_manager->moveToThread(this->zip_thread);
+    this->zip_worker->moveToThread(this->zip_thread);
 
-    this->db_manager = new DBManager();
+    this->db_worker = new DBWorker();
     this->db_thread = new QThread(this);
-    this->db_manager->moveToThread(this->db_thread);
+    this->db_worker->moveToThread(this->db_thread);
 
     // Menubar:File
     connect(this->ui->actionAddFile, &QAction::triggered, this, &MainWindow::actionAddFile_triggered);
@@ -85,37 +87,40 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->ui->libraryView, &LibraryView::send_LibraryView_deleteFromDatabase_request, this, &MainWindow::receive_LibraryView_deleteFromDatabse_request);
     connect(this->ui->libraryView, &LibraryView::request_showMangaInfoDialog, this->manga_info_dialog, &MangaInfoDialog::receive_showMangaInfoDialog_request);
 
+    // Image view
+    connect(this->ui->imageView, &ImageView::send_ImageView_status, this->image_view_status, &QLabel::setText);
+
     // Thread requests
-    connect(this, &MainWindow::request_getFileJsonInfo, this->zip_manager, &ZipManager::receive_getFileJsonInfo_request);
-    connect(this, &MainWindow::request_getDirJsonInfo, this->zip_manager, &ZipManager::receive_getDirJsonInfo_request);
-    connect(this, &MainWindow::request_createDatabase, this->db_manager, &DBManager::receive_createDatabase_request);
-    connect(this, &MainWindow::request_loadDatabase, this->db_manager, &DBManager::receive_loadDatabase_request);
-    connect(this, &MainWindow::request_unloadDatabase, this->db_manager, &DBManager::receive_unloadDatabase_request);
-    connect(this, &MainWindow::request_insertInDatabase, this->db_manager, &DBManager::receive_insertIntoDatabase_request);
-    connect(this, &MainWindow::request_deleteFromDatabase, this->db_manager, &DBManager::receive_deleteFromDatabase_request);
-    connect(this, &MainWindow::request_getAllDatabaseData, this->db_manager, &DBManager::receive_getAllDatabaseData_request);
-    connect(this, &MainWindow::request_getPathHashDatabaseData, this->db_manager, &DBManager::receive_getPathHashDatabaseData_request);
-    connect(this, &MainWindow::request_checkDatabaseHashes, this->db_manager, &DBManager::receive_checkDatabaseHashes_request);
-    connect(this, &MainWindow::request_checkDatabaseFilepaths, this->db_manager, &DBManager::receive_checkDatabaseFilepaths_request);
+    connect(this, &MainWindow::request_getFileJsonInfo, this->zip_worker, &ZipWorker::receive_getFileJsonInfo_request);
+    connect(this, &MainWindow::request_getDirJsonInfo, this->zip_worker, &ZipWorker::receive_getDirJsonInfo_request);
+    connect(this, &MainWindow::request_createDatabase, this->db_worker, &DBWorker::receive_createDatabase_request);
+    connect(this, &MainWindow::request_loadDatabase, this->db_worker, &DBWorker::receive_loadDatabase_request);
+    connect(this, &MainWindow::request_unloadDatabase, this->db_worker, &DBWorker::receive_unloadDatabase_request);
+    connect(this, &MainWindow::request_insertInDatabase, this->db_worker, &DBWorker::receive_insertIntoDatabase_request);
+    connect(this, &MainWindow::request_deleteFromDatabase, this->db_worker, &DBWorker::receive_deleteFromDatabase_request);
+    connect(this, &MainWindow::request_getAllDatabaseData, this->db_worker, &DBWorker::receive_getAllDatabaseData_request);
+    connect(this, &MainWindow::request_getPathHashDatabaseData, this->db_worker, &DBWorker::receive_getPathHashDatabaseData_request);
+    connect(this, &MainWindow::request_checkDatabaseHashes, this->db_worker, &DBWorker::receive_checkDatabaseHashes_request);
+    connect(this, &MainWindow::request_checkDatabaseFilepaths, this->db_worker, &DBWorker::receive_checkDatabaseFilepaths_request);
 
     // Thread info/data received
-    connect(this->zip_manager, &ZipManager::send_ZipManager_info, this, &MainWindow::receive_ZipManager_info);
-    connect(this->zip_manager, &ZipManager::send_ZipManager_progress, this, &MainWindow::receive_ZipManager_progress);
-    connect(this->zip_manager, &ZipManager::send_ZipManager_data, this, &MainWindow::receive_ZipManager_data);
-    connect(this->db_manager, &DBManager::send_DBManager_info, this, &MainWindow::receive_DBManager_info);
-    connect(this->db_manager, &DBManager::send_DBManager_loadDatabase_status, this, &MainWindow::receive_DBManager_loadDatabase_status);
-    connect(this->db_manager, &DBManager::send_DBManager_unloadDatabase_status, this, &MainWindow::receive_DBManager_unloadDatabase_status);
-    connect(this->db_manager, &DBManager::send_DBManager_progress, this, &MainWindow::receive_DBManager_progress);
-    connect(this->db_manager, &DBManager::send_DBManager_data, this, &MainWindow::receive_DBManager_data);
-    connect(this->db_manager, &DBManager::send_DBManager_pathhash_data, this, &MainWindow::receive_DBManager_pathhash_data);
+    connect(this->zip_worker, &ZipWorker::send_ZipWorker_info, this, &MainWindow::receive_ZipWorker_info);
+    connect(this->zip_worker, &ZipWorker::send_ZipWorker_progress, this, &MainWindow::receive_ZipWorker_progress);
+    connect(this->zip_worker, &ZipWorker::send_ZipWorker_data, this, &MainWindow::receive_ZipWorker_data);
+    connect(this->db_worker, &DBWorker::send_DBWorker_info, this, &MainWindow::receive_DBWorker_info);
+    connect(this->db_worker, &DBWorker::send_DBWorker_loadDatabase_status, this, &MainWindow::receive_DBWorker_loadDatabase_status);
+    connect(this->db_worker, &DBWorker::send_DBWorker_unloadDatabase_status, this, &MainWindow::receive_DBWorker_unloadDatabase_status);
+    connect(this->db_worker, &DBWorker::send_DBWorker_progress, this, &MainWindow::receive_DBWorker_progress);
+    connect(this->db_worker, &DBWorker::send_DBWorker_data, this, &MainWindow::receive_DBWorker_data);
+    connect(this->db_worker, &DBWorker::send_DBWorker_pathhash_data, this, &MainWindow::receive_DBWorker_pathhash_data);
 
     // Quit thread when result or info is received
-    connect(this->zip_manager, &ZipManager::send_ZipManager_info, this->zip_thread, &QThread::quit);
-    connect(this->zip_manager, &ZipManager::send_ZipManager_data, this->zip_thread, &QThread::quit);
-    connect(this->db_manager, &DBManager::send_DBManager_info, this->db_thread, &QThread::quit);
-    connect(this->db_manager, &DBManager::send_DBManager_unloadDatabase_status, this->db_thread, &QThread::quit);
-    connect(this->db_manager, &DBManager::send_DBManager_data, this->db_thread, &QThread::quit);
-    connect(this->db_manager, &DBManager::send_DBManager_pathhash_data, this->db_thread, &QThread::quit);
+    connect(this->zip_worker, &ZipWorker::send_ZipWorker_info, this->zip_thread, &QThread::quit);
+    connect(this->zip_worker, &ZipWorker::send_ZipWorker_data, this->zip_thread, &QThread::quit);
+    connect(this->db_worker, &DBWorker::send_DBWorker_info, this->db_thread, &QThread::quit);
+    connect(this->db_worker, &DBWorker::send_DBWorker_unloadDatabase_status, this->db_thread, &QThread::quit);
+    connect(this->db_worker, &DBWorker::send_DBWorker_data, this->db_thread, &QThread::quit);
+    connect(this->db_worker, &DBWorker::send_DBWorker_pathhash_data, this->db_thread, &QThread::quit);
 }
 
 MainWindow::~MainWindow() {
@@ -140,15 +145,18 @@ MainWindow::~MainWindow() {
         this->db_thread->deleteLater();
     }
 
-    delete this->db_manager;
+    delete this->db_worker;
     delete this->db_thread;
 
-    delete this->zip_manager;
+    delete this->zip_worker;
     delete this->zip_thread;
 
     delete this->mainwindow_progress_dialog;
     delete this->slider_scale;
     delete this->action_scale_slider;
+
+    delete this->library_view_status;
+    delete this->image_view_status;
 
     delete this->log_dialog;
     delete this->manga_info_dialog;
@@ -272,12 +280,12 @@ void MainWindow::actionExit_triggered() {
     QApplication::quit();
 }
 
-// ZipManager
-void MainWindow::receive_ZipManager_info(const QString &info) {
+// ZipWorker
+void MainWindow::receive_ZipWorker_info(const QString &info) {
     QMessageBox::information(this, QStringLiteral("Add file(s)"), info);
 }
 
-void MainWindow::receive_ZipManager_progress(int progress) {
+void MainWindow::receive_ZipWorker_progress(int progress) {
     if (this->mainwindow_progress_dialog) {
         this->mainwindow_progress_dialog->setValue(progress);
     } else {
@@ -293,7 +301,7 @@ void MainWindow::receive_ZipManager_progress(int progress) {
     }
 }
 
-void MainWindow::receive_ZipManager_data(QList<ZipData> data) {
+void MainWindow::receive_ZipWorker_data(QList<ZipData> data) {
     QMessageBox::information(this, QStringLiteral("Add file(s)"), QStringLiteral("Files to add in database: %1").arg(QString::number(data.length())));
     if (this->db_thread->isRunning()) {
         QMessageBox::information(this, QStringLiteral("Database insert"), QStringLiteral("Action already running"));
@@ -303,12 +311,12 @@ void MainWindow::receive_ZipManager_data(QList<ZipData> data) {
     }
 }
 
-// DBManager
-void MainWindow::receive_DBManager_info(const QString &info) {
+// DBWorker
+void MainWindow::receive_DBWorker_info(const QString &info) {
     QMessageBox::information(this, QStringLiteral("Database"), info);
 }
 
-void MainWindow::receive_DBManager_loadDatabase_status(bool status) {
+void MainWindow::receive_DBWorker_loadDatabase_status(bool status) {
     if (status) {
         this->updateUiLock();
         emit request_getAllDatabaseData();
@@ -319,7 +327,7 @@ void MainWindow::receive_DBManager_loadDatabase_status(bool status) {
     }
 }
 
-void MainWindow::receive_DBManager_unloadDatabase_status(bool status) {
+void MainWindow::receive_DBWorker_unloadDatabase_status(bool status) {
     if (status) {
         emit request_clearMangaList();
         this->clearSearchText();
@@ -331,7 +339,7 @@ void MainWindow::receive_DBManager_unloadDatabase_status(bool status) {
     }
 }
 
-void MainWindow::receive_DBManager_progress(int progress) {
+void MainWindow::receive_DBWorker_progress(int progress) {
     if (this->mainwindow_progress_dialog) {
         this->mainwindow_progress_dialog->setValue(progress);
     } else {
@@ -347,12 +355,12 @@ void MainWindow::receive_DBManager_progress(int progress) {
     }
 }
 
-void MainWindow::receive_DBManager_data(QList<Manga> data) {
-    Log::info(QStringLiteral("[DBManager received]: %1").arg(QString::number(data.length())));
+void MainWindow::receive_DBWorker_data(QList<Manga> data) {
+    Log::info(QStringLiteral("[DBWorker received]: %1").arg(QString::number(data.length())));
     emit request_setMangaList(data);
 }
 
-void MainWindow::receive_DBManager_pathhash_data(QList<PathHash> data, bool is_dir) {
+void MainWindow::receive_DBWorker_pathhash_data(QList<PathHash> data, bool is_dir) {
     if (this->zip_thread->isRunning()) {
         QMessageBox::information(this, QStringLiteral("Add file(s)"), QStringLiteral("Action already running"));
     } else if (is_dir == true) {

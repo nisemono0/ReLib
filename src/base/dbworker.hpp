@@ -11,11 +11,11 @@
 #include <QList>
 
 
-class DBManager : public QObject {
+class DBWorker : public QObject {
     Q_OBJECT
 public:
-    explicit DBManager(QObject *parent = nullptr);
-    ~DBManager();
+    explicit DBWorker(QObject *parent = nullptr);
+    ~DBWorker();
 
 private:
     QSqlDatabase database;
@@ -37,12 +37,12 @@ private:
     void checkDatabaseFilepath(const QString &file_path);
 
 signals:
-    void send_DBManager_info(const QString &info);
-    void send_DBManager_loadDatabase_status(bool status);
-    void send_DBManager_unloadDatabase_status(bool status);
-    void send_DBManager_progress(int progress);
-    void send_DBManager_data(QList<Manga> data);
-    void send_DBManager_pathhash_data(QList<PathHash> data, bool is_dir);
+    void send_DBWorker_info(const QString &info);
+    void send_DBWorker_loadDatabase_status(bool status);
+    void send_DBWorker_unloadDatabase_status(bool status);
+    void send_DBWorker_progress(int progress);
+    void send_DBWorker_data(QList<Manga> data);
+    void send_DBWorker_pathhash_data(QList<PathHash> data, bool is_dir);
 
 public slots:
     void receive_createDatabase_request(const QString &file_path);

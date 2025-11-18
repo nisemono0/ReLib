@@ -7,8 +7,8 @@
 #include "app/imageview.hpp"
 #include "app/libraryview.hpp"
 
-#include "base/dbmanager.hpp"
-#include "base/zipmanager.hpp"
+#include "base/dbworker.hpp"
+#include "base/zipworker.hpp"
 
 #include "utils/defs.hpp"
 
@@ -53,12 +53,14 @@ private:
     QActionGroup *actiongroup_view_mode;
     // Library view status label
     QLabel *library_view_status;
+    // Image view status label
+    QLabel *image_view_status;
 
     // Database
-    DBManager *db_manager;
+    DBWorker *db_worker;
     QThread *db_thread;
     // Archive
-    ZipManager *zip_manager;
+    ZipWorker *zip_worker;
     QThread *zip_thread;
 
     // Open file dialog
@@ -76,11 +78,11 @@ private:
     const QString getSearchText();
 
 signals:
-    // ZipManager
+    // ZipWorker
     void request_getFileJsonInfo(const QString &file_path, const QList<PathHash> path_hash_list);
     void request_getDirJsonInfo(const QString &dir_path, const QList<PathHash> path_hash_list);
 
-    // DBManager
+    // DBWorker
     void request_createDatabase(const QString &file_path);
     void request_loadDatabase(const QString &file_path);
     void request_unloadDatabase();
@@ -98,18 +100,18 @@ signals:
     void request_selectRandomManga();
 
 public slots:
-    // ZipManager
-    void receive_ZipManager_info(const QString &info);
-    void receive_ZipManager_progress(int progress);
-    void receive_ZipManager_data(QList<ZipData> data);
+    // ZipWorker
+    void receive_ZipWorker_info(const QString &info);
+    void receive_ZipWorker_progress(int progress);
+    void receive_ZipWorker_data(QList<ZipData> data);
 
-    // DBManager
-    void receive_DBManager_info(const QString &info);
-    void receive_DBManager_loadDatabase_status(bool status);
-    void receive_DBManager_unloadDatabase_status(bool status);
-    void receive_DBManager_progress(int progress);
-    void receive_DBManager_data(QList<Manga> data);
-    void receive_DBManager_pathhash_data(QList<PathHash> data, bool is_dir);
+    // DBWorker
+    void receive_DBWorker_info(const QString &info);
+    void receive_DBWorker_loadDatabase_status(bool status);
+    void receive_DBWorker_unloadDatabase_status(bool status);
+    void receive_DBWorker_progress(int progress);
+    void receive_DBWorker_data(QList<Manga> data);
+    void receive_DBWorker_pathhash_data(QList<PathHash> data, bool is_dir);
 
     // LibraryView
     void receive_LibraryView_deleteFromDatabse_request(QStringList hash_list);

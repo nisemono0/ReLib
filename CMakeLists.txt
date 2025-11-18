@@ -7,6 +7,8 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 qt_standard_project_setup(REQUIRES 6.8)
 
 qt_add_executable(ReLib
+    src/app/imagescene.cpp
+    src/app/imagescene.hpp
     src/app/imageview.cpp
     src/app/imageview.hpp
     src/app/librarymodel.cpp
@@ -17,14 +19,16 @@ qt_add_executable(ReLib
     src/app/libraryview.hpp
     src/base/clipboard.cpp
     src/base/clipboard.hpp
-    src/base/dbmanager.cpp
-    src/base/dbmanager.hpp
+    src/base/dbworker.cpp
+    src/base/dbworker.hpp
+    src/base/imageworker.cpp
+    src/base/imageworker.hpp
     src/base/log.cpp
     src/base/log.hpp
     src/base/manga.cpp
     src/base/manga.hpp
-    src/base/zipmanager.cpp
-    src/base/zipmanager.hpp
+    src/base/zipworker.cpp
+    src/base/zipworker.hpp
     src/gui/logdialog.cpp
     src/gui/logdialog.hpp
     src/gui/mainwindow.cpp

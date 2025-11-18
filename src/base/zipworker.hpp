@@ -13,23 +13,24 @@
 
 
 
-class ZipManager : public QObject {
+class ZipWorker : public QObject {
     Q_OBJECT;
 public:
-    explicit ZipManager(QObject *parent = nullptr);
-    ~ZipManager();
+    explicit ZipWorker(QObject *parent = nullptr);
+    ~ZipWorker();
 
 private:
     // For use in getZipInfo with QtConcurrent
-    struct ZipManagerInfo {
+    struct ZipWorkerInfo {
         ZipData zip_data; // ZipData type
         bool is_error; // True if returns with error
     };
-    ZipManagerInfo getZipInfo(const QString &file_path, const QList<PathHash> &path_hash_list);
+    ZipWorkerInfo getZipInfo(const QString &file_path, const QList<PathHash> &path_hash_list);
+
 signals:
-    void send_ZipManager_info(const QString &status);
-    void send_ZipManager_progress(int progress);
-    void send_ZipManager_data(QList<ZipData> data);
+    void send_ZipWorker_info(const QString &status);
+    void send_ZipWorker_progress(int progress);
+    void send_ZipWorker_data(QList<ZipData> data);
 
 public slots:
     void receive_getFileJsonInfo_request(const QString &file_path, const QList<PathHash> path_hash_list);
