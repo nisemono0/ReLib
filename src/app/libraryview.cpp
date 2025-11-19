@@ -150,8 +150,8 @@ void LibraryView::libraryView_selectionModel_currentChanged(const QModelIndex &c
 }
 
 void LibraryView::load_images_action_triggered() {
+    // TODO: send request to load all zip images to ImageView
     QList<Manga> manga_list = QList<Manga>();
-
 }
 
 void LibraryView::show_info_action_triggered() {
