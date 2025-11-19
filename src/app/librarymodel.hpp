@@ -31,7 +31,7 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
-    void setMangaList(QList<Manga> &manga_list);
+    void setMangaList(const QList<Manga> &manga_list);
     void clearMangaList();
 
 private:

@@ -15,7 +15,7 @@ int LibraryModel::rowCount(const QModelIndex &parent) const {
     return this->manga_list->size();
 }
 
-void LibraryModel::setMangaList(QList<Manga> &manga_list) {
+void LibraryModel::setMangaList(const QList<Manga> &manga_list) {
     beginResetModel();
 
     this->manga_list->clear();

@@ -21,10 +21,10 @@ public:
 private:
     Ui::MangaInfoDialog *ui;
 
-    void updateDialogInfo(const Manga manga);
+    void updateDialogInfo(const Manga &manga);
 
 public slots:
-    void receive_showMangaInfoDialog_request(const Manga manga);
+    void receive_showMangaInfoDialog_request(const Manga &manga);
 
 };
 

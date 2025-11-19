@@ -79,22 +79,22 @@ private:
 
 signals:
     // ZipWorker
-    void request_getFileJsonInfo(const QString &file_path, const QList<PathHash> path_hash_list);
-    void request_getDirJsonInfo(const QString &dir_path, const QList<PathHash> path_hash_list);
+    void request_getFileJsonInfo(const QString &file_path, const QList<PathHash> &path_hash_list);
+    void request_getDirJsonInfo(const QString &dir_path, const QList<PathHash> &path_hash_list);
 
     // DBWorker
     void request_createDatabase(const QString &file_path);
     void request_loadDatabase(const QString &file_path);
     void request_unloadDatabase();
-    void request_insertInDatabase(QList<ZipData> zip_data_list);
-    void request_deleteFromDatabase(QStringList hash_list);
+    void request_insertInDatabase(const QList<ZipData> &zip_data_list);
+    void request_deleteFromDatabase(const QStringList &hash_list);
     void request_getAllDatabaseData();
     void request_getPathHashDatabaseData(bool is_dir);
     void request_checkDatabaseHashes();
     void request_checkDatabaseFilepaths();
 
     // LibraryView
-    void request_setMangaList(QList<Manga> manga_list);
+    void request_setMangaList(const QList<Manga> &manga_list);
     void request_clearMangaList();
     void request_setSearchText(const QString &search_text);
     void request_selectRandomManga();
@@ -103,18 +103,18 @@ public slots:
     // ZipWorker
     void receive_ZipWorker_info(const QString &info);
     void receive_ZipWorker_progress(int progress);
-    void receive_ZipWorker_data(QList<ZipData> data);
+    void receive_ZipWorker_data(const QList<ZipData> &data);
 
     // DBWorker
     void receive_DBWorker_info(const QString &info);
     void receive_DBWorker_loadDatabase_status(bool status);
     void receive_DBWorker_unloadDatabase_status(bool status);
     void receive_DBWorker_progress(int progress);
-    void receive_DBWorker_data(QList<Manga> data);
-    void receive_DBWorker_pathhash_data(QList<PathHash> data, bool is_dir);
+    void receive_DBWorker_data(const QList<Manga> &data);
+    void receive_DBWorker_pathhash_data(const QList<PathHash> &data, bool is_dir);
 
     // LibraryView
-    void receive_LibraryView_deleteFromDatabse_request(QStringList hash_list);
+    void receive_LibraryView_deleteFromDatabse_request(const QStringList &hash_list);
 
 private slots:
     // Menubar:File

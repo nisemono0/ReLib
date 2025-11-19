@@ -14,7 +14,7 @@ MangaInfoDialog::~MangaInfoDialog() {
     delete this->ui;
 }
 
-void MangaInfoDialog::updateDialogInfo(const Manga manga) {
+void MangaInfoDialog::updateDialogInfo(const Manga &manga) {
     this->ui->fileHashPlainTextEdit->setPlainText(manga.file_hash);
     this->ui->filePathPlainTextEdit->setPlainText(manga.file_path);
     this->ui->fileBasenamePlainTextEdit->setPlainText(manga.file_basename);
@@ -28,7 +28,7 @@ void MangaInfoDialog::updateDialogInfo(const Manga manga) {
     this->ui->tagsPlainTextEdit->setPlainText(manga.tags.join("; "));
 }
 
-void MangaInfoDialog::receive_showMangaInfoDialog_request(const Manga manga) {
+void MangaInfoDialog::receive_showMangaInfoDialog_request(const Manga &manga) {
     this->updateDialogInfo(manga);
     if (this->isVisible()) {
         this->activateWindow();

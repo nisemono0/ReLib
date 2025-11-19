@@ -54,7 +54,7 @@ ZipWorker::ZipWorkerInfo ZipWorker::getZipInfo(const QString &file_path, const Q
     return ret_struct;
 }
 
-void ZipWorker::receive_getFileJsonInfo_request(const QString &file_path, const QList<PathHash> path_hash_list) {
+void ZipWorker::receive_getFileJsonInfo_request(const QString &file_path, const QList<PathHash> &path_hash_list) {
     if (! Utils::Fs::fileExists(file_path)) {
         emit send_ZipWorker_info(QStringLiteral("Empty filename"));
         return;
@@ -75,7 +75,7 @@ void ZipWorker::receive_getFileJsonInfo_request(const QString &file_path, const 
     emit send_ZipWorker_data(zip_data_list);
 }
 
-void ZipWorker::receive_getDirJsonInfo_request(const QString &dir_path, const QList<PathHash> path_hash_list) {
+void ZipWorker::receive_getDirJsonInfo_request(const QString &dir_path, const QList<PathHash> &path_hash_list) {
     QStringList files_list = Utils::Fs::getDirZipList(dir_path);
     qsizetype files_list_len = files_list.length();
 

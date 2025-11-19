@@ -210,7 +210,7 @@ void DBWorker::receive_unloadDatabase_request() {
     emit send_DBWorker_info(QStringLiteral("Could not unload the database"));
 }
 
-void DBWorker::receive_insertIntoDatabase_request(QList<ZipData> zip_data_list) {
+void DBWorker::receive_insertIntoDatabase_request(const QList<ZipData> &zip_data_list) {
     if (!this->isDatabaseLoaded()) {
         emit send_DBWorker_info(QStringLiteral("Database not loaded"));
         return;
@@ -298,7 +298,7 @@ void DBWorker::receive_insertIntoDatabase_request(QList<ZipData> zip_data_list) 
     emit send_DBWorker_data(this->getAllDatabaseData());
 }
 
-void DBWorker::receive_deleteFromDatabase_request(QStringList hash_list) {
+void DBWorker::receive_deleteFromDatabase_request(const QStringList &hash_list) {
     if (!this->isDatabaseLoaded()) {
         emit send_DBWorker_info(QStringLiteral("Database not loaded"));
         return;

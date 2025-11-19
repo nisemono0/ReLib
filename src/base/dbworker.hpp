@@ -41,15 +41,15 @@ signals:
     void send_DBWorker_loadDatabase_status(bool status);
     void send_DBWorker_unloadDatabase_status(bool status);
     void send_DBWorker_progress(int progress);
-    void send_DBWorker_data(QList<Manga> data);
-    void send_DBWorker_pathhash_data(QList<PathHash> data, bool is_dir);
+    void send_DBWorker_data(const QList<Manga> &data);
+    void send_DBWorker_pathhash_data(const QList<PathHash> &data, bool is_dir);
 
 public slots:
     void receive_createDatabase_request(const QString &file_path);
     void receive_loadDatabase_request(const QString &file_path);
     void receive_unloadDatabase_request();
-    void receive_insertIntoDatabase_request(QList<ZipData> zip_data_list);
-    void receive_deleteFromDatabase_request(QStringList hash_list);
+    void receive_insertIntoDatabase_request(const QList<ZipData> &zip_data_list);
+    void receive_deleteFromDatabase_request(const QStringList &hash_list);
     void receive_getAllDatabaseData_request();
     void receive_getPathHashDatabaseData_request(bool is_dir);
     void receive_checkDatabaseHashes_request();

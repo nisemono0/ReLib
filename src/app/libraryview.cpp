@@ -113,7 +113,7 @@ void LibraryView::contextMenuEvent(QContextMenuEvent *event) {
     }
 }
 
-void LibraryView::receive_setMangaList_request(QList<Manga> manga_list) {
+void LibraryView::receive_setMangaList_request(const QList<Manga> &manga_list) {
     this->library_model->setMangaList(manga_list);
     this->updateLibraryViewStatus();
 }

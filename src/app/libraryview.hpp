@@ -41,11 +41,11 @@ protected:
 
 signals:
     void send_LibraryView_status(const QString &status);
-    void send_LibraryView_deleteFromDatabase_request(QStringList hash_list);
+    void send_LibraryView_deleteFromDatabase_request(const QStringList &hash_list);
     void request_showMangaInfoDialog(const Manga &manga);
 
 public slots:
-    void receive_setMangaList_request(QList<Manga> manga_list);
+    void receive_setMangaList_request(const QList<Manga> &manga_list);
     void receive_clearMangaList_request();
     void receive_setSearchText_request(const QString &search_text);
     void receive_selectRandomManga_request();

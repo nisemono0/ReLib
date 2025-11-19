@@ -301,7 +301,7 @@ void MainWindow::receive_ZipWorker_progress(int progress) {
     }
 }
 
-void MainWindow::receive_ZipWorker_data(QList<ZipData> data) {
+void MainWindow::receive_ZipWorker_data(const QList<ZipData> &data) {
     QMessageBox::information(this, QStringLiteral("Add file(s)"), QStringLiteral("Files to add in database: %1").arg(QString::number(data.length())));
     if (this->db_thread->isRunning()) {
         QMessageBox::information(this, QStringLiteral("Database insert"), QStringLiteral("Action already running"));
@@ -355,12 +355,12 @@ void MainWindow::receive_DBWorker_progress(int progress) {
     }
 }
 
-void MainWindow::receive_DBWorker_data(QList<Manga> data) {
+void MainWindow::receive_DBWorker_data(const QList<Manga> &data) {
     Log::info(QStringLiteral("[DBWorker received]: %1").arg(QString::number(data.length())));
     emit request_setMangaList(data);
 }
 
-void MainWindow::receive_DBWorker_pathhash_data(QList<PathHash> data, bool is_dir) {
+void MainWindow::receive_DBWorker_pathhash_data(const QList<PathHash> &data, bool is_dir) {
     if (this->zip_thread->isRunning()) {
         QMessageBox::information(this, QStringLiteral("Add file(s)"), QStringLiteral("Action already running"));
     } else if (is_dir == true) {
@@ -381,7 +381,7 @@ void MainWindow::receive_DBWorker_pathhash_data(QList<PathHash> data, bool is_di
 }
 
 // LibraryView
-void MainWindow::receive_LibraryView_deleteFromDatabse_request(QStringList hash_list) {
+void MainWindow::receive_LibraryView_deleteFromDatabse_request(const QStringList &hash_list) {
     if (this->db_thread->isRunning()) {
         QMessageBox::information(this, QStringLiteral("Delete from database"), QStringLiteral("Action already running"));
     } else {
