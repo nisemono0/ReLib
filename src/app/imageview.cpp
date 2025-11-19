@@ -33,7 +33,7 @@ void ImageView::receive_ImageWorker_info(const QString &info) {
 }
 
 void ImageView::receive_ImageWorker_progress(int progress) {
-    emit send_ImageView_progress(progress);
+
 }
 
 void ImageView::receive_ImageWorker_data(const QMap<int, QGraphicsPixmapItem*> &data, int total_images) {
