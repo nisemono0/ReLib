@@ -28,7 +28,7 @@ private:
     ZipWorkerInfo getZipInfo(const QString &file_path, const QList<PathHash> &path_hash_list);
 
 signals:
-    void send_ZipWorker_info(const QString &status);
+    void send_ZipWorker_info(const QString &info);
     void send_ZipWorker_progress(int progress);
     void send_ZipWorker_data(const QList<ZipData> &data);
 
