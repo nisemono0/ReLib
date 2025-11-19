@@ -15,6 +15,8 @@ int main (int argc, char **argv) {
 
     MainWindow main_window;
 
+    // Hack for my wm to have this window floating
+    // without configuring a rule for it
     main_window.setWindowFlags(Qt::Dialog);
     main_window.show();
 
