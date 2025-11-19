@@ -51,7 +51,7 @@ ImageWorker::ImageWorkerInfo ImageWorker::getPixmapItemFromData(const NumberImag
     return worker_info;
 }
 
-void ImageWorker::receive_getAllImages(const QString &file_path) {
+void ImageWorker::receive_getArchiveImages(const QString &file_path) {
     QuaZip zip_archive = QuaZip(file_path);
     // Try to open the archive in read mode
     if (!zip_archive.open(QuaZip::mdUnzip)) {

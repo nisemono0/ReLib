@@ -33,7 +33,7 @@ signals:
     void send_ImageWorker_cover(const QGraphicsPixmapItem* pixmap_item, int total_images);
 
 public slots:
-    void receive_getAllImages(const QString &file_path);
+    void receive_getArchiveImages(const QString &file_path);
     void receive_getArchiveCover(const QString &file_path);
 
 };
