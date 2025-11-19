@@ -5,6 +5,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
 #include <QThread>
+#include <QMap>
 
 
 class ImageScene : public QGraphicsScene {
@@ -15,10 +16,12 @@ public:
 
 private:
     // Implement functions to load the pixmap items into the scene etc.
-    QList<QGraphicsPixmapItem*> pixmap_items_list;
+    QMap<int, QGraphicsPixmapItem*> pixmap_items_list;
 
     ImageWorker *image_worker;
     QThread *image_thread;
+
+    void clearPixmapItemsList();
 
 signals:
 

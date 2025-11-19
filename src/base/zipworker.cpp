@@ -6,7 +6,7 @@
 #include "utils/json.hpp"
 
 #include <QThread>
-#include <QtMath>
+#include <QtMinMax>
 #include <QtConcurrent>
 #include <QFuture>
 #include <QJsonObject>
@@ -106,10 +106,10 @@ void ZipWorker::receive_getDirJsonInfo_request(const QString &dir_path, const QL
         auto mapped_batch_results = QtConcurrent::blockingMapped(batch_file_list, [this, path_hash_list](const QString &file_path) {
                 return this->getZipInfo(file_path, path_hash_list);
                 });
-        for (auto it_custom_ret : mapped_batch_results) {
-            if (!it_custom_ret.is_error) {
-                zip_data_list.append(it_custom_ret.zip_data);
-                Log::info(QStringLiteral("[ZipWorker:Add] %1").arg(it_custom_ret.zip_data.file_path));
+        for (auto batch_results_it : mapped_batch_results) {
+            if (!batch_results_it.is_error) {
+                zip_data_list.append(batch_results_it.zip_data);
+                Log::info(QStringLiteral("[ZipWorker:Add] %1").arg(batch_results_it.zip_data.file_path));
             }
         }
 

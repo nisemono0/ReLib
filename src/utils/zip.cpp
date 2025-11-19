@@ -5,13 +5,11 @@
 #include "base/log.hpp"
 
 #include <quazip/JlCompress.h>
+#include <quazip/quazip.h>
 #include <quazip/quazipfile.h>
 
 #include <QStringList>
 #include <QJsonDocument>
-#include <QCollator>
-#include <QMimeDatabase>
-#include <QMimeType>
 
 
 QJsonDocument Utils::Zip::getInfoJsonDocument(const QString &file_path) {
@@ -77,18 +75,10 @@ QByteArray Utils::Zip::getArchiveFirstImage(const QString &file_path) {
 
     // Get archive files list and natural sort it
     QStringList archive_files_list = zip_archive.getFileNameList();
-    Utils::Str::naturalSortQStringList(archive_files_list);
+    Utils::Str::naturalSort(archive_files_list);
 
     // Get the first found image file name inside the archive
-    QString image_file = QString();
-    QMimeDatabase mime_database = QMimeDatabase();
-    for (auto file_name : archive_files_list) {
-        QMimeType file_mime = mime_database.mimeTypeForFile(file_name);
-        if (file_mime.isValid() && file_mime.name().startsWith("image/", Qt::CaseInsensitive)) {
-            image_file = file_name;
-            break;
-        }
-    }
+    QString image_file = Utils::Str::getFirstImage(archive_files_list);
 
     // If no image file is found return empty QByteArray
     if(Utils::Str::isNullOrEmpty(image_file)) {
@@ -118,5 +108,11 @@ QByteArray Utils::Zip::getArchiveFirstImage(const QString &file_path) {
     zip_archive.close();
 
     return image_bytes;
+}
+
+int Utils::Zip::getArchiveImageCount(const QString &file_path) {
+    QStringList file_list = JlCompress::getFileList(file_path);
+    Utils::Str::removeNonImages(file_list);
+    return file_list.length();
 }
 

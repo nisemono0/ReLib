@@ -10,5 +10,7 @@ namespace Utils::Zip {
     QJsonDocument getInfoJsonDocument(const QString &file_path);
     // Return a QByteArray of the first image in the archive
     QByteArray getArchiveFirstImage(const QString &file_path);
+    // Return number of images inside an archive
+    int getArchiveImageCount(const QString &file_path);
 };
 

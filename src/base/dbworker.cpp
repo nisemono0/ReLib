@@ -10,7 +10,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
-#include <QtMath>
+#include <QtMinMax>
 #include <QThread>
 #include <QtConcurrent>
 

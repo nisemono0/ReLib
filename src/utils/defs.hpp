@@ -4,25 +4,33 @@
 #include <QString>
 #include <QJsonDocument>
 
-// Custom data types
+// Holds current zip's hash, path and json document
 struct ZipData {
-    QString file_hash;
-    QString file_path;
-    QJsonDocument info_json;
+    QString file_hash = QString();
+    QString file_path = QString();
+    QJsonDocument info_json = QJsonDocument();
 };
 
+// Holds a pair of file_path with its corresponding hash
+// Also overloads ==; Equal if both path and hash are equal
 struct PathHash {
-    QString file_path;
-    QString file_hash;
+    QString file_path = QString();
+    QString file_hash = QString();
     bool operator==(const PathHash &path_hash) const {
-    if (
-            this->file_hash == path_hash.file_hash &&
-            this->file_path == path_hash.file_path
-       ) {
-        return true;
+        if (
+                this->file_hash == path_hash.file_hash &&
+                this->file_path == path_hash.file_path
+           ) {
+            return true;
+        }
+        return false;
     }
-    return false;
-}
+};
+
+// Holds a pair of an image number and its corresponding QByteArray data
+struct NumberImage {
+    int image_number = -1;
+    QByteArray image_data = QByteArray();
 };
 
 namespace App {
@@ -83,5 +91,6 @@ namespace BatchSize {
     static const int DBDelete    = 100;
     static const int DBHashCheck = 10;
     static const int DBPathCheck = 100;
+    static const int ImageLoad   = 10;
 };
 

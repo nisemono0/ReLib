@@ -22,8 +22,8 @@ public:
 private:
     // For use in getZipInfo with QtConcurrent
     struct ZipWorkerInfo {
-        ZipData zip_data; // ZipData type
-        bool is_error; // True if returns with error
+        ZipData zip_data = ZipData(); // ZipData type
+        bool is_error = false; // True if returns with error
     };
     ZipWorkerInfo getZipInfo(const QString &file_path, const QList<PathHash> &path_hash_list);
 
