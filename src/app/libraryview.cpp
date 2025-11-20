@@ -78,7 +78,7 @@ void LibraryView::initContextMenu() {
 }
 
 void LibraryView::updateLibraryViewStatus() {
-    if (Utils::Str::isNullOrEmpty(this->item_selected_filesize)) {
+    if (Utils::Str::isNullOrEmpty(this->current_item_filesize)) {
         emit send_LibraryView_status(QStringLiteral("Showing: [%1/%2]").arg(
                     QString::number(this->library_model_proxy->rowCount()),
                     QString::number(this->library_model->rowCount())
@@ -87,7 +87,7 @@ void LibraryView::updateLibraryViewStatus() {
         emit send_LibraryView_status(QStringLiteral("Showing: [%1/%2] | Filesize: [%3]").arg(
                     QString::number(this->library_model_proxy->rowCount()),
                     QString::number(this->library_model->rowCount()),
-                    this->item_selected_filesize
+                    this->current_item_filesize
                     ));
     }
 
@@ -109,10 +109,10 @@ QString LibraryView::getSelectedItemsData(LibraryModel::LibraryRole role) {
 }
 
 void LibraryView::contextMenuEvent(QContextMenuEvent *event) {
+    QListView::contextMenuEvent(event);
     if (this->library_model_proxy->rowCount() != 0) {
         this->context_menu->popup(event->globalPos());
     }
-    QListView::contextMenuEvent(event);
 }
 
 void LibraryView::receive_setMangaList_request(const QList<Manga> &manga_list) {
@@ -123,7 +123,7 @@ void LibraryView::receive_setMangaList_request(const QList<Manga> &manga_list) {
 
 void LibraryView::receive_clearMangaList_request() {
     this->library_model->clearMangaList();
-    this->item_selected_filesize = QStringLiteral("File not found");
+    this->current_item_filesize = QStringLiteral("File not found");
     this->updateLibraryViewStatus();
 }
 
@@ -148,21 +148,31 @@ void LibraryView::receive_showMangaInfoDialog_request() {
     this->showCurrentItemInfo();
 }
 
-void LibraryView::receive_loadCurrentItemImages_request() {
-    this->loadCurrentItemImages();
+void LibraryView::receive_scrollToCurrentItem_request() {
+    QModelIndexList selected_idxs = this->selectedIndexes();
+    if (selected_idxs.isEmpty()) {
+        return;
+    }
+
+    this->scrollTo(selected_idxs.first(), QAbstractItemView::PositionAtCenter);
 }
 
 void LibraryView::libraryView_selectionModel_currentChanged(const QModelIndex &current, const QModelIndex &previous) {
     Q_UNUSED(previous);
     if (current.isValid()) {
-        this->item_selected_filesize = Utils::Fs::getFileSize(current.data(LibraryModel::FilePath).toString());
+        this->current_item_filesize = Utils::Fs::getFileSize(current.data(LibraryModel::FilePath).toString());
         this->updateLibraryViewStatus();
         emit send_LibraryView_currentChanged_path(current.data(LibraryModel::FilePath).toString());
     }
 }
 
 void LibraryView::load_images_action_triggered() {
-    this->loadCurrentItemImages();
+    QModelIndexList selected_idxs = this->selectedIndexes();
+    if (selected_idxs.isEmpty()) {
+        return;
+    }
+
+    emit send_LibraryView_load_images_path(selected_idxs.first().data(LibraryModel::FilePath).toString());
 }
 
 void LibraryView::show_info_action_triggered() {
@@ -195,15 +205,6 @@ void LibraryView::showCurrentItemInfo() {
                 selected_idxs.first().data(LibraryModel::Publisher).toStringList(),
                 selected_idxs.first().data(LibraryModel::Tags).toStringList()
                 ));
-}
-
-void LibraryView::loadCurrentItemImages() {
-    QModelIndexList selected_idxs = this->selectedIndexes();
-    if (selected_idxs.isEmpty()) {
-        return;
-    }
-
-    emit send_LibraryView_loadCurrentItemImages_path(selected_idxs.first().data(LibraryModel::FilePath).toString());
 }
 
 void LibraryView::copy_title_action_triggered() {

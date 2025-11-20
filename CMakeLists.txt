@@ -54,6 +54,12 @@ target_sources(ReLib
         src/gui/ui/mangainfodialog.ui
 )
 
+qt_add_resources(ReLib_resources src/gui/theme/mouse-next-prev.qrc)
+target_sources(ReLib
+    PRIVATE
+        ${ReLib_resources}
+)
+
 target_link_libraries(ReLib
     PRIVATE
         Qt::Core

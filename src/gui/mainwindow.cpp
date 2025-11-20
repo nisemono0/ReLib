@@ -80,7 +80,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // Library view
     connect(this, &MainWindow::request_setMangaList, this->ui->libraryView, &LibraryView::receive_setMangaList_request);
-    connect(this, &MainWindow::request_clearMangaList, this->ui->libraryView, &LibraryView::receive_clearMangaList_request);
+    connect(this, &MainWindow::request_clearLibraryView, this->ui->libraryView, &LibraryView::receive_clearMangaList_request);
     connect(this, &MainWindow::request_setSearchText, this->ui->libraryView, &LibraryView::receive_setSearchText_request);
     connect(this, &MainWindow::request_selectRandomManga, this->ui->libraryView, &LibraryView::receive_selectRandomManga_request);
     connect(this->ui->libraryView, &LibraryView::send_LibraryView_status, this->library_view_status, &QLabel::setText);
@@ -91,8 +91,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->ui->imageView, &ImageView::send_ImageView_status, this->image_view_status, &QLabel::setText);
     connect(this->ui->libraryView, &LibraryView::send_LibraryView_currentChanged_path, this->ui->imageView, &ImageView::receive_LibraryView_currentChanged_path);
     connect(this->ui->imageView, &ImageView::request_LibraryView_showMangaInfoDialog, this->ui->libraryView, &LibraryView::receive_showMangaInfoDialog_request);
-    connect(this->ui->imageView, &ImageView::request_LibraryView_loadCurrentItemImages, this->ui->libraryView, &LibraryView::receive_loadCurrentItemImages_request);
-    connect(this->ui->libraryView, &LibraryView::send_LibraryView_loadCurrentItemImages_path, this->ui->imageView, &ImageView::receive_LibraryVew_loadCurrentItemImages_path);
+    connect(this->ui->libraryView, &LibraryView::send_LibraryView_load_images_path, this->ui->imageView, &ImageView::receive_LibraryVew_load_images_path);
+    connect(this, &MainWindow::request_clearImageView, this->ui->imageView, &ImageView::receive_clearImageView_request);
+    connect(this->ui->imageView, &ImageView::request_LibraryView_scrollToCurrentItem, this->ui->libraryView, &LibraryView::receive_scrollToCurrentItem_request);
 
     // Thread requests
     connect(this, &MainWindow::request_getFileJsonInfo, this->zip_worker, &ZipWorker::receive_getFileJsonInfo_request);
@@ -333,7 +334,8 @@ void MainWindow::receive_DBWorker_loadDatabase_status(bool status) {
 
 void MainWindow::receive_DBWorker_unloadDatabase_status(bool status) {
     if (status) {
-        emit request_clearMangaList();
+        emit request_clearLibraryView();
+        emit request_clearImageView();
         this->clearSearchText();
         this->setNoDatabaseStatus();
         this->updateUiLock();

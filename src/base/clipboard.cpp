@@ -12,3 +12,13 @@ void Clipboard::setImage(const QImage &image) {
     QApplication::clipboard()->setImage(image);
 }
 
+void Clipboard::setImage(const QPixmap &pixmap) {
+    QImage image = pixmap.toImage();
+    QApplication::clipboard()->setImage(image);
+}
+
+void Clipboard::setImage(QGraphicsPixmapItem *pixmap_item) {
+    QImage image = pixmap_item->pixmap().toImage();
+    QApplication::clipboard()->setImage(image);
+}
+

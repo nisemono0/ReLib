@@ -95,9 +95,12 @@ signals:
 
     // LibraryView
     void request_setMangaList(const QList<Manga> &manga_list);
-    void request_clearMangaList();
+    void request_clearLibraryView();
     void request_setSearchText(const QString &search_text);
     void request_selectRandomManga();
+
+    // ImageView
+    void request_clearImageView();
 
 public slots:
     // ZipWorker

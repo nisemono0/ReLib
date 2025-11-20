@@ -20,7 +20,7 @@ private:
     LibraryModel *library_model;
     LibraryModelProxy *library_model_proxy;
 
-    QString item_selected_filesize = nullptr;
+    QString current_item_filesize = nullptr;
 
     QMenu *context_menu;
     QAction *load_images_action;
@@ -50,7 +50,7 @@ signals:
     // Sends the current selected item path to ImageView
     void send_LibraryView_currentChanged_path(const QString &file_path);
     // Send the current item path to ImageView for loading all images
-    void send_LibraryView_loadCurrentItemImages_path(const QString &file_path);
+    void send_LibraryView_load_images_path(const QString &file_path);
 
 public slots:
     void receive_setMangaList_request(const QList<Manga> &manga_list);
@@ -59,7 +59,7 @@ public slots:
     void receive_selectRandomManga_request();
 
     void receive_showMangaInfoDialog_request();
-    void receive_loadCurrentItemImages_request();
+    void receive_scrollToCurrentItem_request();
 
 private slots:
     void libraryView_selectionModel_currentChanged(const QModelIndex &current, const QModelIndex &previous);

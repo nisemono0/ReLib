@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>mouse/mouse-image-prev.png</file>
+        <file>mouse/mouse-image-next.png</file>
+    </qresource>
+</RCC>
