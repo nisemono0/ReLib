@@ -23,7 +23,7 @@ private:
     QString item_selected_filesize = nullptr;
 
     QMenu *context_menu;
-    QAction *load_images_action; // TODO Implement after ImageView is done
+    QAction *load_images_action;
     QAction *show_info_action;
     QAction *copy_item_name_action;
     QAction *copy_title_action;
@@ -36,19 +36,30 @@ private:
     void updateLibraryViewStatus();
     QString getSelectedItemsData(LibraryModel::LibraryRole role);
 
+    void showCurrentItemInfo();
+    void loadCurrentItemImages();
+
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
 
 signals:
     void send_LibraryView_status(const QString &status);
     void send_LibraryView_deleteFromDatabase_request(const QStringList &hash_list);
+    // Show the MangaInfoDialog for the current item
     void request_showMangaInfoDialog(const Manga &manga);
+    // Sends the current selected item path to ImageView
+    void send_LibraryView_currentChanged_path(const QString &file_path);
+    // Send the current item path to ImageView for loading all images
+    void send_LibraryView_loadCurrentItemImages_path(const QString &file_path);
 
 public slots:
     void receive_setMangaList_request(const QList<Manga> &manga_list);
     void receive_clearMangaList_request();
     void receive_setSearchText_request(const QString &search_text);
     void receive_selectRandomManga_request();
+
+    void receive_showMangaInfoDialog_request();
+    void receive_loadCurrentItemImages_request();
 
 private slots:
     void libraryView_selectionModel_currentChanged(const QModelIndex &current, const QModelIndex &previous);

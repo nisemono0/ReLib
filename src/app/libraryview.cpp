@@ -45,10 +45,11 @@ LibraryView::~LibraryView() {
     delete this->copy_hash_action;
     delete this->copy_tags_action;
     delete this->remove_manga_action;
+    delete this->context_menu;
 }
 
 void LibraryView::initContextMenu() {
-    this->context_menu = new QMenu("Hello", this);
+    this->context_menu = new QMenu("Library menu", this);
     this->load_images_action = new QAction("Load images", this);
     this->show_info_action = new QAction("Show info", this);
     this->copy_item_name_action = new QAction("Copy item name", this);
@@ -109,12 +110,14 @@ QString LibraryView::getSelectedItemsData(LibraryModel::LibraryRole role) {
 
 void LibraryView::contextMenuEvent(QContextMenuEvent *event) {
     if (this->library_model_proxy->rowCount() != 0) {
-        context_menu->popup(event->globalPos());
+        this->context_menu->popup(event->globalPos());
     }
+    QListView::contextMenuEvent(event);
 }
 
 void LibraryView::receive_setMangaList_request(const QList<Manga> &manga_list) {
     this->library_model->setMangaList(manga_list);
+    this->setCurrentIndex(this->library_model_proxy->getFirstIndex());
     this->updateLibraryViewStatus();
 }
 
@@ -141,20 +144,39 @@ void LibraryView::receive_selectRandomManga_request() {
     }
 }
 
+void LibraryView::receive_showMangaInfoDialog_request() {
+    this->showCurrentItemInfo();
+}
+
+void LibraryView::receive_loadCurrentItemImages_request() {
+    this->loadCurrentItemImages();
+}
+
 void LibraryView::libraryView_selectionModel_currentChanged(const QModelIndex &current, const QModelIndex &previous) {
     Q_UNUSED(previous);
     if (current.isValid()) {
         this->item_selected_filesize = Utils::Fs::getFileSize(current.data(LibraryModel::FilePath).toString());
         this->updateLibraryViewStatus();
+        emit send_LibraryView_currentChanged_path(current.data(LibraryModel::FilePath).toString());
     }
 }
 
 void LibraryView::load_images_action_triggered() {
-    // TODO: send request to load all zip images to ImageView
-    QList<Manga> manga_list = QList<Manga>();
+    this->loadCurrentItemImages();
 }
 
 void LibraryView::show_info_action_triggered() {
+    this->showCurrentItemInfo();
+}
+
+void LibraryView::copy_item_name_action_triggered() {
+    QString items_name = this->getSelectedItemsData(LibraryModel::FileBasename);
+    if (!Utils::Str::isNullOrEmpty(items_name)) {
+        Clipboard::setText(items_name);
+    }
+}
+
+void LibraryView::showCurrentItemInfo() {
     QModelIndexList selected_idxs = this->selectedIndexes();
     if (selected_idxs.isEmpty()) {
         return;
@@ -175,11 +197,13 @@ void LibraryView::show_info_action_triggered() {
                 ));
 }
 
-void LibraryView::copy_item_name_action_triggered() {
-    QString items_name = this->getSelectedItemsData(LibraryModel::FileBasename);
-    if (!Utils::Str::isNullOrEmpty(items_name)) {
-        Clipboard::setText(items_name);
+void LibraryView::loadCurrentItemImages() {
+    QModelIndexList selected_idxs = this->selectedIndexes();
+    if (selected_idxs.isEmpty()) {
+        return;
     }
+
+    emit send_LibraryView_loadCurrentItemImages_path(selected_idxs.first().data(LibraryModel::FilePath).toString());
 }
 
 void LibraryView::copy_title_action_triggered() {

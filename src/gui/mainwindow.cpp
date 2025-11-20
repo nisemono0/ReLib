@@ -89,6 +89,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // Image view
     connect(this->ui->imageView, &ImageView::send_ImageView_status, this->image_view_status, &QLabel::setText);
+    connect(this->ui->libraryView, &LibraryView::send_LibraryView_currentChanged_path, this->ui->imageView, &ImageView::receive_LibraryView_currentChanged_path);
+    connect(this->ui->imageView, &ImageView::request_LibraryView_showMangaInfoDialog, this->ui->libraryView, &LibraryView::receive_showMangaInfoDialog_request);
+    connect(this->ui->imageView, &ImageView::request_LibraryView_loadCurrentItemImages, this->ui->libraryView, &LibraryView::receive_loadCurrentItemImages_request);
+    connect(this->ui->libraryView, &LibraryView::send_LibraryView_loadCurrentItemImages_path, this->ui->imageView, &ImageView::receive_LibraryVew_loadCurrentItemImages_path);
 
     // Thread requests
     connect(this, &MainWindow::request_getFileJsonInfo, this->zip_worker, &ZipWorker::receive_getFileJsonInfo_request);
@@ -467,7 +471,7 @@ void MainWindow::lineEditSearch_returnPressed() {
 
 // Progress dialog
 void MainWindow::main_window_progress_dialog_canceled() {
-    if(this->zip_thread->isRunning()) {
+    if (this->zip_thread->isRunning()) {
         this->zip_thread->requestInterruption();
     } else if (this->db_thread->isRunning()) {
         this->db_thread->requestInterruption();

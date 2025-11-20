@@ -51,7 +51,7 @@ ImageWorker::ImageWorkerInfo ImageWorker::getPixmapItemFromData(const NumberImag
     return worker_info;
 }
 
-void ImageWorker::receive_getArchiveImages(const QString &file_path) {
+void ImageWorker::receive_getArchiveImages_request(const QString &file_path) {
     QuaZip zip_archive = QuaZip(file_path);
     // Try to open the archive in read mode
     if (!zip_archive.open(QuaZip::mdUnzip)) {
@@ -147,7 +147,7 @@ void ImageWorker::receive_getArchiveImages(const QString &file_path) {
 
 }
 
-void ImageWorker::receive_getArchiveCover(const QString &file_path) {
+void ImageWorker::receive_getArchiveCover_request(const QString &file_path) {
     // Use the utility function since we dont need a progressbar for a single file
     QByteArray image_bytes = Utils::Zip::getArchiveFirstImage(file_path);
 
