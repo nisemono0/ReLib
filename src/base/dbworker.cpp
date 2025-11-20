@@ -331,7 +331,7 @@ void DBWorker::receive_deleteFromDatabase_request(const QStringList &hash_list) 
         }
 
         // Batch delete
-        int current_batch_len = qMin(BatchSize::DBDelete, hash_list_len);
+        int current_batch_len = qMin(BatchSize::DBDelete, hash_list_len - hash_list_idx);
         for (int batch_idx = 0; batch_idx < current_batch_len; batch_idx++) {
             QString file_hash = hash_list[hash_list_idx + batch_idx];
 
