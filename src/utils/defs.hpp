@@ -4,6 +4,7 @@
 #include <QString>
 #include <QJsonDocument>
 
+
 // Holds current zip's hash, path and json document
 struct ZipData {
     QString file_hash = QString();
@@ -35,6 +36,7 @@ struct NumberImage {
 
 namespace App {
     static const QString AppName = QStringLiteral("ReLib");
+    static const QString OrgName = QStringLiteral("ReLib");
     static const QString Style   = QStringLiteral("Fusion");
 };
 
