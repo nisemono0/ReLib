@@ -47,10 +47,10 @@ private:
     // Manga info dialog
     MangaInfoDialog *manga_info_dialog;
     // Image scale slider
-    QSlider *slider_scale;
-    QWidgetAction *action_scale_slider;
+    QSlider *scale_slider;
+    QWidgetAction *scale_slider_action;
     // View settings group
-    QActionGroup *actiongroup_view_mode;
+    QActionGroup *view_mode_actiongroup;
     // Library view status label
     QLabel *library_view_status;
     // Image view status label
@@ -76,6 +76,9 @@ private:
     // Search input
     void clearSearchText();
     const QString getSearchText();
+
+    // Settings loading
+    void updateUiSettings();
 
 signals:
     // ZipWorker
@@ -132,7 +135,14 @@ private slots:
     void actionCheckDatabaseHashes_triggered();
     void actionCheckDatabasePaths_triggered();
 
-    // TODO: Menubar:Settings
+    // Menubar:Settings
+    void actionScaleImage_toggled(bool checked);
+    void slider_scale_valueChanged(int value);
+    void view_mode_actiongroup_triggered(QAction *action);
+    void actionSearchWhileTyping_toggled(bool checked);
+    void actionSelectFirstAfterSearch_toggled(bool checked);
+    void actionRememberSettings_toggled(bool checked);
+    void actionLoadLastDatabase_toggled(bool checked);
 
     // Buttons
     void pushButtonSearch_clicked();

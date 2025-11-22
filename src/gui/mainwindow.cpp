@@ -1,8 +1,10 @@
 #include "gui/mainwindow.hpp"
 
 #include "base/log.hpp"
+#include "base/settings.hpp"
 
 #include "utils/str.hpp"
+#include "utils/fs.hpp"
 
 #include <QMessageBox>
 #include <QFileDialog>
@@ -11,9 +13,11 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     // Ui setup
     this->ui->setupUi(this);
+
     this->log_dialog = new LogDialog(this);
     this->manga_info_dialog = new MangaInfoDialog(this);
 
+    this->updateUiSettings();
     this->updateUiLock();
 
     this->library_view_status = new QLabel(this);
@@ -23,25 +27,25 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->ui->statusBar->addPermanentWidget(this->image_view_status);
     this->setNoDatabaseStatus();
 
-    this->action_scale_slider = new QWidgetAction(this->ui->menuSettings);
-    this->slider_scale = new QSlider(this->ui->menuSettings);
-    this->slider_scale->setFixedHeight(25);
-    this->slider_scale->setOrientation(Qt::Horizontal);
-    this->slider_scale->setTickPosition(QSlider::NoTicks);
-    this->slider_scale->setMaximum(10);
-    this->slider_scale->setMinimum(0);
-    this->slider_scale->setSingleStep(0);
-    this->slider_scale->setPageStep(0);
-    this->slider_scale->setValue(0);
-    this->action_scale_slider->setDefaultWidget(this->slider_scale);
-    this->ui->menuSettings->insertAction(this->ui->menuSettingsView->menuAction(), this->action_scale_slider);
+    this->scale_slider_action = new QWidgetAction(this->ui->menuSettings);
+    this->scale_slider = new QSlider(this->ui->menuSettings);
+    this->scale_slider->setFixedHeight(25);
+    this->scale_slider->setOrientation(Qt::Horizontal);
+    this->scale_slider->setTickPosition(QSlider::NoTicks);
+    this->scale_slider->setMaximum(10);
+    this->scale_slider->setMinimum(0);
+    this->scale_slider->setSingleStep(0);
+    this->scale_slider->setPageStep(0);
+    this->scale_slider->setValue(0);
+    this->scale_slider_action->setDefaultWidget(this->scale_slider);
+    this->ui->menuSettings->insertAction(this->ui->menuSettingsView->menuAction(), this->scale_slider_action);
     this->ui->menuSettings->insertSeparator(this->ui->menuSettingsView->menuAction());
 
-    this->actiongroup_view_mode = new QActionGroup(this->ui->menuSettingsView);
-    this->actiongroup_view_mode->addAction(this->ui->actionFitInView);
-    this->actiongroup_view_mode->addAction(this->ui->actionFitToWidth);
-    this->actiongroup_view_mode->addAction(this->ui->actionFreeView);
-    this->actiongroup_view_mode->setExclusive(true);
+    this->view_mode_actiongroup = new QActionGroup(this->ui->menuSettingsView);
+    this->view_mode_actiongroup->addAction(this->ui->actionFitInView);
+    this->view_mode_actiongroup->addAction(this->ui->actionFitToWidth);
+    this->view_mode_actiongroup->addAction(this->ui->actionFreeView);
+    this->view_mode_actiongroup->setExclusive(true);
 
     // Thread setup
     this->zip_worker = new ZipWorker();
@@ -64,7 +68,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->ui->actionCheckDatabaseHashes, &QAction::triggered, this, &MainWindow::actionCheckDatabaseHashes_triggered);
     connect(this->ui->actionCheckDatabasePaths, &QAction::triggered, this, &MainWindow::actionCheckDatabasePaths_triggered);
 
-    // TODO: Menubar:Settings
+    // Menubar:Settings
+    connect(this->ui->actionScaleImage, &QAction::toggled, this, &MainWindow::actionScaleImage_toggled);
+    connect(this->scale_slider, &QSlider::valueChanged, this, &MainWindow::slider_scale_valueChanged);
+    connect(this->view_mode_actiongroup, &QActionGroup::triggered, this, &MainWindow::view_mode_actiongroup_triggered);
+    connect(this->ui->actionSearchWhileTyping, &QAction::toggled, this, &MainWindow::actionSearchWhileTyping_toggled);
+    connect(this->ui->actionSelectFirstAfterSearch, &QAction::toggled, this, &MainWindow::actionSelectFirstAfterSearch_toggled);
+    connect(this->ui->actionRememberSettings, &QAction::toggled, this, &MainWindow::actionRememberSettings_toggled);
+    connect(this->ui->actionLoadLastDatabase, &QAction::toggled, this, &MainWindow::actionLoadLastDatabase_toggled);
 
     // Menubar:Info
     connect(this->ui->actionShowLogs, &QAction::triggered, this->log_dialog, &LogDialog::receive_showLogDialog_request);
@@ -157,8 +168,8 @@ MainWindow::~MainWindow() {
     delete this->zip_thread;
 
     delete this->mainwindow_progress_dialog;
-    delete this->slider_scale;
-    delete this->action_scale_slider;
+    delete this->scale_slider;
+    delete this->scale_slider_action;
 
     delete this->library_view_status;
     delete this->image_view_status;
@@ -169,21 +180,24 @@ MainWindow::~MainWindow() {
 }
 
 QString MainWindow::selectFile(const FileDialog::FileDialog DIALOG_TYPE) {
-    QFileDialog file_dialog = QFileDialog(this, QStringLiteral("Select file"), QDir::homePath());
+    QFileDialog file_dialog = QFileDialog(this, QStringLiteral("Select file"));
 
     switch (DIALOG_TYPE) {
         case FileDialog::SelectDB:
+            file_dialog.setDirectory(Settings::last_select_database_dialog_path);
             file_dialog.setAcceptMode(QFileDialog::AcceptOpen);
             file_dialog.setFileMode(QFileDialog::ExistingFile);
             file_dialog.setNameFilter(QStringLiteral("SQLite files (*.db *.sqlite)"));
             break;
         case FileDialog::SelectDBSave:
+            file_dialog.setDirectory(QDir::homePath());
             file_dialog.setAcceptMode(QFileDialog::AcceptSave);
             file_dialog.setFileMode(QFileDialog::AnyFile);
             file_dialog.setNameFilter(QStringLiteral("SQLite files (*.db *.sqlite)"));
             file_dialog.setDefaultSuffix(QStringLiteral(".db"));
             break;
         case FileDialog::SelectZip:
+            file_dialog.setDirectory(Settings::last_add_file_dialog_path);
             file_dialog.setAcceptMode(QFileDialog::AcceptOpen);
             file_dialog.setFileMode(QFileDialog::ExistingFile);
             file_dialog.setNameFilters({
@@ -192,6 +206,7 @@ QString MainWindow::selectFile(const FileDialog::FileDialog DIALOG_TYPE) {
                     });
             break;
         case FileDialog::SelectDir:
+            file_dialog.setDirectory(Settings::last_add_dir_dialog_path);
             file_dialog.setAcceptMode(QFileDialog::AcceptOpen);
             file_dialog.setFileMode(QFileDialog::Directory);
             break;
@@ -261,6 +276,18 @@ void MainWindow::clearSearchText() {
 
 const QString MainWindow::getSearchText() {
     return this->ui->lineEditSearch->text();
+}
+
+void MainWindow::updateUiSettings() {
+    if (Settings::remember_settings) {
+        this->ui->actionScaleImage->setChecked(Settings::scale_image);
+        this->scale_slider->setValue(Settings::scale_slider_value);
+        this->ui->actionFitInView->setChecked(true);
+        this->ui->actionSearchWhileTyping->setChecked(Settings::search_while_typing);
+        this->ui->actionSelectFirstAfterSearch->setChecked(Settings::select_first_item);
+        this->ui->actionRememberSettings->setChecked(Settings::remember_settings);
+        this->ui->actionLoadLastDatabase->setChecked(Settings::load_last_database);
+    }
 }
 
 void MainWindow::actionAddFile_triggered() {
@@ -374,6 +401,7 @@ void MainWindow::receive_DBWorker_pathhash_data(const QList<PathHash> &data, boo
         if (Utils::Str::isNullOrEmpty(dir_path)) {
             return;
         }
+        Settings::last_add_dir_dialog_path = Utils::Fs::getAbsolutePath(dir_path);
         this->zip_thread->start();
         emit request_getDirJsonInfo(dir_path, data);
     } else if (is_dir == false) {
@@ -381,6 +409,7 @@ void MainWindow::receive_DBWorker_pathhash_data(const QList<PathHash> &data, boo
         if (Utils::Str::isNullOrEmpty(file_path)) {
             return;
         }
+        Settings::last_add_file_dialog_path = Utils::Fs::getAbsolutePath(file_path);
         this->zip_thread->start();
         emit request_getFileJsonInfo(file_path, data);
     }
@@ -405,6 +434,8 @@ void MainWindow::actionCreateDatabase_triggered() {
         if (Utils::Str::isNullOrEmpty(file_path)) {
             return;
         }
+        Settings::last_select_database_dialog_path = Utils::Fs::getAbsolutePath(file_path);
+        Settings::last_database_path = file_path;
         this->db_thread->start();
         emit request_createDatabase(file_path);
     }
@@ -450,7 +481,42 @@ void MainWindow::actionCheckDatabasePaths_triggered() {
     }
 }
 
-// TODO: Menubar:Settings
+// Menubar:Settings
+void MainWindow::actionScaleImage_toggled(bool checked) {
+    Settings::scale_image = checked;
+}
+
+void MainWindow::slider_scale_valueChanged(int value) {
+    Settings::scale_slider_value = value;
+}
+
+void MainWindow::view_mode_actiongroup_triggered(QAction *action) {
+    if (action == this->ui->actionFitInView) {
+        Settings::image_view_option = ImageOptions::FitInView;
+    } else if (action == this->ui->actionFitToWidth) {
+        Settings::image_view_option = ImageOptions::FitToWidth;
+    } else if (action == this->ui->actionFreeView) {
+        Settings::image_view_option = ImageOptions::FreeView;
+    } else {
+        Settings::image_view_option = ImageOptions::FitInView;
+    }
+}
+
+void MainWindow::actionSearchWhileTyping_toggled(bool checked) {
+    Settings::search_while_typing = checked;
+}
+
+void MainWindow::actionSelectFirstAfterSearch_toggled(bool checked) {
+    Settings::select_first_item = checked;
+}
+
+void MainWindow::actionRememberSettings_toggled(bool checked) {
+    Settings::remember_settings = checked;
+}
+
+void MainWindow::actionLoadLastDatabase_toggled(bool checked) {
+    Settings::load_last_database = checked;
+}
 
 // Buttons
 void MainWindow::pushButtonSearch_clicked() {

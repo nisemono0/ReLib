@@ -27,6 +27,8 @@ qt_add_executable(ReLib
     src/base/log.hpp
     src/base/manga.cpp
     src/base/manga.hpp
+    src/base/settings.cpp
+    src/base/settings.hpp
     src/base/zipworker.cpp
     src/base/zipworker.hpp
     src/gui/logdialog.cpp
