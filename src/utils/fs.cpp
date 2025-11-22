@@ -57,3 +57,11 @@ QString Utils::Fs::getFileSize(const QString &file_path) {
     return QStringLiteral("File not found");
 }
 
+QString Utils::Fs::getAbsolutePath(const QString &path) {
+    QFileInfo file_info = QFileInfo(path);
+    if (file_info.exists()) {
+        return file_info.absolutePath();
+    }
+    return QDir::homePath();
+}
+

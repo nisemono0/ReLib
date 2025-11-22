@@ -17,5 +17,8 @@ namespace Utils::Fs {
     QString getCompleteBaseName(const QString &file_path);
     // Returns filesize of file
     QString getFileSize(const QString &file_path);
+    // Returns the absolute path of a file (w/o the file name)
+    // If dir/file doesn't exist it returns home path
+    QString getAbsolutePath(const QString &path);
 };
 
