@@ -2,6 +2,11 @@
 
 #include <QMutexLocker>
 
+
+QQueue<QString> Log::log_queue = QQueue<QString>();
+QMutex Log::qmutex = QMutex();
+
+
 void Log::info(const QString &message) {
     QMutexLocker locker(&Log::qmutex);
     Log::log_queue.enqueue(QStringLiteral("<font color=\"gray\">[INFO]: </font>%1").arg(message));

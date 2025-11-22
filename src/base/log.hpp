@@ -13,6 +13,6 @@ public:
     static bool isLogQueueEmpty();
     static QString getQueuedMessage();
 private:
-    static inline QQueue<QString> log_queue = QQueue<QString>();
-    static inline QMutex qmutex = QMutex();
+    static QQueue<QString> log_queue;
+    static QMutex qmutex;
 };
