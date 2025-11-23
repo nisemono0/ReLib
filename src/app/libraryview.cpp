@@ -1,6 +1,7 @@
 #include "app/libraryview.hpp"
 
 #include <base/clipboard.hpp>
+#include <base/settings.hpp>
 
 #include "utils/str.hpp"
 #include "utils/fs.hpp"
@@ -130,11 +131,11 @@ void LibraryView::receive_clearMangaList_request() {
 void LibraryView::receive_setSearchText_request(const QString &search_text) {
     this->library_model_proxy->setSearchText(search_text);
     this->updateLibraryViewStatus();
-    // TODO: When implemeting settings add a flag to auto select the first item found if it exists
-    // if (this->select_first) {
-    //     QModelIndex first_index = this->library_model_proxy->getFirstIndex();
-    //     this->setCurrentIndex(first_index);
-    // }
+
+    if (Settings::select_first_item) {
+        QModelIndex first_index = this->library_model_proxy->getFirstIndex();
+        this->setCurrentIndex(first_index);
+    }
 }
 
 void LibraryView::receive_selectRandomManga_request() {
@@ -158,7 +159,14 @@ void LibraryView::receive_scrollToCurrentItem_request() {
 }
 
 void LibraryView::libraryView_selectionModel_currentChanged(const QModelIndex &current, const QModelIndex &previous) {
-    Q_UNUSED(previous);
+    // this prevents the filter model from selecting a new item
+    // if the previous one got filtered out (is not visible)
+    if (previous.isValid() && !Settings::select_first_item) {
+        if (this->library_model_proxy->isIndexFiltered(previous)) {
+            return;
+        }
+    }
+
     if (current.isValid()) {
         this->current_item_filesize = Utils::Fs::getFileSize(current.data(LibraryModel::FilePath).toString());
         this->updateLibraryViewStatus();

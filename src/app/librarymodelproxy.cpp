@@ -32,6 +32,11 @@ void LibraryModelProxy::setSearchText(const QString &search_text) {
     endFilterChange();
 }
 
+bool LibraryModelProxy::isIndexFiltered(const QModelIndex &index) {
+    QModelIndex source_index = this->mapToSource(index);
+    return !this->filterAcceptsRow(source_index.row(), source_index.parent());
+}
+
 QModelIndex LibraryModelProxy::getFirstIndex() {
     return this->index(0, 0);
 }

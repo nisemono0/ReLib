@@ -13,6 +13,7 @@ public:
     ~LibraryModelProxy();
 
     void setSearchText(const QString &search_text);
+    bool isIndexFiltered(const QModelIndex &index);
 
     QModelIndex getFirstIndex();
     QModelIndex getRandomIndex();
