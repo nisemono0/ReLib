@@ -17,9 +17,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->log_dialog = new LogDialog(this);
     this->manga_info_dialog = new MangaInfoDialog(this);
 
-    this->updateUiSettings();
-    this->updateUiLock();
-
     this->library_view_status = new QLabel(this);
     this->ui->statusBar->addWidget(this->library_view_status);
     this->library_view_status->setIndent(4);
@@ -146,6 +143,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->db_worker, &DBWorker::send_DBWorker_unloadDatabase_status, this->db_thread, &QThread::quit);
     connect(this->db_worker, &DBWorker::send_DBWorker_data, this->db_thread, &QThread::quit);
     connect(this->db_worker, &DBWorker::send_DBWorker_pathhash_data, this->db_thread, &QThread::quit);
+
+    this->updateUiSettings();
+    this->updateUiLock();
 }
 
 MainWindow::~MainWindow() {
