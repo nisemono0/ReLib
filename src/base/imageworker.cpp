@@ -34,6 +34,7 @@ QGraphicsPixmapItem* ImageWorker::getPixmapItemFromData(const QByteArray &image_
 
     QGraphicsPixmapItem *pixmap_item = new QGraphicsPixmapItem(image_pixmap);
     pixmap_item->setVisible(false);
+    pixmap_item->setTransformationMode(Qt::SmoothTransformation);
     return pixmap_item;
 }
 
@@ -49,6 +50,7 @@ ImageWorker::ImageWorkerInfo ImageWorker::getPixmapItemFromData(const NumberImag
     worker_info.image_number = number_image.image_number;
     worker_info.pixmap_item = new QGraphicsPixmapItem(image_pixmap);
     worker_info.pixmap_item->setVisible(false);
+    worker_info.pixmap_item->setTransformationMode(Qt::SmoothTransformation);
 
     return worker_info;
 }
