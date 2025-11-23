@@ -96,3 +96,7 @@ namespace BatchSize {
     static const int ImageLoad   = 10;
 };
 
+namespace Search {
+    static const int SearchTimer = 300;
+};
+

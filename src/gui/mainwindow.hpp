@@ -25,6 +25,7 @@
 #include <QVariantMap>
 #include <QList>
 #include <QLabel>
+#include <QTimer>
 
 
 namespace Ui {
@@ -63,6 +64,10 @@ private:
     ZipWorker *zip_worker;
     QThread *zip_thread;
 
+    // Search while typing timer
+    QTimer *search_timer;
+    QString current_search;
+
     // Open file dialog
     QString selectFile(const FileDialog::FileDialog DIALOG_TYPE);
 
@@ -76,9 +81,11 @@ private:
     // Search input
     void clearSearchText();
     const QString getSearchText();
+    bool isLastSearchedText(const QString &search_text);
 
     // Settings loading
     void updateUiSettings();
+
 
 signals:
     // ZipWorker
@@ -154,5 +161,9 @@ private slots:
 
     // Progress dialog
     void main_window_progress_dialog_canceled();
+
+    // Search while typing timer
+    void search_while_typing_timeout();
+
 };
 

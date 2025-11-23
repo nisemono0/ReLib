@@ -56,6 +56,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->db_thread = new QThread(this);
     this->db_worker->moveToThread(this->db_thread);
 
+    // Search while typing timer
+    this->search_timer = new QTimer(this);
+    this->search_timer->setInterval(Search::SearchTimer);
+    if (Settings::search_while_typing) {
+        this->search_timer->start();
+    }
+
     // Menubar:File
     connect(this->ui->actionAddFile, &QAction::triggered, this, &MainWindow::actionAddFile_triggered);
     connect(this->ui->actionAddDir, &QAction::triggered, this, &MainWindow::actionAddDir_triggered);
@@ -88,6 +95,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // Search
     connect(this->ui->lineEditSearch, &QLineEdit::returnPressed, this, &MainWindow::lineEditSearch_returnPressed);
+    // Search while typing timer
+    connect(this->search_timer, &QTimer::timeout, this, &MainWindow::search_while_typing_timeout);
 
     // Library view
     connect(this, &MainWindow::request_setMangaList, this->ui->libraryView, &LibraryView::receive_setMangaList_request);
@@ -272,10 +281,19 @@ void MainWindow::setNoDatabaseStatus() {
 
 void MainWindow::clearSearchText() {
     this->ui->lineEditSearch->setText("");
+    this->current_search = "";
 }
 
 const QString MainWindow::getSearchText() {
-    return this->ui->lineEditSearch->text();
+    this->current_search = this->ui->lineEditSearch->text();
+    return this->current_search;
+}
+
+bool MainWindow::isLastSearchedText(const QString &search_text) {
+    if (this->current_search == search_text) {
+        return true;
+    }
+    return false;
 }
 
 void MainWindow::updateUiSettings() {
@@ -504,6 +522,11 @@ void MainWindow::view_mode_actiongroup_triggered(QAction *action) {
 
 void MainWindow::actionSearchWhileTyping_toggled(bool checked) {
     Settings::search_while_typing = checked;
+    if (checked) {
+        this->search_timer->start();
+    } else {
+        this->search_timer->stop();
+    }
 }
 
 void MainWindow::actionSelectFirstAfterSearch_toggled(bool checked) {
@@ -543,6 +566,15 @@ void MainWindow::main_window_progress_dialog_canceled() {
         this->zip_thread->requestInterruption();
     } else if (this->db_thread->isRunning()) {
         this->db_thread->requestInterruption();
+    }
+}
+
+// Search while typing timer
+void MainWindow::search_while_typing_timeout() {
+    QString new_search = this->ui->lineEditSearch->text();
+    if (!this->isLastSearchedText(new_search)) {
+        this->current_search = new_search;
+        emit request_setSearchText(new_search);
     }
 }
 
