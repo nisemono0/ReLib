@@ -26,7 +26,7 @@ QString Settings::last_select_database_dialog_path = QDir::homePath();
 
 void Settings::saveSettings() {
     Settings::settings.setValue(QStringLiteral("scale_image"), Settings::scale_image);
-    Settings::settings.setValue("scale_slider_value", Settings::scale_slider_value);
+    Settings::settings.setValue(QStringLiteral("scale_slider_value"), Settings::scale_slider_value);
 
     Settings::settings.setValue(QStringLiteral("search_while_typing"), Settings::search_while_typing);
     Settings::settings.setValue(QStringLiteral("select_first_item"), Settings::select_first_item);
