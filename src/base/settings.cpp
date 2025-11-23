@@ -7,6 +7,7 @@ QSettings Settings::settings = QSettings(App::OrgName, App::AppName);
 
 bool Settings::scale_image = true;
 int Settings::scale_slider_value = 0;
+float Settings::image_scale_value = 1.0;
 
 ImageOptions::ImageOptions Settings::image_view_option = ImageOptions::FitInView;
 
@@ -63,12 +64,16 @@ void Settings::loadSettings() {
 
     if (Settings::remember_settings == false) {
         Settings::loadDefaultSettings();
+    } else {
+        Settings::updateImageScaleValue();
     }
+
 }
 
 void Settings::loadDefaultSettings() {
     Settings::scale_image = true;
     Settings::scale_slider_value = 0;
+    Settings::image_scale_value = 1.0;
 
     Settings::image_view_option = ImageOptions::FitInView;
 
@@ -80,5 +85,9 @@ void Settings::loadDefaultSettings() {
     Settings::load_last_database = false;
 
     Settings::last_database_path = QString();
+}
+
+void Settings::updateImageScaleValue() {
+    Settings::image_scale_value = 1.0 + (Settings::scale_slider_value / 10.0);
 }
 

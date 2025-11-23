@@ -10,6 +10,7 @@ class Settings {
 public:
     static bool scale_image;
     static int scale_slider_value;
+    static float image_scale_value;
 
     static ImageOptions::ImageOptions image_view_option;
 
@@ -29,8 +30,10 @@ public:
     static void saveSettings();
     static void loadSettings();
 
+    static void updateImageScaleValue();
+
 private:
     static QSettings settings;
-    void static loadDefaultSettings();
+    static void loadDefaultSettings();
 
 };

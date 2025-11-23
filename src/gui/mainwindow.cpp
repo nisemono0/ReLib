@@ -8,6 +8,7 @@
 
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QToolTip>
 
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -506,6 +507,12 @@ void MainWindow::actionScaleImage_toggled(bool checked) {
 
 void MainWindow::slider_scale_valueChanged(int value) {
     Settings::scale_slider_value = value;
+    Settings::updateImageScaleValue();
+    QToolTip::showText(
+            QCursor::pos(),
+            QStringLiteral("Scale: %1").arg(QString::number(Settings::image_scale_value)),
+            this->scale_slider
+            );
 }
 
 void MainWindow::view_mode_actiongroup_triggered(QAction *action) {
