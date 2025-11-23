@@ -34,6 +34,9 @@ public:
     // Return true if only 1 image is loaded
     bool isCoverImage();
 
+    // Return the current item's bounding rect
+    QRectF getCurrentImageBoundingRect();
+
     // Return current/total image number
     int getCurrentImageNumber();
     int getTotalImagesNumber();

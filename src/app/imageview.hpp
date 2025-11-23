@@ -50,6 +50,14 @@ private:
     void updateImageViewStatus(int current_image, int total_images, int image_width, int image_height, bool is_cover = false);
     void updateImageViewStatus(const QString &status);
 
+    // TODO
+    // Make this a slot and connect it to the image scene
+    // then emit to it everytime a image is loaded / changed etc
+    // if i make this a slot i can also easily call it from the override mouseEvent functions
+    // Also add a slot from MainWindow that calls this whenever the view option is changed
+    // this way i get live image updates
+    void scaleAndFitImage();
+
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;

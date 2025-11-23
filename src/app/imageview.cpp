@@ -1,5 +1,9 @@
 #include "app/imageview.hpp"
 
+#include "base/settings.hpp"
+
+#include <QScrollBar>
+
 
 ImageView::ImageView(QWidget *parent) : QGraphicsView(parent) {
     // This makes mouse events respond to movement
@@ -110,6 +114,40 @@ void ImageView::updateImageViewStatus(int current_image, int total_images, int i
 
 void ImageView::updateImageViewStatus(const QString &status) {
     emit send_ImageView_status(status);
+}
+
+void ImageView::scaleAndFitImage() {
+    // Scale image
+    // TODO: here or when loading the pixmaps
+
+    // Fit image
+    this->setSceneRect(this->image_scene->getCurrentImageBoundingRect());
+    switch (Settings::image_view_option) {
+        case ImageOptions::FitInView:
+            {
+                this->fitInView(this->image_scene->getCurrentImageBoundingRect(), Qt::KeepAspectRatio);
+                break;
+            }
+        case ImageOptions::FitToWidth:
+            {
+                int scroll_h = this->horizontalScrollBar()->value();
+                int scroll_y = this->horizontalScrollBar()->value();
+                this->fitInView(this->image_scene->itemsBoundingRect(), Qt::KeepAspectRatioByExpanding);
+                if (this->sceneRect().width() >= this->mapToScene(this->viewport()->rect()).boundingRect().width()) {
+                    this->fitInView(this->image_scene->getCurrentImageBoundingRect(), Qt::KeepAspectRatio);
+                }
+                this->horizontalScrollBar()->setValue(scroll_h);
+                this->verticalScrollBar()->setValue(scroll_y);
+                break;
+            }
+        case ImageOptions::FreeView:
+            {
+                this->setTransformationAnchor(QGraphicsView::NoAnchor);
+                this->setResizeAnchor(QGraphicsView::NoAnchor);
+                this->setDragMode(QGraphicsView::ScrollHandDrag);
+                break;
+            }
+    };
 }
 
 void ImageView::contextMenuEvent(QContextMenuEvent *event) {

@@ -91,6 +91,14 @@ bool ImageScene::isCoverImage() {
     return false;
 }
 
+QRectF ImageScene::getCurrentImageBoundingRect() {
+    if (this->image_list.isEmpty()) {
+        return QRectF();
+    }
+
+    return this->image_list[this->current_image]->boundingRect();
+}
+
 int ImageScene::getCurrentImageNumber() {
     return this->current_image;
 }
