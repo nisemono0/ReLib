@@ -78,7 +78,6 @@ void ImageScene::jumpToImage(int image_number) {
 
     this->sendCurrentSceneInfo();
 
-    this->scaleCurrentImage();
 }
 
 void ImageScene::clearScene() {
