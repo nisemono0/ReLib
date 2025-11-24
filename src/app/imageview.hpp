@@ -2,6 +2,8 @@
 
 #include "app/imagescene.hpp"
 
+#include "base/imageworker.hpp"
+
 #include <QGraphicsView>
 #include <QWidget>
 #include <QMenu>
@@ -50,13 +52,8 @@ private:
     void updateImageViewStatus(int current_image, int total_images, int image_width, int image_height, bool is_cover = false);
     void updateImageViewStatus(const QString &status);
 
-    // TODO
-    // Make this a slot and connect it to the image scene
-    // then emit to it everytime a image is loaded / changed etc
-    // if i make this a slot i can also easily call it from the override mouseEvent functions
-    // Also add a slot from MainWindow that calls this whenever the view option is changed
-    // this way i get live image updates
-    void scaleAndFitImage();
+    void scaleImage();
+    void fitImage();
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
@@ -76,9 +73,10 @@ public slots:
     void receive_LibraryVew_load_images_path(const QString &file_path);
     void receive_ImageWorker_info(const QString &info);
     void receive_ImageWorker_progress(int progress);
-    void receive_ImageWorker_data(const QMap<int, QGraphicsPixmapItem*> &data, int total_images);
-    void receive_ImageWorker_cover(QGraphicsPixmapItem* pixmap_item, int total_images);
+    void receive_ImageWorker_data(const QMap<int, QPixmap> &data, int total_images);
+    void receive_ImageWorker_cover(const QPixmap &pixmap, int total_images);
     void receive_clearImageView_request();
+    void receive_scaleAndFitImage_request();
 
 private slots:
     void load_images_action_triggered();
@@ -90,6 +88,8 @@ private slots:
     void receive_ImageScene_info(int current_image, int total_images, int image_width, int image_height);
 
     void imageview_progress_dialog_canceled();
+
+    void receive_fitImage_request();
 
 };
 

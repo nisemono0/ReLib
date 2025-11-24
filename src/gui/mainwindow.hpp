@@ -111,6 +111,7 @@ signals:
 
     // ImageView
     void request_clearImageView();
+    void request_scaleAndFitImage();
 
 public slots:
     // ZipWorker

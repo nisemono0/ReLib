@@ -112,6 +112,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->ui->libraryView, &LibraryView::send_LibraryView_load_images_path, this->ui->imageView, &ImageView::receive_LibraryVew_load_images_path);
     connect(this, &MainWindow::request_clearImageView, this->ui->imageView, &ImageView::receive_clearImageView_request);
     connect(this->ui->imageView, &ImageView::request_LibraryView_scrollToCurrentItem, this->ui->libraryView, &LibraryView::receive_scrollToCurrentItem_request);
+    connect(this, &MainWindow::request_scaleAndFitImage, this->ui->imageView, &ImageView::receive_scaleAndFitImage_request);
 
     // Thread requests
     connect(this, &MainWindow::request_getFileJsonInfo, this->zip_worker, &ZipWorker::receive_getFileJsonInfo_request);
@@ -513,6 +514,7 @@ void MainWindow::slider_scale_valueChanged(int value) {
             QStringLiteral("Scale: %1").arg(QString::number(Settings::image_scale_value)),
             this->scale_slider
             );
+    emit request_scaleAndFitImage();
 }
 
 void MainWindow::view_mode_actiongroup_triggered(QAction *action) {
@@ -525,6 +527,7 @@ void MainWindow::view_mode_actiongroup_triggered(QAction *action) {
     } else {
         Settings::image_view_option = ImageOptions::FitInView;
     }
+    emit request_scaleAndFitImage();
 }
 
 void MainWindow::actionSearchWhileTyping_toggled(bool checked) {

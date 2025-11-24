@@ -37,11 +37,13 @@ ImageView::ImageView(QWidget *parent) : QGraphicsView(parent) {
     // ImageScene current image info
     connect(this->image_scene, &ImageScene::send_ImageScene_info, this, &ImageView::receive_ImageScene_info);
 
+    // ImageScene scale and fit the ImageView
+    connect(this->image_scene, &ImageScene::request_fitImage, this, &ImageView::receive_fitImage_request);
+
     // ImageWorker thread
     connect(this->image_worker, &ImageWorker::send_ImageWorker_info, this->image_thread, &QThread::quit);
     connect(this->image_worker, &ImageWorker::send_ImageWorker_data, this->image_thread, &QThread::quit);
     connect(this->image_worker, &ImageWorker::send_ImageWorker_cover, this->image_thread, &QThread::quit);
-
 
     // Context menu
     connect(this->load_images_action, &QAction::triggered, this, &ImageView::load_images_action_triggered);
@@ -116,11 +118,12 @@ void ImageView::updateImageViewStatus(const QString &status) {
     emit send_ImageView_status(status);
 }
 
-void ImageView::scaleAndFitImage() {
-    // Scale image
-    // TODO: here or when loading the pixmaps
+void ImageView::scaleImage() {
+    // TODO
+}
 
-    // Fit image
+// TODO: remake this with pixmap instead of QGraphicsPixmapItem
+void ImageView::fitImage() {
     this->setSceneRect(this->image_scene->getCurrentImageBoundingRect());
     switch (Settings::image_view_option) {
         case ImageOptions::FitInView:
@@ -222,13 +225,13 @@ void ImageView::receive_ImageWorker_progress(int progress) {
     }
 }
 
-void ImageView::receive_ImageWorker_data(const QMap<int, QGraphicsPixmapItem*> &data, int total_images) {
+void ImageView::receive_ImageWorker_data(const QMap<int, QPixmap> &data, int total_images) {
     this->image_scene->setImageList(data);
 }
 
-void ImageView::receive_ImageWorker_cover(QGraphicsPixmapItem* pixmap_item, int total_images) {
-    this->image_scene->addCoverImage(pixmap_item);
-    this->updateImageViewStatus(1, total_images, pixmap_item->pixmap().width(), pixmap_item->pixmap().height(), true);
+void ImageView::receive_ImageWorker_cover(const QPixmap &pixmap, int total_images) {
+    this->image_scene->addCoverImage(pixmap);
+    this->updateImageViewStatus(1, total_images, pixmap.width(), pixmap.height(), true);
 }
 
 void ImageView::receive_clearImageView_request() {
@@ -296,5 +299,14 @@ void ImageView::imageview_progress_dialog_canceled() {
     if (this->image_thread->isRunning()) {
         this->image_thread->requestInterruption();
     }
+}
+
+void ImageView::receive_scaleAndFitImage_request() {
+    this->image_scene->scaleCurrentImage();
+    this->fitImage();
+}
+
+void ImageView::receive_fitImage_request() {
+    this->fitImage();
 }
 

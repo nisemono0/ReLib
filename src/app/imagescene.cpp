@@ -1,39 +1,43 @@
 #include "app/imagescene.hpp"
 
 #include "base/clipboard.hpp"
+#include "base/settings.hpp"
 
 ImageScene::ImageScene(QObject *parent) : QGraphicsScene(parent) {
+    this->image_item = this->addPixmap(QPixmap());
+    this->image_item->setVisible(true);
+
     this->current_image = -1;
     this->total_images = -1;
 }
 
 ImageScene::~ImageScene() {
-    qDeleteAll(this->image_list);
+    delete this->image_item;
 }
 
-void ImageScene::addCoverImage(QGraphicsPixmapItem *cover_image) {
-    // Clear scene before adding a new cover image
+void ImageScene::addCoverImage(const QPixmap &cover_pixmap) {
     this->clearScene();
-    // Add cover image item and store its pointer for ease of access
-    this->addItem(cover_image);
-    this->image_list[0] = cover_image;
-    // Show the added cover image
-    this->image_list[0]->show();
+
+    this->image_list[0] = cover_pixmap;
+
+    this->image_item->setPixmap(cover_pixmap); // TODO: image_item->setPixmap(scalePixmap(cover_pixmap))
+
+    this->image_item->show();
+
     this->total_images = 0;
     this->current_image = 0;
 }
 
-void ImageScene::setImageList(const QMap<int, QGraphicsPixmapItem*> &pixmap_items) {
+void ImageScene::setImageList(const QMap<int, QPixmap> &pixmap_map) {
     // Clear the scene
     this->clearScene();
-    // Add our pixmap items to the scene
-    for (auto item : pixmap_items) {
-        this->addItem(item);
-    }
-    // Store the item pointers for ease of access
-    this->image_list = pixmap_items;
+
+    // Store pixmap_map
+    this->image_list = pixmap_map;
+
     // Display the first image
-    this->image_list[0]->show();
+    this->image_item->setPixmap(this->image_list[0]); // TODO: set scaled image
+
     // Set current and total image count
     this->current_image = 0;
     this->total_images = this->image_list.count();
@@ -41,19 +45,18 @@ void ImageScene::setImageList(const QMap<int, QGraphicsPixmapItem*> &pixmap_item
 
 void ImageScene::showNextImage() {
     if (this->current_image < this->total_images - 1) {
-        this->image_list[this->current_image]->hide();
         this->current_image += 1;
-        this->image_list[this->current_image]->show();
+        this->image_item->setPixmap(this->image_list[this->current_image]); // TODO: scale here
         this->sendCurrentSceneInfo();
     }
 }
 
 void ImageScene::showPreviousImage() {
     if (this->current_image > 0) {
-        this->image_list[this->current_image]->hide();
         this->current_image -= 1;
-        this->image_list[this->current_image]->show();
+        this->image_item->setPixmap(this->image_list[this->current_image]); // TODO scale here
         this->sendCurrentSceneInfo();
+
     }
 }
 
@@ -69,17 +72,18 @@ void ImageScene::jumpToImage(int image_number) {
         return;
     }
 
-    this->image_list[this->current_image]->hide();
     this->current_image = image_number;
-    this->image_list[this->current_image]->show();
+
+    this->image_item->setPixmap(this->image_list[this->current_image]); // TODO scale here
 
     this->sendCurrentSceneInfo();
+
+    this->scaleCurrentImage();
 }
 
 void ImageScene::clearScene() {
-    qDeleteAll(this->image_list);
     this->image_list.clear();
-    this->clear();
+    this->image_item->setPixmap(QPixmap());
     this->current_image = -1;
     this->total_images = -1;
 }
@@ -96,7 +100,7 @@ QRectF ImageScene::getCurrentImageBoundingRect() {
         return QRectF();
     }
 
-    return this->image_list[this->current_image]->boundingRect();
+    return this->image_item->boundingRect();
 }
 
 int ImageScene::getCurrentImageNumber() {
@@ -107,12 +111,19 @@ int ImageScene::getTotalImagesNumber() {
     return this->total_images;
 }
 
+void ImageScene::scaleCurrentImage() {
+    // TODO scale here
+    emit request_fitImage();
+}
+
 void ImageScene::sendCurrentSceneInfo() {
     emit send_ImageScene_info(
             this->current_image + 1,
             this->total_images,
-            this->image_list[this->current_image]->pixmap().width(),
-            this->image_list[this->current_image]->pixmap().height()
+            // Use original image size instead of the loaded item
+            // since the item could be scaled
+            this->image_list[this->current_image].width(),
+            this->image_list[this->current_image].height()
             );
 }
 

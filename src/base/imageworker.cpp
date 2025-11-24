@@ -25,20 +25,17 @@ ImageWorker::~ImageWorker() {
 
 }
 
-QGraphicsPixmapItem* ImageWorker::getPixmapItemFromData(const QByteArray &image_data) {
+QPixmap ImageWorker::getPixmapFromData(const QByteArray &image_data) {
     QPixmap image_pixmap = QPixmap();
 
     if (!image_pixmap.loadFromData(image_data)) {
-        return nullptr;
+        return QPixmap();
     }
 
-    QGraphicsPixmapItem *pixmap_item = new QGraphicsPixmapItem(image_pixmap);
-    pixmap_item->setVisible(false);
-    pixmap_item->setTransformationMode(Qt::SmoothTransformation);
-    return pixmap_item;
+    return image_pixmap;
 }
 
-ImageWorker::ImageWorkerInfo ImageWorker::getPixmapItemFromData(const NumberImage &number_image) {
+ImageWorker::ImageWorkerInfo ImageWorker::getPixmapFromData(const NumberImage &number_image) {
     ImageWorkerInfo worker_info;
 
     QPixmap image_pixmap = QPixmap();
@@ -48,9 +45,7 @@ ImageWorker::ImageWorkerInfo ImageWorker::getPixmapItemFromData(const NumberImag
     }
 
     worker_info.image_number = number_image.image_number;
-    worker_info.pixmap_item = new QGraphicsPixmapItem(image_pixmap);
-    worker_info.pixmap_item->setVisible(false);
-    worker_info.pixmap_item->setTransformationMode(Qt::SmoothTransformation);
+    worker_info.pixmap = image_pixmap;
 
     return worker_info;
 }
@@ -75,7 +70,7 @@ void ImageWorker::receive_getArchiveImages_request(const QString &file_path) {
     QuaZipFile zip_file = QuaZipFile(&zip_archive);
 
     // Init our (image number, pixmap item) map
-    QMap<int, QGraphicsPixmapItem*> pixmap_item_map = QMap<int, QGraphicsPixmapItem*>();
+    QMap<int, QPixmap> pixmap_map = QMap<int, QPixmap>();
 
     qsizetype archive_files_len = archive_files_list.length();
     int progress = 0;
@@ -88,10 +83,10 @@ void ImageWorker::receive_getArchiveImages_request(const QString &file_path) {
             zip_archive.close();
             // If no images are loaded send a message otherwise
             // send whatever images we managed to load
-            if (pixmap_item_map.isEmpty()) {
+            if (pixmap_map.isEmpty()) {
                 emit send_ImageWorker_info(QStringLiteral("No image"));
             } else {
-                emit send_ImageWorker_data(pixmap_item_map, pixmap_item_map.count());
+                emit send_ImageWorker_data(pixmap_map, pixmap_map.count());
             }
             return;
         }
@@ -129,25 +124,25 @@ void ImageWorker::receive_getArchiveImages_request(const QString &file_path) {
         }
 
         auto mapped_batch_results = QtConcurrent::blockingMapped(batch_number_image, [this](const NumberImage &number_image) {
-                return this->getPixmapItemFromData(number_image);
+                return this->getPixmapFromData(number_image);
                 });
 
         for (auto batch_results_it : mapped_batch_results) {
             // If we couldnt load a pixmap, stop everything
-            if (batch_results_it.pixmap_item == nullptr) {
+            if (batch_results_it.pixmap.isNull()) {
                 zip_archive.close();
                 Log::error(QStringLiteral("[ImageWorker:getAllImages:batch_results_it.pixmap_item]: %1").arg(file_path));
                 emit send_ImageWorker_info("No image");
                 return;
             }
-            pixmap_item_map[batch_results_it.image_number] = batch_results_it.pixmap_item;
+            pixmap_map[batch_results_it.image_number] = batch_results_it.pixmap;
         }
 
         emit send_ImageWorker_progress(progress);
 
     }
 
-    emit send_ImageWorker_data(pixmap_item_map, pixmap_item_map.count());
+    emit send_ImageWorker_data(pixmap_map, pixmap_map.count());
 
 }
 
@@ -161,14 +156,14 @@ void ImageWorker::receive_getArchiveCover_request(const QString &file_path) {
         return;
     }
 
-    QGraphicsPixmapItem *pixmap_item = this->getPixmapItemFromData(image_bytes);
-    if (pixmap_item == nullptr) {
+    QPixmap image_pixmap = this->getPixmapFromData(image_bytes);
+    if (image_pixmap.isNull()) {
         Log::error(QStringLiteral("[ImageWorker:getArchiveCover:pixmap_item]: %1").arg(file_path));
         emit send_ImageWorker_info("No image");
         return;
     }
 
     int total_images = Utils::Zip::getArchiveImageCount(file_path);
-    emit send_ImageWorker_cover(pixmap_item, total_images);
+    emit send_ImageWorker_cover(image_pixmap, total_images);
 }
 

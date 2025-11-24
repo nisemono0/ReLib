@@ -1,7 +1,5 @@
 #pragma once
 
-#include "base/imageworker.hpp"
-
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
 #include <QThread>
@@ -15,8 +13,8 @@ public:
     ~ImageScene();
 
     // Add cover image or list of images to the scene
-    void addCoverImage(QGraphicsPixmapItem *cover_image);
-    void setImageList(const QMap<int, QGraphicsPixmapItem*> &pixmap_items);
+    void addCoverImage(const QPixmap &cover_pixmap);
+    void setImageList(const QMap<int, QPixmap> &pixmap_map);
 
     // Show next/prev image
     void showNextImage();
@@ -41,8 +39,12 @@ public:
     int getCurrentImageNumber();
     int getTotalImagesNumber();
 
+    // Scale the current image
+    void scaleCurrentImage();
+
 private:
-    QMap<int, QGraphicsPixmapItem*> image_list;
+    QMap<int, QPixmap> image_list;
+    QGraphicsPixmapItem *image_item;
 
     int current_image;
     int total_images;
@@ -51,6 +53,7 @@ private:
 
 signals:
     void send_ImageScene_info(int current_image, int total_images, int image_width, int image_height);
+    void request_fitImage();
 
 public slots:
 
