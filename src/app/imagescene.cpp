@@ -4,15 +4,20 @@
 #include "base/settings.hpp"
 
 ImageScene::ImageScene(QObject *parent) : QGraphicsScene(parent) {
-    this->image_item = this->addPixmap(QPixmap());
-    this->image_item->setVisible(true);
+    this->scene_item = this->addPixmap(QPixmap());
+    this->scene_item->setTransformationMode(Qt::SmoothTransformation);
+    this->scene_item->setVisible(true);
 
     this->current_image = -1;
     this->total_images = -1;
 }
 
 ImageScene::~ImageScene() {
-    delete this->image_item;
+    delete this->scene_item;
+}
+
+void ImageScene::setViewWindowSize(const QSize &window_size) {
+    this->view_window_size = window_size;
 }
 
 void ImageScene::addCoverImage(const QPixmap &cover_pixmap) {
@@ -20,9 +25,7 @@ void ImageScene::addCoverImage(const QPixmap &cover_pixmap) {
 
     this->image_list[0] = cover_pixmap;
 
-    this->image_item->setPixmap(cover_pixmap); // TODO: image_item->setPixmap(scalePixmap(cover_pixmap))
-
-    this->image_item->show();
+    this->setCurrentDisplayImage(0);
 
     this->total_images = 0;
     this->current_image = 0;
@@ -36,7 +39,7 @@ void ImageScene::setImageList(const QMap<int, QPixmap> &pixmap_map) {
     this->image_list = pixmap_map;
 
     // Display the first image
-    this->image_item->setPixmap(this->image_list[0]); // TODO: set scaled image
+    this->setCurrentDisplayImage(0);
 
     // Set current and total image count
     this->current_image = 0;
@@ -45,23 +48,23 @@ void ImageScene::setImageList(const QMap<int, QPixmap> &pixmap_map) {
 
 void ImageScene::showNextImage() {
     if (this->current_image < this->total_images - 1) {
-        this->current_image += 1;
-        this->image_item->setPixmap(this->image_list[this->current_image]); // TODO: scale here
+        // Increment current_image before displaying
+        this->setCurrentDisplayImage(++this->current_image);
         this->sendCurrentSceneInfo();
     }
 }
 
 void ImageScene::showPreviousImage() {
     if (this->current_image > 0) {
-        this->current_image -= 1;
-        this->image_item->setPixmap(this->image_list[this->current_image]); // TODO scale here
+        // Decrement current_image before displaying
+        this->setCurrentDisplayImage(--this->current_image);
         this->sendCurrentSceneInfo();
 
     }
 }
 
 void ImageScene::copyCurrentImage() {
-    if (this->image_list.isEmpty()) {
+    if (this->isImageListEmpty()) {
         return;
     }
     Clipboard::setImage(this->image_list[this->current_image]);
@@ -72,9 +75,10 @@ void ImageScene::jumpToImage(int image_number) {
         return;
     }
 
-    this->current_image = image_number;
 
-    this->image_item->setPixmap(this->image_list[this->current_image]); // TODO scale here
+    this->setCurrentDisplayImage(image_number);
+
+    this->current_image = image_number;
 
     this->sendCurrentSceneInfo();
 
@@ -82,7 +86,7 @@ void ImageScene::jumpToImage(int image_number) {
 
 void ImageScene::clearScene() {
     this->image_list.clear();
-    this->image_item->setPixmap(QPixmap());
+    this->scene_item->setPixmap(QPixmap());
     this->current_image = -1;
     this->total_images = -1;
 }
@@ -95,11 +99,11 @@ bool ImageScene::isCoverImage() {
 }
 
 QRectF ImageScene::getCurrentImageBoundingRect() {
-    if (this->image_list.isEmpty()) {
+    if (this->isImageListEmpty()) {
         return QRectF();
     }
 
-    return this->image_item->boundingRect();
+    return this->scene_item->boundingRect();
 }
 
 int ImageScene::getCurrentImageNumber() {
@@ -111,8 +115,18 @@ int ImageScene::getTotalImagesNumber() {
 }
 
 void ImageScene::scaleCurrentImage() {
-    // TODO scale here
-    emit request_fitImage();
+    if (this->isImageListEmpty()) {
+        return;
+    }
+    if (Settings::scale_image) {
+        this->scene_item->setPixmap(this->image_list[this->current_image].scaled(
+                    this->view_window_size * Settings::image_scale_value,
+                    Qt::KeepAspectRatio,
+                    Qt::SmoothTransformation
+                    ));
+    } else {
+        this->scene_item->setPixmap(this->image_list[this->current_image]);
+    }
 }
 
 void ImageScene::sendCurrentSceneInfo() {
@@ -124,5 +138,31 @@ void ImageScene::sendCurrentSceneInfo() {
             this->image_list[this->current_image].width(),
             this->image_list[this->current_image].height()
             );
+}
+
+bool ImageScene::isImageListEmpty() {
+    if (this->image_list.isEmpty()) {
+        return true;
+    }
+    return false;
+}
+
+void ImageScene::setCurrentDisplayImage(int image_number) {
+    if (this->isImageListEmpty()) {
+        return;
+    }
+
+    if (this->image_list.contains(image_number)) {
+        if (Settings::scale_image) {
+            this->scene_item->setPixmap(this->image_list[image_number].scaled(
+                        this->view_window_size * Settings::image_scale_value,
+                        Qt::KeepAspectRatio,
+                        Qt::SmoothTransformation
+                        ));
+        } else {
+            this->scene_item->setPixmap(this->image_list[image_number]);
+        }
+        emit request_fitImage();
+    }
 }
 

@@ -14,6 +14,7 @@ ImageView::ImageView(QWidget *parent) : QGraphicsView(parent) {
 
     // Set scene
     this->image_scene = new ImageScene(this);
+    this->image_scene->setViewWindowSize(QWidget::window()->size());
     this->setScene(this->image_scene);
 
     // Init context menu

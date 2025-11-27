@@ -24,8 +24,6 @@ public:
 
 private:
     // TODO
-    // Implement functions to load all images, next, prev, zoom etc.
-    // Implement a fitScene method that fits the scene based on an enum from settings
     // Implement more mouse event handlers (drag, zoom, etc.)
     ImageScene *image_scene;
 
