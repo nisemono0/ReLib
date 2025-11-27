@@ -119,7 +119,6 @@ void ImageView::updateImageViewStatus(const QString &status) {
     emit send_ImageView_status(status);
 }
 
-// TODO: remake this with pixmap instead of QGraphicsPixmapItem
 void ImageView::fitImage() {
     this->setSceneRect(this->image_scene->getCurrentImageBoundingRect());
     switch (Settings::image_view_option) {
