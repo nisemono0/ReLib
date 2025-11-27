@@ -50,7 +50,6 @@ private:
     void updateImageViewStatus(int current_image, int total_images, int image_width, int image_height, bool is_cover = false);
     void updateImageViewStatus(const QString &status);
 
-    void scaleImage();
     void fitImage();
 
 protected:
