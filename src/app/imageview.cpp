@@ -44,7 +44,6 @@ ImageView::ImageView(QWidget *parent) : QGraphicsView(parent) {
     // ImageWorker thread
     connect(this->image_worker, &ImageWorker::send_ImageWorker_info, this->image_thread, &QThread::quit);
     connect(this->image_worker, &ImageWorker::send_ImageWorker_data, this->image_thread, &QThread::quit);
-    // connect(this->image_worker, &ImageWorker::send_ImageWorker_cover, this->image_thread, &QThread::quit);
 
     // Context menu
     connect(this->load_images_action, &QAction::triggered, this, &ImageView::load_images_action_triggered);
