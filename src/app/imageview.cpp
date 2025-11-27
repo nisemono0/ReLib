@@ -162,27 +162,34 @@ void ImageView::scaleAndFitCurrentImage() {
 }
 
 void ImageView::contextMenuEvent(QContextMenuEvent *event) {
-    QGraphicsView::contextMenuEvent(event);
     if (!this->image_scene->items().isEmpty()) {
         this->context_menu->popup(event->globalPos());
     }
+    QGraphicsView::contextMenuEvent(event);
 }
 
 
 void ImageView::keyPressEvent(QKeyEvent *event) {
+    // TODO
     QGraphicsView::keyPressEvent(event);
 }
 
 void ImageView::keyReleaseEvent(QKeyEvent *event) {
+    // TODO
     QGraphicsView::keyReleaseEvent(event);
 }
 
 void ImageView::mouseDoubleClickEvent(QMouseEvent *event) {
+    if (this->image_scene->isCoverImage() && event->button() == Qt::LeftButton) {
+        if (!this->image_thread->isRunning()) {
+            this->image_thread->start();
+            emit request_getArchiveImages(this->current_item_path);
+        }
+    }
     QGraphicsView::mouseDoubleClickEvent(event);
 }
 
 void ImageView::mouseMoveEvent(QMouseEvent *event) {
-    QGraphicsView::mouseMoveEvent(event);
     if (this->image_scene->isCoverImage()) {
         this->setCursor(Qt::ArrowCursor);
     } else {
@@ -194,14 +201,19 @@ void ImageView::mouseMoveEvent(QMouseEvent *event) {
             this->setCursor(this->cursor_previous);
         }
     }
+    QGraphicsView::mouseMoveEvent(event);
 }
 
 void ImageView::mousePressEvent(QMouseEvent *event) {
+    if (event->button() == Qt::MiddleButton) {
+        this->setDragMode(QGraphicsView::ScrollHandDrag);
+        QMouseEvent fake = QMouseEvent(event->type(), event->pos(), event->globalPosition(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
+        QGraphicsView::mousePressEvent(&fake);
+    }
     QGraphicsView::mousePressEvent(event);
 }
 
 void ImageView::mouseReleaseEvent(QMouseEvent *event) {
-    QGraphicsView::mouseReleaseEvent(event);
     this->setDragMode(QGraphicsView::NoDrag);
     if (event->button() == Qt::LeftButton) {
         int mouse_x_pos = event->position().x();
@@ -212,14 +224,25 @@ void ImageView::mouseReleaseEvent(QMouseEvent *event) {
             this->image_scene->showPreviousImage();
         }
     }
+    QGraphicsView::mouseReleaseEvent(event);
 }
 
 void ImageView::resizeEvent(QResizeEvent *event) {
-    QGraphicsView::resizeEvent(event);
     this->scaleAndFitCurrentImage();
+    QGraphicsView::resizeEvent(event);
 }
 
 void ImageView::wheelEvent(QWheelEvent *event) {
+    float scale_factor = 1.1;
+
+    if (event->angleDelta().y() > 0) {
+        this->scale(scale_factor, scale_factor);
+    } else {
+        this->scale(1.0 / scale_factor, 1.0 / scale_factor);
+    }
+
+    this->centerOn(this->mapToScene(event->position().toPoint()));
+
     QGraphicsView::wheelEvent(event);
 }
 
