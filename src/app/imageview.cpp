@@ -149,11 +149,30 @@ void ImageView::fitImage() {
     };
 }
 
+void ImageView::scaleAndFitCurrentImage() {
+    this->image_scene->setViewWindowSize(QWidget::window()->size());
+    this->image_scene->scaleCurrentImage();
+    this->fitImage();
+}
+
 void ImageView::contextMenuEvent(QContextMenuEvent *event) {
     QGraphicsView::contextMenuEvent(event);
     if (!this->image_scene->items().isEmpty()) {
         this->context_menu->popup(event->globalPos());
     }
+}
+
+
+void ImageView::keyPressEvent(QKeyEvent *event) {
+    QGraphicsView::keyPressEvent(event);
+}
+
+void ImageView::keyReleaseEvent(QKeyEvent *event) {
+    QGraphicsView::keyReleaseEvent(event);
+}
+
+void ImageView::mouseDoubleClickEvent(QMouseEvent *event) {
+    QGraphicsView::mouseDoubleClickEvent(event);
 }
 
 void ImageView::mouseMoveEvent(QMouseEvent *event) {
@@ -171,6 +190,10 @@ void ImageView::mouseMoveEvent(QMouseEvent *event) {
     }
 }
 
+void ImageView::mousePressEvent(QMouseEvent *event) {
+    QGraphicsView::mousePressEvent(event);
+}
+
 void ImageView::mouseReleaseEvent(QMouseEvent *event) {
     QGraphicsView::mouseReleaseEvent(event);
     this->setDragMode(QGraphicsView::NoDrag);
@@ -183,6 +206,15 @@ void ImageView::mouseReleaseEvent(QMouseEvent *event) {
             this->image_scene->showPreviousImage();
         }
     }
+}
+
+void ImageView::resizeEvent(QResizeEvent *event) {
+    QGraphicsView::resizeEvent(event);
+    this->scaleAndFitCurrentImage();
+}
+
+void ImageView::wheelEvent(QWheelEvent *event) {
+    QGraphicsView::wheelEvent(event);
 }
 
 void ImageView::receive_LibraryView_currentChanged_path(const QString &file_path) {
@@ -298,8 +330,7 @@ void ImageView::imageview_progress_dialog_canceled() {
 }
 
 void ImageView::receive_scaleAndFitImage_request() {
-    this->image_scene->scaleCurrentImage();
-    this->fitImage();
+    this->scaleAndFitCurrentImage();
 }
 
 void ImageView::receive_fitImage_request() {
