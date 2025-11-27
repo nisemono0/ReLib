@@ -23,6 +23,7 @@ private:
     QString current_item_filesize = nullptr;
 
     QMenu *context_menu;
+    QMenu *copy_context_menu;
     QAction *show_info_action;
     QAction *copy_item_name_action;
     QAction *copy_title_action;

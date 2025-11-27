@@ -45,12 +45,16 @@ LibraryView::~LibraryView() {
     delete this->copy_tags_action;
     delete this->remove_manga_action;
     delete this->context_menu;
+    delete this->copy_context_menu;
 }
 
 void LibraryView::initContextMenu() {
     this->context_menu = new QMenu("Library menu", this);
+    this->copy_context_menu = new QMenu("Copy", this);
+
     this->show_info_action = new QAction("Show info", this);
     this->copy_item_name_action = new QAction("Copy item name", this);
+
     this->copy_title_action = new QAction("Copy title", this);
     this->copy_path_action = new QAction("Copy path", this);
     this->copy_hash_action = new QAction("Copy hash", this);
@@ -63,10 +67,11 @@ void LibraryView::initContextMenu() {
     this->context_menu->addAction(this->copy_item_name_action);
     this->context_menu->addSeparator();
 
-    this->context_menu->addAction(this->copy_title_action);
-    this->context_menu->addAction(this->copy_path_action);
-    this->context_menu->addAction(this->copy_hash_action);
-    this->context_menu->addAction(this->copy_tags_action);
+    this->context_menu->addMenu(this->copy_context_menu);
+    this->copy_context_menu->addAction(this->copy_title_action);
+    this->copy_context_menu->addAction(this->copy_path_action);
+    this->copy_context_menu->addAction(this->copy_hash_action);
+    this->copy_context_menu->addAction(this->copy_tags_action);
     this->context_menu->addSeparator();
 
     this->context_menu->addAction(this->remove_manga_action);
