@@ -26,8 +26,8 @@ private:
 signals:
     void send_ImageWorker_info(const QString &info);
     void send_ImageWorker_progress(int progress);
-    void send_ImageWorker_data(const QMap<int, QPixmap> &data, int total_images);
-    void send_ImageWorker_cover(const QPixmap &pixmap, int total_images);
+    void send_ImageWorker_data(const QMap<int, QPixmap> &data);
+    void send_ImageWorker_cover(const QPixmap &pixmap, int total_images, const QString &cover_file_path);
 
 public slots:
     void receive_getArchiveImages_request(const QString &file_path);

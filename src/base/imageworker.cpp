@@ -86,7 +86,7 @@ void ImageWorker::receive_getArchiveImages_request(const QString &file_path) {
             if (pixmap_map.isEmpty()) {
                 emit send_ImageWorker_info(QStringLiteral("No image"));
             } else {
-                emit send_ImageWorker_data(pixmap_map, pixmap_map.count());
+                emit send_ImageWorker_data(pixmap_map);
             }
             return;
         }
@@ -142,7 +142,7 @@ void ImageWorker::receive_getArchiveImages_request(const QString &file_path) {
 
     }
 
-    emit send_ImageWorker_data(pixmap_map, pixmap_map.count());
+    emit send_ImageWorker_data(pixmap_map);
 
 }
 
@@ -164,6 +164,6 @@ void ImageWorker::receive_getArchiveCover_request(const QString &file_path) {
     }
 
     int total_images = Utils::Zip::getArchiveImageCount(file_path);
-    emit send_ImageWorker_cover(image_pixmap, total_images);
+    emit send_ImageWorker_cover(image_pixmap, total_images, file_path);
 }
 

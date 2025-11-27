@@ -77,8 +77,8 @@ public slots:
     void receive_LibraryVew_load_images_path(const QString &file_path);
     void receive_ImageWorker_info(const QString &info);
     void receive_ImageWorker_progress(int progress);
-    void receive_ImageWorker_data(const QMap<int, QPixmap> &data, int total_images);
-    void receive_ImageWorker_cover(const QPixmap &pixmap, int total_images);
+    void receive_ImageWorker_data(const QMap<int, QPixmap> &data);
+    void receive_ImageWorker_cover(const QPixmap &pixmap, int total_images, const QString &cover_file_path);
     void receive_clearImageView_request();
     void receive_scaleAndFitImage_request();
 

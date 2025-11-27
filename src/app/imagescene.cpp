@@ -44,6 +44,8 @@ void ImageScene::setImageList(const QMap<int, QPixmap> &pixmap_map) {
     // Set current and total image count
     this->current_image = 0;
     this->total_images = this->image_list.count();
+
+    this->sendCurrentSceneInfo();
 }
 
 void ImageScene::showNextImage() {

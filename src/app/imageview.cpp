@@ -44,7 +44,7 @@ ImageView::ImageView(QWidget *parent) : QGraphicsView(parent) {
     // ImageWorker thread
     connect(this->image_worker, &ImageWorker::send_ImageWorker_info, this->image_thread, &QThread::quit);
     connect(this->image_worker, &ImageWorker::send_ImageWorker_data, this->image_thread, &QThread::quit);
-    connect(this->image_worker, &ImageWorker::send_ImageWorker_cover, this->image_thread, &QThread::quit);
+    // connect(this->image_worker, &ImageWorker::send_ImageWorker_cover, this->image_thread, &QThread::quit);
 
     // Context menu
     connect(this->load_images_action, &QAction::triggered, this, &ImageView::load_images_action_triggered);
@@ -228,7 +228,8 @@ void ImageView::receive_LibraryView_currentChanged_path(const QString &file_path
 void ImageView::receive_LibraryVew_load_images_path(const QString &file_path) {
     if (!this->image_thread->isRunning()) {
         this->image_thread->start();
-        emit request_getArchiveImages(file_path);
+        this->current_item_path = file_path;
+        emit request_getArchiveImages(this->current_item_path);
     }
 }
 
@@ -253,13 +254,26 @@ void ImageView::receive_ImageWorker_progress(int progress) {
     }
 }
 
-void ImageView::receive_ImageWorker_data(const QMap<int, QPixmap> &data, int total_images) {
+void ImageView::receive_ImageWorker_data(const QMap<int, QPixmap> &data) {
     this->image_scene->setImageList(data);
 }
 
-void ImageView::receive_ImageWorker_cover(const QPixmap &pixmap, int total_images) {
-    this->image_scene->addCoverImage(pixmap);
-    this->updateImageViewStatus(1, total_images, pixmap.width(), pixmap.height(), true);
+void ImageView::receive_ImageWorker_cover(const QPixmap &pixmap, int total_images, const QString &cover_file_path) {
+    // If the current selected item is not the same as the
+    // one received from the ImageWorker then request the
+    // cover of the current selected item (last selected item)
+    // and also display the received covers; this is so that the
+    // images change while scrolling
+    if (this->current_item_path != cover_file_path ) {
+        this->image_scene->addCoverImage(pixmap);
+        this->updateImageViewStatus(1, total_images, pixmap.width(), pixmap.height(), true);
+        emit request_getArchiveCover(this->current_item_path);
+    } else {
+        this->image_thread->quit();
+        this->image_scene->addCoverImage(pixmap);
+        this->updateImageViewStatus(1, total_images, pixmap.width(), pixmap.height(), true);
+
+    }
 }
 
 void ImageView::receive_clearImageView_request() {
