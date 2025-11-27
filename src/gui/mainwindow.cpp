@@ -504,6 +504,7 @@ void MainWindow::actionCheckDatabasePaths_triggered() {
 // Menubar:Settings
 void MainWindow::actionScaleImage_toggled(bool checked) {
     Settings::scale_image = checked;
+    emit request_scaleAndFitImage();
 }
 
 void MainWindow::slider_scale_valueChanged(int value) {
