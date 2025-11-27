@@ -23,7 +23,6 @@ LibraryView::LibraryView(QWidget *parent) : QListView(parent) {
 
     connect(this->selectionModel(), &QItemSelectionModel::currentChanged, this, &LibraryView::libraryView_selectionModel_currentChanged);
 
-    connect(this->load_images_action, &QAction::triggered, this, &LibraryView::load_images_action_triggered);
     connect(this->show_info_action, &QAction::triggered, this, &LibraryView::show_info_action_triggered);
     connect(this->copy_item_name_action, &QAction::triggered, this, &LibraryView::copy_item_name_action_triggered);
     connect(this->copy_title_action, &QAction::triggered, this, &LibraryView::copy_title_action_triggered);
@@ -38,7 +37,6 @@ LibraryView::~LibraryView() {
     delete this->library_model_proxy;
     delete this->library_model;
 
-    delete this->load_images_action;
     delete this->show_info_action;
     delete this->copy_item_name_action;
     delete this->copy_title_action;
@@ -51,7 +49,6 @@ LibraryView::~LibraryView() {
 
 void LibraryView::initContextMenu() {
     this->context_menu = new QMenu("Library menu", this);
-    this->load_images_action = new QAction("Load images", this);
     this->show_info_action = new QAction("Show info", this);
     this->copy_item_name_action = new QAction("Copy item name", this);
     this->copy_title_action = new QAction("Copy title", this);
@@ -59,9 +56,6 @@ void LibraryView::initContextMenu() {
     this->copy_hash_action = new QAction("Copy hash", this);
     this->copy_tags_action = new QAction("Copy tags", this);
     this->remove_manga_action = new QAction("Remove from database", this);
-
-    this->context_menu->addAction(this->load_images_action);
-    this->context_menu->addSeparator();
 
     this->context_menu->addAction(this->show_info_action);
     this->context_menu->addSeparator();
@@ -172,15 +166,6 @@ void LibraryView::libraryView_selectionModel_currentChanged(const QModelIndex &c
         this->updateLibraryViewStatus();
         emit send_LibraryView_currentChanged_path(current.data(LibraryModel::FilePath).toString());
     }
-}
-
-void LibraryView::load_images_action_triggered() {
-    QModelIndexList selected_idxs = this->selectedIndexes();
-    if (selected_idxs.isEmpty()) {
-        return;
-    }
-
-    emit send_LibraryView_load_images_path(selected_idxs.first().data(LibraryModel::FilePath).toString());
 }
 
 void LibraryView::show_info_action_triggered() {

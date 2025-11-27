@@ -96,6 +96,13 @@ void ImageView::initContextMenu() {
     this->context_menu->addAction(this->scroll_item_action);
 }
 
+void ImageView::updateContextMenu(bool lock) {
+    // If it's cover enable load images action
+    this->load_images_action->setEnabled(lock);
+    // If it's cover disable jump to image action
+    this->jump_image_action->setEnabled(!lock);
+}
+
 void ImageView::updateImageViewStatus(int current_image, int total_images, int image_width, int image_height, bool is_cover) {
     if (is_cover) {
         emit send_ImageView_status(QStringLiteral("Cover: [%1/%2] (%3x%4)").arg(
@@ -224,14 +231,6 @@ void ImageView::receive_LibraryView_currentChanged_path(const QString &file_path
     }
 }
 
-void ImageView::receive_LibraryVew_load_images_path(const QString &file_path) {
-    if (!this->image_thread->isRunning()) {
-        this->image_thread->start();
-        this->current_item_path = file_path;
-        emit request_getArchiveImages(this->current_item_path);
-    }
-}
-
 void ImageView::receive_ImageWorker_info(const QString &info) {
     this->updateImageViewStatus(info);
     this->image_scene->clearScene();
@@ -255,6 +254,7 @@ void ImageView::receive_ImageWorker_progress(int progress) {
 
 void ImageView::receive_ImageWorker_data(const QMap<int, QPixmap> &data) {
     this->image_scene->setImageList(data);
+    this->updateContextMenu(false);
 }
 
 void ImageView::receive_ImageWorker_cover(const QPixmap &pixmap, int total_images, const QString &cover_file_path) {
@@ -266,12 +266,13 @@ void ImageView::receive_ImageWorker_cover(const QPixmap &pixmap, int total_image
     if (this->current_item_path != cover_file_path ) {
         this->image_scene->addCoverImage(pixmap);
         this->updateImageViewStatus(1, total_images, pixmap.width(), pixmap.height(), true);
+        this->updateContextMenu(true);
         emit request_getArchiveCover(this->current_item_path);
     } else {
         this->image_thread->quit();
         this->image_scene->addCoverImage(pixmap);
         this->updateImageViewStatus(1, total_images, pixmap.width(), pixmap.height(), true);
-
+        this->updateContextMenu(true);
     }
 }
 

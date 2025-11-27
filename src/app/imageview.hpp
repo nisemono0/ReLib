@@ -46,6 +46,7 @@ private:
     QAction *scroll_item_action;
 
     void initContextMenu();
+    void updateContextMenu(bool lock);
 
     void updateImageViewStatus(int current_image, int total_images, int image_width, int image_height, bool is_cover = false);
     void updateImageViewStatus(const QString &status);
@@ -74,7 +75,6 @@ signals:
 
 public slots:
     void receive_LibraryView_currentChanged_path(const QString &file_path);
-    void receive_LibraryVew_load_images_path(const QString &file_path);
     void receive_ImageWorker_info(const QString &info);
     void receive_ImageWorker_progress(int progress);
     void receive_ImageWorker_data(const QMap<int, QPixmap> &data);

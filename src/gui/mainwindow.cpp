@@ -109,7 +109,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->ui->imageView, &ImageView::send_ImageView_status, this->image_view_status, &QLabel::setText);
     connect(this->ui->libraryView, &LibraryView::send_LibraryView_currentChanged_path, this->ui->imageView, &ImageView::receive_LibraryView_currentChanged_path);
     connect(this->ui->imageView, &ImageView::request_LibraryView_showMangaInfoDialog, this->ui->libraryView, &LibraryView::receive_showMangaInfoDialog_request);
-    connect(this->ui->libraryView, &LibraryView::send_LibraryView_load_images_path, this->ui->imageView, &ImageView::receive_LibraryVew_load_images_path);
     connect(this, &MainWindow::request_clearImageView, this->ui->imageView, &ImageView::receive_clearImageView_request);
     connect(this->ui->imageView, &ImageView::request_LibraryView_scrollToCurrentItem, this->ui->libraryView, &LibraryView::receive_scrollToCurrentItem_request);
     connect(this, &MainWindow::request_scaleAndFitImage, this->ui->imageView, &ImageView::receive_scaleAndFitImage_request);
@@ -230,51 +229,27 @@ QString MainWindow::selectFile(const FileDialog::FileDialog DIALOG_TYPE) {
 }
 
 void MainWindow::updateUiLock() {
-    if (this->ui_lock) {
-        // Menubar:File
-        this->ui->actionAddFile->setEnabled(false);
-        this->ui->actionAddDir->setEnabled(false);
+    // Menubar:File
+    this->ui->actionAddFile->setEnabled(this->is_locked);
+    this->ui->actionAddDir->setEnabled(this->is_locked);
 
-        // Menubar:Database
-        this->ui->actionLoadDatabase->setEnabled(true);
-        this->ui->actionUnloadDatabase->setEnabled(false);
-        this->ui->actionCheckDatabaseHashes->setEnabled(false);
-        this->ui->actionCheckDatabasePaths->setEnabled(false);
-        this->ui->actionRemoveDeletedEntries->setEnabled(false);
+    // Menubar:Database
+    this->ui->actionLoadDatabase->setEnabled(!this->is_locked);
+    this->ui->actionUnloadDatabase->setEnabled(this->is_locked);
+    this->ui->actionCheckDatabaseHashes->setEnabled(this->is_locked);
+    this->ui->actionCheckDatabasePaths->setEnabled(this->is_locked);
+    this->ui->actionRemoveDeletedEntries->setEnabled(this->is_locked);
 
-        // MainWindow:Buttons
-        this->ui->pushButtonSearch->setEnabled(false);
-        this->ui->pushButtonRandom->setEnabled(false);
-        this->ui->pushButtonRefresh->setEnabled(false);
+    // MainWindow:Buttons
+    this->ui->pushButtonSearch->setEnabled(this->is_locked);
+    this->ui->pushButtonRandom->setEnabled(this->is_locked);
+    this->ui->pushButtonRefresh->setEnabled(this->is_locked);
 
-        // MainWindow:SearchInput
-        this->ui->lineEditSearch->setEnabled(false);
+    // MainWindow:SearchInput
+    this->ui->lineEditSearch->setEnabled(this->is_locked);
 
-        // Update ui lock status
-        this->ui_lock = false;
-    } else {
-        // Menubar:File
-        this->ui->actionAddFile->setEnabled(true);
-        this->ui->actionAddDir->setEnabled(true);
-
-        // Menubar:Database
-        this->ui->actionLoadDatabase->setEnabled(false);
-        this->ui->actionUnloadDatabase->setEnabled(true);
-        this->ui->actionCheckDatabaseHashes->setEnabled(true);
-        this->ui->actionCheckDatabasePaths->setEnabled(true);
-        this->ui->actionRemoveDeletedEntries->setEnabled(true);
-
-        // MainWindow:Buttons
-        this->ui->pushButtonSearch->setEnabled(true);
-        this->ui->pushButtonRandom->setEnabled(true);
-        this->ui->pushButtonRefresh->setEnabled(true);
-
-        // MainWindow:SearchInput
-        this->ui->lineEditSearch->setEnabled(true);
-
-        // Update ui lock status
-        this->ui_lock = true;
-    }
+    // Update ui lock status
+    this->is_locked = !this->is_locked;
 }
 
 void MainWindow::setNoDatabaseStatus() {

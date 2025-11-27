@@ -72,7 +72,7 @@ private:
     QString selectFile(const FileDialog::FileDialog DIALOG_TYPE);
 
     // Lock/unlock ui elements
-    bool ui_lock = true;
+    bool is_locked = false;
     void updateUiLock();
 
     // Set db status as unloaded

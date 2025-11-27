@@ -23,7 +23,6 @@ private:
     QString current_item_filesize = nullptr;
 
     QMenu *context_menu;
-    QAction *load_images_action;
     QAction *show_info_action;
     QAction *copy_item_name_action;
     QAction *copy_title_action;
@@ -49,8 +48,6 @@ signals:
     void request_showMangaInfoDialog(const Manga &manga);
     // Sends the current selected item path to ImageView
     void send_LibraryView_currentChanged_path(const QString &file_path);
-    // Send the current item path to ImageView for loading all images
-    void send_LibraryView_load_images_path(const QString &file_path);
 
 public slots:
     void receive_setMangaList_request(const QList<Manga> &manga_list);
@@ -65,7 +62,6 @@ private slots:
     void libraryView_selectionModel_currentChanged(const QModelIndex &current, const QModelIndex &previous);
 
     // Context menu
-    void load_images_action_triggered();
     void show_info_action_triggered();
     void copy_item_name_action_triggered();
     void copy_title_action_triggered();
