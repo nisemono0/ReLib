@@ -39,14 +39,17 @@ private:
     QPointer<QInputDialog> jump_image_dialog;
 
     QMenu *context_menu;
+    QMenu *fit_image_context_menu;
     QAction *load_images_action;
     QAction *show_info_action;
     QAction *copy_image_action;
     QAction *jump_image_action;
     QAction *scroll_item_action;
+    QAction *fit_in_view_action;
+    QAction *fit_to_width_action;
 
     void initContextMenu();
-    void updateContextMenu(bool lock);
+    void updateContextMenu(bool is_cover);
 
     void updateImageViewStatus(int current_image, int total_images, int image_width, int image_height, bool is_cover = false);
     void updateImageViewStatus(const QString &status);
@@ -86,6 +89,8 @@ private slots:
     void copy_image_action_triggered();
     void jump_image_action_triggered();
     void scroll_item_action_triggered();
+    void fit_in_view_action_triggered();
+    void fit_to_width_action_triggered();
 
     void receive_ImageScene_info(int current_image, int total_images, int image_width, int image_height);
 

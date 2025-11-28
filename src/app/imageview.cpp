@@ -51,6 +51,8 @@ ImageView::ImageView(QWidget *parent) : QGraphicsView(parent) {
     connect(this->copy_image_action, &QAction::triggered, this, &ImageView::copy_image_action_triggered);
     connect(this->jump_image_action, &QAction::triggered, this, &ImageView::jump_image_action_triggered);
     connect(this->scroll_item_action, &QAction::triggered, this, &ImageView::scroll_item_action_triggered);
+    connect(this->fit_in_view_action, &QAction::triggered, this, &ImageView::fit_in_view_action_triggered);
+    connect(this->fit_to_width_action, &QAction::triggered, this, &ImageView::fit_to_width_action_triggered);
 
 }
 
@@ -72,16 +74,22 @@ ImageView::~ImageView() {
     delete this->copy_image_action;
     delete this->jump_image_action;
     delete this->scroll_item_action;
+    delete this->fit_in_view_action;
+    delete this->fit_to_width_action;
+    delete this->fit_image_context_menu;
     delete this->context_menu;
 }
 
 void ImageView::initContextMenu() {
     this->context_menu = new QMenu(QStringLiteral("Image menu"),this);
+    this->fit_image_context_menu = new QMenu(QStringLiteral("Fit image"), this);
     this->load_images_action = new QAction(QStringLiteral("Load all images"), this);
     this->show_info_action = new QAction(QStringLiteral("Show info"), this);
     this->copy_image_action = new QAction(QStringLiteral("Copy image"), this);
     this->jump_image_action = new QAction(QStringLiteral("Jump to image"), this);
     this->scroll_item_action = new QAction(QStringLiteral("Scroll to item"), this);
+    this->fit_in_view_action = new QAction(QStringLiteral("Fit in view"), this);
+    this->fit_to_width_action = new QAction(QStringLiteral("Fit to width"), this);
 
     this->context_menu->addAction(this->load_images_action);
     this->context_menu->addSeparator();
@@ -94,12 +102,18 @@ void ImageView::initContextMenu() {
 
     this->context_menu->addAction(this->jump_image_action);
     this->context_menu->addAction(this->scroll_item_action);
+    this->context_menu->addSeparator();
+
+    this->context_menu->addMenu(this->fit_image_context_menu);
+    this->fit_image_context_menu->addAction(this->fit_in_view_action);
+    this->fit_image_context_menu->addAction(this->fit_to_width_action);
+
 }
 
 void ImageView::updateContextMenu(bool lock) {
-    // If it's cover enable load images action
+    // If it's cover, enable load images action
     this->load_images_action->setEnabled(lock);
-    // If it's cover disable jump to image action
+    // If it's cover, disable jump to image action
     this->jump_image_action->setEnabled(!lock);
 }
 
@@ -344,6 +358,25 @@ void ImageView::jump_image_action_triggered() {
 
 void ImageView::scroll_item_action_triggered() {
     emit request_LibraryView_scrollToCurrentItem();
+}
+
+void ImageView::fit_in_view_action_triggered() {
+    // Fit the current image in view without setting the option for all images
+    ImageOptions::ImageOptions previous_view_setting = Settings::image_view_option;
+
+    Settings::image_view_option = ImageOptions::FitInView;
+    this->fitImage();
+    Settings::image_view_option = previous_view_setting;
+}
+
+void ImageView::fit_to_width_action_triggered() {
+    // Fit the current image to width without setting the option for all images
+    ImageOptions::ImageOptions previous_view_setting = Settings::image_view_option;
+
+    Settings::image_view_option = ImageOptions::FitToWidth;
+    this->fitImage();
+    Settings::image_view_option = previous_view_setting;
+
 }
 
 void ImageView::receive_ImageScene_info(int current_image, int total_images, int image_width, int image_height) {
