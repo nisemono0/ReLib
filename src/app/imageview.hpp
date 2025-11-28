@@ -12,7 +12,7 @@
 #include <QPointer>
 #include <QProgressDialog>
 #include <QCursor>
-#include <QMouseEvent>
+#include <QEvent>
 #include <QInputDialog>
 
 
@@ -56,8 +56,6 @@ private:
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
-    void keyPressEvent(QKeyEvent *event) override;
-    void keyReleaseEvent(QKeyEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;

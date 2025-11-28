@@ -131,6 +131,10 @@ void ImageScene::scaleCurrentImage() {
     }
 }
 
+bool ImageScene::isSceneEmpty() {
+    return this->image_list.isEmpty();
+}
+
 void ImageScene::sendCurrentSceneInfo() {
     emit send_ImageScene_info(
             this->current_image + 1,

@@ -46,6 +46,9 @@ public:
     // Scale the current image
     void scaleCurrentImage();
 
+    // True if the scene has images in the image_list
+    bool isSceneEmpty();
+
 private:
     QMap<int, QPixmap> image_list;
     QGraphicsPixmapItem *scene_item;

@@ -146,12 +146,7 @@ void ImageView::fitImage() {
                 break;
             }
         case ImageOptions::FreeView:
-            {
-                this->setTransformationAnchor(QGraphicsView::NoAnchor);
-                this->setResizeAnchor(QGraphicsView::NoAnchor);
-                this->setDragMode(QGraphicsView::ScrollHandDrag);
                 break;
-            }
     };
 }
 
@@ -162,35 +157,26 @@ void ImageView::scaleAndFitCurrentImage() {
 }
 
 void ImageView::contextMenuEvent(QContextMenuEvent *event) {
-    if (!this->image_scene->items().isEmpty()) {
+    if (!this->image_scene->isSceneEmpty()) {
         this->context_menu->popup(event->globalPos());
     }
     QGraphicsView::contextMenuEvent(event);
 }
 
-
-void ImageView::keyPressEvent(QKeyEvent *event) {
-    // TODO
-    QGraphicsView::keyPressEvent(event);
-}
-
-void ImageView::keyReleaseEvent(QKeyEvent *event) {
-    // TODO
-    QGraphicsView::keyReleaseEvent(event);
-}
-
 void ImageView::mouseDoubleClickEvent(QMouseEvent *event) {
-    if (this->image_scene->isCoverImage() && event->button() == Qt::LeftButton) {
-        if (!this->image_thread->isRunning()) {
-            this->image_thread->start();
-            emit request_getArchiveImages(this->current_item_path);
+    if (this->image_scene->isCoverImage() && !this->image_scene->isSceneEmpty()) {
+        if (event->button() == Qt::LeftButton) {
+            if (!this->image_thread->isRunning()) {
+                this->image_thread->start();
+                emit request_getArchiveImages(this->current_item_path);
+            }
         }
     }
     QGraphicsView::mouseDoubleClickEvent(event);
 }
 
 void ImageView::mouseMoveEvent(QMouseEvent *event) {
-    if (this->image_scene->isCoverImage()) {
+    if (this->image_scene->isCoverImage() || this->image_scene->isSceneEmpty()) {
         this->setCursor(Qt::ArrowCursor);
     } else {
         int mouse_x_pos = event->position().x();
@@ -205,23 +191,27 @@ void ImageView::mouseMoveEvent(QMouseEvent *event) {
 }
 
 void ImageView::mousePressEvent(QMouseEvent *event) {
-    if (event->button() == Qt::MiddleButton) {
-        this->setDragMode(QGraphicsView::ScrollHandDrag);
-        QMouseEvent fake = QMouseEvent(event->type(), event->pos(), event->globalPosition(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
-        QGraphicsView::mousePressEvent(&fake);
+    if (!this->image_scene->isSceneEmpty()) {
+        if (event->button() == Qt::MiddleButton) {
+            this->setDragMode(QGraphicsView::ScrollHandDrag);
+            QMouseEvent fake = QMouseEvent(event->type(), event->pos(), event->globalPosition(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
+            QGraphicsView::mousePressEvent(&fake);
+        }
     }
     QGraphicsView::mousePressEvent(event);
 }
 
 void ImageView::mouseReleaseEvent(QMouseEvent *event) {
     this->setDragMode(QGraphicsView::NoDrag);
-    if (event->button() == Qt::LeftButton) {
-        int mouse_x_pos = event->position().x();
-        int half_point = this->size().width() / 2;
-        if (mouse_x_pos > half_point) {
-            this->image_scene->showNextImage();
-        } else {
-            this->image_scene->showPreviousImage();
+    if (!this->image_scene->isCoverImage() && !this->image_scene->isSceneEmpty()) {
+        if (event->button() == Qt::LeftButton) {
+            int mouse_x_pos = event->position().x();
+            int half_point = this->size().width() / 2;
+            if (mouse_x_pos > half_point) {
+                this->image_scene->showNextImage();
+            } else {
+                this->image_scene->showPreviousImage();
+            }
         }
     }
     QGraphicsView::mouseReleaseEvent(event);
