@@ -23,8 +23,6 @@ public:
     ~ImageView() override;
 
 private:
-    // TODO
-    // Implement more mouse event handlers (drag, zoom, etc.)
     ImageScene *image_scene;
 
     QString current_item_path;
