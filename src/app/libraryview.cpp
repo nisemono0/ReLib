@@ -49,17 +49,17 @@ LibraryView::~LibraryView() {
 }
 
 void LibraryView::initContextMenu() {
-    this->context_menu = new QMenu("Library menu", this);
-    this->copy_context_menu = new QMenu("Copy", this);
+    this->context_menu = new QMenu(QStringLiteral("Library menu"), this);
+    this->copy_context_menu = new QMenu(QStringLiteral("Copy"), this);
 
-    this->show_info_action = new QAction("Show info", this);
-    this->copy_item_name_action = new QAction("Copy item name", this);
+    this->show_info_action = new QAction(QStringLiteral("Show info"), this);
+    this->copy_item_name_action = new QAction(QStringLiteral("Copy item name"), this);
 
-    this->copy_title_action = new QAction("Copy title", this);
-    this->copy_path_action = new QAction("Copy path", this);
-    this->copy_hash_action = new QAction("Copy hash", this);
-    this->copy_tags_action = new QAction("Copy tags", this);
-    this->remove_manga_action = new QAction("Remove from database", this);
+    this->copy_title_action = new QAction(QStringLiteral("Copy title"), this);
+    this->copy_path_action = new QAction(QStringLiteral("Copy path"), this);
+    this->copy_hash_action = new QAction(QStringLiteral("Copy hash"), this);
+    this->copy_tags_action = new QAction(QStringLiteral("Copy tags"), this);
+    this->remove_manga_action = new QAction(QStringLiteral("Remove from database"), this);
 
     this->context_menu->addAction(this->show_info_action);
     this->context_menu->addSeparator();
@@ -100,7 +100,7 @@ QString LibraryView::getSelectedItemsData(LibraryModel::LibraryRole role) {
     } else if (selected_idxs.length() > 1) {
         QString item_data = "";
         for (auto idx : selected_idxs) {
-            item_data.append(QStringLiteral("%1\n").arg(idx.data(role).toStringList().join("; ")));
+            item_data.append(QStringLiteral("%1\n").arg(idx.data(role).toStringList().join(QStringLiteral("; "))));
         }
         return item_data;
     } else {
