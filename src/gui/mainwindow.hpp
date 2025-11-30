@@ -26,6 +26,7 @@
 #include <QList>
 #include <QLabel>
 #include <QTimer>
+#include <QShortcut>
 
 
 namespace Ui {
@@ -67,6 +68,12 @@ private:
     // Search while typing timer
     QTimer *search_timer;
     QString current_search;
+
+    // Shortcuts TODO
+    QShortcut *libraryview_next;
+    QShortcut *libraryview_prev;
+    QShortcut *imageview_next;
+    QShortcut *imageview_prev;
 
     // Open file dialog
     QString selectFile(const FileDialog::FileDialog DIALOG_TYPE);
