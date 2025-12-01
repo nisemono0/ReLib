@@ -12,10 +12,14 @@ public:
     explicit LibraryModelProxy(QObject *parent = nullptr);
     ~LibraryModelProxy();
 
+    // Set the filter text
     void setSearchText(const QString &search_text);
+    // Check if given index is filtered by the search or not
     bool isIndexFiltered(const QModelIndex &index);
 
+    // Return first visible index
     QModelIndex getFirstIndex();
+    // Return random index from visible
     QModelIndex getRandomIndex();
 
 private:
