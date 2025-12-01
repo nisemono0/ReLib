@@ -70,11 +70,14 @@ private:
     QString current_search;
 
     // Shortcuts
+    // LibraryView
     QShortcut *libraryview_next_item;
     QShortcut *libraryview_previous_item;
+    // ImageView
     QShortcut *imageview_next_image;
     QShortcut *imageview_previous_image;
     QShortcut *imageview_load_images;
+    // Search
     QShortcut *focus_search_input;
 
     // Open file dialog
@@ -94,6 +97,9 @@ private:
 
     // Settings loading
     void updateUiSettings();
+
+    // Init shortcuts
+    void setupShortcuts();
 
 signals:
     // ZipWorker
