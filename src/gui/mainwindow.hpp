@@ -54,9 +54,9 @@ private:
     // View settings group
     QActionGroup *view_mode_actiongroup;
     // Library view status label
-    QLabel *library_view_status;
+    QLabel *libraryview_status;
     // Image view status label
-    QLabel *image_view_status;
+    QLabel *imageview_status;
 
     // Database
     DBWorker *db_worker;
@@ -69,11 +69,13 @@ private:
     QTimer *search_timer;
     QString current_search;
 
-    // Shortcuts TODO
-    QShortcut *libraryview_next;
-    QShortcut *libraryview_prev;
-    QShortcut *imageview_next;
-    QShortcut *imageview_prev;
+    // Shortcuts
+    QShortcut *libraryview_next_item;
+    QShortcut *libraryview_previous_item;
+    QShortcut *imageview_next_image;
+    QShortcut *imageview_previous_image;
+    QShortcut *imageview_load_images;
+    QShortcut *focus_search_input;
 
     // Open file dialog
     QString selectFile(const FileDialog::FileDialog DIALOG_TYPE);
@@ -92,7 +94,6 @@ private:
 
     // Settings loading
     void updateUiSettings();
-
 
 signals:
     // ZipWorker

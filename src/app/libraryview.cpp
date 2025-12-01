@@ -149,12 +149,50 @@ void LibraryView::receive_showMangaInfoDialog_request() {
 }
 
 void LibraryView::receive_scrollToCurrentItem_request() {
-    QModelIndexList selected_idxs = this->selectedIndexes();
-    if (selected_idxs.isEmpty()) {
+    QModelIndex selected_idx = this->currentIndex();
+    if (!selected_idx.isValid()) {
         return;
     }
 
-    this->scrollTo(selected_idxs.first(), QAbstractItemView::PositionAtCenter);
+    this->scrollTo(selected_idx, QAbstractItemView::PositionAtCenter);
+}
+
+void LibraryView::receive_selectNextItem_shortcut() {
+    if (this->library_model_proxy->rowCount() <= 0) {
+        return;
+    }
+
+    QModelIndex current_idx = this->currentIndex();
+    if (current_idx.isValid()) {
+        QModelIndex next_idx = this->library_model_proxy->index(current_idx.row() + 1, 0);
+        if (next_idx.isValid()) {
+            this->setCurrentIndex(next_idx);
+        }
+    } else {
+        QModelIndex first_idx = this->library_model_proxy->getFirstIndex();
+        if (first_idx.isValid()) {
+            this->setCurrentIndex(first_idx);
+        }
+    }
+}
+
+void LibraryView::receive_selectPreviousItem_shortcut() {
+    if (this->library_model_proxy->rowCount() <= 0) {
+        return;
+    }
+
+    QModelIndex current_idx = this->currentIndex();
+    if (current_idx.isValid()) {
+        QModelIndex previous_idx = this->library_model_proxy->index(current_idx.row() - 1, 0);
+        if (previous_idx.isValid()) {
+            this->setCurrentIndex(previous_idx);
+        }
+    } else {
+        QModelIndex last_idx = this->library_model_proxy->getLastIndex();
+        if (last_idx.isValid()) {
+            this->setCurrentIndex(last_idx);
+        }
+    }
 }
 
 void LibraryView::libraryView_selectionModel_currentChanged(const QModelIndex &current, const QModelIndex &previous) {
@@ -162,6 +200,7 @@ void LibraryView::libraryView_selectionModel_currentChanged(const QModelIndex &c
     // if the previous one got filtered out (is not visible)
     if (previous.isValid() && !Settings::select_first_item) {
         if (this->library_model_proxy->isIndexFiltered(previous)) {
+            this->setCurrentIndex(previous);
             return;
         }
     }
@@ -185,23 +224,23 @@ void LibraryView::copy_item_name_action_triggered() {
 }
 
 void LibraryView::showCurrentItemInfo() {
-    QModelIndexList selected_idxs = this->selectedIndexes();
-    if (selected_idxs.isEmpty()) {
+    QModelIndex selected_idx = this->currentIndex();
+    if (!selected_idx.isValid()) {
         return;
     }
 
     emit request_showMangaInfoDialog(Manga(
-                selected_idxs.first().data(LibraryModel::FileHash).toString(),
-                selected_idxs.first().data(LibraryModel::FilePath).toString(),
-                selected_idxs.first().data(LibraryModel::FileBasename).toString(),
-                selected_idxs.first().data(LibraryModel::Title).toString(),
-                selected_idxs.first().data(LibraryModel::Artist).toStringList(),
-                selected_idxs.first().data(LibraryModel::Parody).toStringList(),
-                selected_idxs.first().data(LibraryModel::Circle).toStringList(),
-                selected_idxs.first().data(LibraryModel::Magazine).toStringList(),
-                selected_idxs.first().data(LibraryModel::Event).toStringList(),
-                selected_idxs.first().data(LibraryModel::Publisher).toStringList(),
-                selected_idxs.first().data(LibraryModel::Tags).toStringList()
+                selected_idx.data(LibraryModel::FileHash).toString(),
+                selected_idx.data(LibraryModel::FilePath).toString(),
+                selected_idx.data(LibraryModel::FileBasename).toString(),
+                selected_idx.data(LibraryModel::Title).toString(),
+                selected_idx.data(LibraryModel::Artist).toStringList(),
+                selected_idx.data(LibraryModel::Parody).toStringList(),
+                selected_idx.data(LibraryModel::Circle).toStringList(),
+                selected_idx.data(LibraryModel::Magazine).toStringList(),
+                selected_idx.data(LibraryModel::Event).toStringList(),
+                selected_idx.data(LibraryModel::Publisher).toStringList(),
+                selected_idx.data(LibraryModel::Tags).toStringList()
                 ));
 }
 

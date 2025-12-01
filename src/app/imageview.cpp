@@ -141,7 +141,7 @@ void ImageView::updateImageViewStatus(const QString &status) {
 
 void ImageView::fitImage() {
     this->setSceneRect(this->image_scene->getCurrentImageBoundingRect());
-    switch (Settings::image_view_option) {
+    switch (Settings::imageview_option) {
         case ImageOptions::FitInView:
             {
                 this->fitInView(this->image_scene->getCurrentImageBoundingRect(), Qt::KeepAspectRatio);
@@ -251,7 +251,12 @@ void ImageView::wheelEvent(QWheelEvent *event) {
 }
 
 void ImageView::receive_LibraryView_currentChanged_path(const QString &file_path) {
+    if (this->current_item_path == file_path) {
+        return;
+    }
+
     this->current_item_path = file_path;
+
     if (!this->image_thread->isRunning()) {
         this->image_thread->start();
         emit request_getArchiveCover(this->current_item_path);
@@ -362,20 +367,20 @@ void ImageView::scroll_item_action_triggered() {
 
 void ImageView::fit_in_view_action_triggered() {
     // Fit the current image in view without setting the option for all images
-    ImageOptions::ImageOptions previous_view_setting = Settings::image_view_option;
+    ImageOptions::ImageOptions previous_view_setting = Settings::imageview_option;
 
-    Settings::image_view_option = ImageOptions::FitInView;
+    Settings::imageview_option = ImageOptions::FitInView;
     this->fitImage();
-    Settings::image_view_option = previous_view_setting;
+    Settings::imageview_option = previous_view_setting;
 }
 
 void ImageView::fit_to_width_action_triggered() {
     // Fit the current image to width without setting the option for all images
-    ImageOptions::ImageOptions previous_view_setting = Settings::image_view_option;
+    ImageOptions::ImageOptions previous_view_setting = Settings::imageview_option;
 
-    Settings::image_view_option = ImageOptions::FitToWidth;
+    Settings::imageview_option = ImageOptions::FitToWidth;
     this->fitImage();
-    Settings::image_view_option = previous_view_setting;
+    Settings::imageview_option = previous_view_setting;
 
 }
 
@@ -391,6 +396,31 @@ void ImageView::imageview_progress_dialog_canceled() {
 
 void ImageView::receive_scaleAndFitImage_request() {
     this->scaleAndFitCurrentImage();
+}
+
+void ImageView::receive_showNextImage_shortcut() {
+    if (this->image_scene->isSceneEmpty() || this->image_scene->isCoverImage()) {
+        return;
+    }
+    this->image_scene->showNextImage();
+}
+
+void ImageView::receive_showPreviousImage_shortcut() {
+    if (this->image_scene->isSceneEmpty() || this->image_scene->isCoverImage()) {
+        return;
+    }
+    this->image_scene->showPreviousImage();
+}
+
+void ImageView::receive_loadImages_shortcut() {
+    if (this->image_scene->isSceneEmpty() || !this->image_scene->isCoverImage()) {
+        return;
+    }
+
+    if (!this->image_thread->isRunning()) {
+        this->image_thread->start();
+        emit request_getArchiveImages(this->current_item_path);
+    }
 }
 
 void ImageView::receive_fitImage_request() {

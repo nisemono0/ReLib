@@ -81,6 +81,10 @@ public slots:
     void receive_clearImageView_request();
     void receive_scaleAndFitImage_request();
 
+    void receive_showNextImage_shortcut();
+    void receive_showPreviousImage_shortcut();
+    void receive_loadImages_shortcut();
+
 private slots:
     void load_images_action_triggered();
     void show_info_action_triggered();

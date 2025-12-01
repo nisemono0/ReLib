@@ -18,11 +18,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->log_dialog = new LogDialog(this);
     this->manga_info_dialog = new MangaInfoDialog(this);
 
-    this->library_view_status = new QLabel(this);
-    this->ui->statusBar->addWidget(this->library_view_status);
-    this->library_view_status->setIndent(4);
-    this->image_view_status = new QLabel(this);
-    this->ui->statusBar->addPermanentWidget(this->image_view_status);
+    this->libraryview_status = new QLabel(this);
+    this->ui->statusBar->addWidget(this->libraryview_status);
+    this->libraryview_status->setIndent(4);
+    this->imageview_status = new QLabel(this);
+    this->ui->statusBar->addPermanentWidget(this->imageview_status);
     this->setNoDatabaseStatus();
 
     this->scale_slider_action = new QWidgetAction(this->ui->menuSettings);
@@ -44,6 +44,37 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->view_mode_actiongroup->addAction(this->ui->actionFitToWidth);
     this->view_mode_actiongroup->addAction(this->ui->actionFreeView);
     this->view_mode_actiongroup->setExclusive(true);
+
+    // Shortcuts
+    this->libraryview_next_item = new QShortcut(this);
+    this->libraryview_next_item->setKeys({
+            Qt::Key_Down,
+            Qt::Key_J
+            });
+    this->libraryview_previous_item = new QShortcut(this);
+    this->libraryview_previous_item->setKeys({
+            Qt::Key_Up,
+            Qt::Key_K
+            });
+    this->imageview_next_image = new QShortcut(this);
+    this->imageview_next_image->setKeys({
+            Qt::Key_Right,
+            Qt::Key_L
+            });
+    this->imageview_previous_image = new QShortcut(this);
+    this->imageview_previous_image->setKeys({
+            Qt::Key_Left,
+            Qt::Key_H
+            });
+    this->imageview_load_images = new QShortcut(this);
+    this->imageview_load_images->setKey(
+            Qt::Key_O
+            );
+    this->focus_search_input = new QShortcut(this);
+    this->focus_search_input->setKeys({
+            QKeySequence(Qt::CTRL | Qt::Key_F),
+            Qt::Key_Slash
+            });
 
     // Thread setup
     this->zip_worker = new ZipWorker();
@@ -101,12 +132,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this, &MainWindow::request_clearLibraryView, this->ui->libraryView, &LibraryView::receive_clearMangaList_request);
     connect(this, &MainWindow::request_setSearchText, this->ui->libraryView, &LibraryView::receive_setSearchText_request);
     connect(this, &MainWindow::request_selectRandomManga, this->ui->libraryView, &LibraryView::receive_selectRandomManga_request);
-    connect(this->ui->libraryView, &LibraryView::send_LibraryView_status, this->library_view_status, &QLabel::setText);
+    connect(this->ui->libraryView, &LibraryView::send_LibraryView_status, this->libraryview_status, &QLabel::setText);
     connect(this->ui->libraryView, &LibraryView::send_LibraryView_deleteFromDatabase_request, this, &MainWindow::receive_LibraryView_deleteFromDatabse_request);
     connect(this->ui->libraryView, &LibraryView::request_showMangaInfoDialog, this->manga_info_dialog, &MangaInfoDialog::receive_showMangaInfoDialog_request);
 
     // Image view
-    connect(this->ui->imageView, &ImageView::send_ImageView_status, this->image_view_status, &QLabel::setText);
+    connect(this->ui->imageView, &ImageView::send_ImageView_status, this->imageview_status, &QLabel::setText);
     connect(this->ui->libraryView, &LibraryView::send_LibraryView_currentChanged_path, this->ui->imageView, &ImageView::receive_LibraryView_currentChanged_path);
     connect(this->ui->imageView, &ImageView::request_LibraryView_showMangaInfoDialog, this->ui->libraryView, &LibraryView::receive_showMangaInfoDialog_request);
     connect(this, &MainWindow::request_clearImageView, this->ui->imageView, &ImageView::receive_clearImageView_request);
@@ -145,6 +176,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->db_worker, &DBWorker::send_DBWorker_data, this->db_thread, &QThread::quit);
     connect(this->db_worker, &DBWorker::send_DBWorker_pathhash_data, this->db_thread, &QThread::quit);
 
+    // Shortcuts
+    // LibraryView
+    connect(this->libraryview_next_item, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectNextItem_shortcut);
+    connect(this->libraryview_previous_item, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectPreviousItem_shortcut);
+    // ImageView
+    connect(this->imageview_next_image, &QShortcut::activated, this->ui->imageView, &ImageView::receive_showNextImage_shortcut);
+    connect(this->imageview_previous_image, &QShortcut::activated, this->ui->imageView, &ImageView::receive_showPreviousImage_shortcut);
+    connect(this->imageview_load_images, &QShortcut::activated, this->ui->imageView, &ImageView::receive_loadImages_shortcut);
+    // Search input
+    connect(this->focus_search_input, &QShortcut::activated, this->ui->lineEditSearch, [=](){ this->ui->lineEditSearch->setFocus(); });
+
     this->updateUiSettings();
     this->updateUiLock();
 }
@@ -181,11 +223,19 @@ MainWindow::~MainWindow() {
     delete this->scale_slider;
     delete this->scale_slider_action;
 
-    delete this->library_view_status;
-    delete this->image_view_status;
+    delete this->libraryview_status;
+    delete this->imageview_status;
 
     delete this->log_dialog;
     delete this->manga_info_dialog;
+
+    delete this->libraryview_next_item;
+    delete this->libraryview_previous_item;
+    delete this->imageview_next_image;
+    delete this->imageview_previous_image;
+    delete this->imageview_load_images;
+    delete this->focus_search_input;
+
     delete this->ui;
 }
 
@@ -253,7 +303,7 @@ void MainWindow::updateUiLock() {
 }
 
 void MainWindow::setNoDatabaseStatus() {
-    this->library_view_status->setText(QStringLiteral("No database loaded"));
+    this->libraryview_status->setText(QStringLiteral("No database loaded"));
 }
 
 void MainWindow::clearSearchText() {
@@ -495,13 +545,13 @@ void MainWindow::slider_scale_valueChanged(int value) {
 
 void MainWindow::view_mode_actiongroup_triggered(QAction *action) {
     if (action == this->ui->actionFitInView) {
-        Settings::image_view_option = ImageOptions::FitInView;
+        Settings::imageview_option = ImageOptions::FitInView;
     } else if (action == this->ui->actionFitToWidth) {
-        Settings::image_view_option = ImageOptions::FitToWidth;
+        Settings::imageview_option = ImageOptions::FitToWidth;
     } else if (action == this->ui->actionFreeView) {
-        Settings::image_view_option = ImageOptions::FreeView;
+        Settings::imageview_option = ImageOptions::FreeView;
     } else {
-        Settings::image_view_option = ImageOptions::FitInView;
+        Settings::imageview_option = ImageOptions::FitInView;
     }
     emit request_scaleAndFitImage();
 }
@@ -544,6 +594,7 @@ void MainWindow::pushButtonRefresh_clicked() {
 // Search
 void MainWindow::lineEditSearch_returnPressed() {
     emit request_setSearchText(this->getSearchText());
+    this->ui->libraryView->setFocus();
 }
 
 // Progress dialog

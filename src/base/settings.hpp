@@ -12,7 +12,7 @@ public:
     static int scale_slider_value;
     static float image_scale_value;
 
-    static ImageOptions::ImageOptions image_view_option;
+    static ImageOptions::ImageOptions imageview_option;
 
     static bool search_while_typing;
     static bool select_first_item;

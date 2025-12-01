@@ -9,7 +9,7 @@ bool Settings::scale_image = true;
 int Settings::scale_slider_value = 0;
 float Settings::image_scale_value = 1.0;
 
-ImageOptions::ImageOptions Settings::image_view_option = ImageOptions::FitInView;
+ImageOptions::ImageOptions Settings::imageview_option = ImageOptions::FitInView;
 
 bool Settings::search_while_typing = false;
 bool Settings::select_first_item = false;
@@ -47,7 +47,7 @@ void Settings::loadSettings() {
     Settings::scale_image = Settings::settings.value(QStringLiteral("scale_image"), true).toBool();
     Settings::scale_slider_value = Settings::settings.value(QStringLiteral("scale_slider_value"), 0).toInt();
 
-    Settings::image_view_option = ImageOptions::FitInView;
+    Settings::imageview_option = ImageOptions::FitInView;
 
     Settings::search_while_typing = Settings::settings.value(QStringLiteral("search_while_typing"), false).toBool();
     Settings::select_first_item = Settings::settings.value(QStringLiteral("select_first_item"), false).toBool();
@@ -75,7 +75,7 @@ void Settings::loadDefaultSettings() {
     Settings::scale_slider_value = 0;
     Settings::image_scale_value = 1.0;
 
-    Settings::image_view_option = ImageOptions::FitInView;
+    Settings::imageview_option = ImageOptions::FitInView;
 
     Settings::search_while_typing = false;
     Settings::select_first_item = false;

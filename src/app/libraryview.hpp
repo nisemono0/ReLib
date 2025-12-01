@@ -59,6 +59,9 @@ public slots:
     void receive_showMangaInfoDialog_request();
     void receive_scrollToCurrentItem_request();
 
+    void receive_selectNextItem_shortcut();
+    void receive_selectPreviousItem_shortcut();
+
 private slots:
     void libraryView_selectionModel_currentChanged(const QModelIndex &current, const QModelIndex &previous);
 

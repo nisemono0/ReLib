@@ -19,6 +19,8 @@ public:
 
     // Return first visible index
     QModelIndex getFirstIndex();
+    // Return last visible index
+    QModelIndex getLastIndex();
     // Return random index from visible
     QModelIndex getRandomIndex();
 

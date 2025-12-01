@@ -41,6 +41,10 @@ QModelIndex LibraryModelProxy::getFirstIndex() {
     return this->index(0, 0);
 }
 
+QModelIndex LibraryModelProxy::getLastIndex() {
+    return this->index(this->rowCount() - 1, 0);
+}
+
 QModelIndex LibraryModelProxy::getRandomIndex() {
     int total_visible = this->rowCount();
     if (total_visible > 0) {
