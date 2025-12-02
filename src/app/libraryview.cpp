@@ -149,12 +149,7 @@ void LibraryView::receive_showMangaInfoDialog_request() {
 }
 
 void LibraryView::receive_scrollToCurrentItem_request() {
-    QModelIndex selected_idx = this->currentIndex();
-    if (!selected_idx.isValid()) {
-        return;
-    }
-
-    this->scrollTo(selected_idx, QAbstractItemView::PositionAtCenter);
+    this->scrollToCurrentItem();
 }
 
 void LibraryView::receive_selectNextItem_shortcut() {
@@ -260,6 +255,13 @@ void LibraryView::showCurrentItemInfo() {
                 selected_idx.data(LibraryModel::Publisher).toStringList(),
                 selected_idx.data(LibraryModel::Tags).toStringList()
                 ));
+}
+
+void LibraryView::scrollToCurrentItem() {
+    QModelIndex selected_idx = this->currentIndex();
+    if (selected_idx.isValid()) {
+        this->scrollTo(selected_idx, QAbstractItemView::PositionAtCenter);
+    }
 }
 
 void LibraryView::copy_title_action_triggered() {

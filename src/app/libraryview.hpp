@@ -37,7 +37,8 @@ private:
     QString getSelectedItemsData(LibraryModel::LibraryRole role);
 
     void showCurrentItemInfo();
-    void loadCurrentItemImages();
+
+    void scrollToCurrentItem();
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
