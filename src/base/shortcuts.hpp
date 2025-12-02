@@ -19,12 +19,18 @@ public:
     QShortcut *libraryview_previous_item;
     QShortcut *libraryview_first_item;
     QShortcut *libraryview_last_item;
+
     // ImageView
     QShortcut *imageview_next_image;
     QShortcut *imageview_previous_image;
     QShortcut *imageview_load_images;
+
     // Search
     QShortcut *focus_search_input;
+    QShortcut *search_move_char_forward;
+    QShortcut *search_move_char_backward;
+    QShortcut *search_move_word_forward;
+    QShortcut *search_move_word_backward;
 
 };
 

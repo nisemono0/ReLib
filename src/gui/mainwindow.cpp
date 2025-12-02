@@ -295,7 +295,7 @@ void MainWindow::updateUiSettings() {
 void MainWindow::setupShortcuts() {
     this->shortcuts = new Shortcuts(this);
 
-    // MainWindow
+    // MainWindow settings
     connect(this->shortcuts->mainwindow_scale_slider_increment, &QShortcut::activated, this, &MainWindow::scale_slider_increment_shortcut);
     connect(this->shortcuts->mainwindow_scale_slider_decrement, &QShortcut::activated, this, &MainWindow::scale_slider_decrement_shortcut);
     // LibraryView
@@ -307,8 +307,12 @@ void MainWindow::setupShortcuts() {
     connect(this->shortcuts->imageview_next_image, &QShortcut::activated, this->ui->imageView, &ImageView::receive_showNextImage_shortcut);
     connect(this->shortcuts->imageview_previous_image, &QShortcut::activated, this->ui->imageView, &ImageView::receive_showPreviousImage_shortcut);
     connect(this->shortcuts->imageview_load_images, &QShortcut::activated, this->ui->imageView, &ImageView::receive_loadImages_shortcut);
-    // Search inpushortcuts->t
-    connect(this->shortcuts->focus_search_input, &QShortcut::activated, this->ui->lineEditSearch, [=](){ this->ui->lineEditSearch->setFocus(); });
+    // Search input shortcuts
+    connect(this->shortcuts->focus_search_input, &QShortcut::activated, this, &MainWindow::focus_search_input_shortcut);
+    connect(this->shortcuts->search_move_char_forward, &QShortcut::activated, this, &MainWindow::search_move_char_forward_shortcut);
+    connect(this->shortcuts->search_move_char_backward, &QShortcut::activated, this, &MainWindow::search_move_char_backward_shortcut);
+    connect(this->shortcuts->search_move_word_forward, &QShortcut::activated, this, &MainWindow::search_move_word_forward_shortcut);
+    connect(this->shortcuts->search_move_word_backward, &QShortcut::activated, this, &MainWindow::search_move_word_backward_shortcut);
 }
 
 void MainWindow::actionAddFile_triggered() {
@@ -616,6 +620,34 @@ void MainWindow::pushButtonRefresh_clicked() {
 void MainWindow::lineEditSearch_returnPressed() {
     emit request_setSearchText(this->getSearchText());
     this->ui->libraryView->setFocus();
+}
+
+void MainWindow::focus_search_input_shortcut() {
+   this->ui->lineEditSearch->setFocus();
+}
+
+void MainWindow::search_move_char_forward_shortcut() {
+    if (this->ui->lineEditSearch->hasFocus()) {
+        this->ui->lineEditSearch->cursorForward(false);
+    }
+}
+
+void MainWindow::search_move_char_backward_shortcut() {
+    if (this->ui->lineEditSearch->hasFocus()) {
+        this->ui->lineEditSearch->cursorBackward(false);
+    }
+}
+
+void MainWindow::search_move_word_forward_shortcut() {
+    if (this->ui->lineEditSearch->hasFocus()) {
+        this->ui->lineEditSearch->cursorWordForward(false);
+    }
+}
+
+void MainWindow::search_move_word_backward_shortcut() {
+    if (this->ui->lineEditSearch->hasFocus()) {
+        this->ui->lineEditSearch->cursorWordBackward(false);
+    }
 }
 
 // Progress dialog

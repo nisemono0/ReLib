@@ -4,11 +4,11 @@
 Shortcuts::Shortcuts(QObject *parent) : QObject(parent) {
     // MainWindow
     this->mainwindow_scale_slider_increment = new QShortcut(parent);
-    this->mainwindow_scale_slider_increment->setKey({
+    this->mainwindow_scale_slider_increment->setKeys({
             QKeySequence(Qt::CTRL | Qt::Key_Equal)
             });
     this->mainwindow_scale_slider_decrement = new QShortcut(parent);
-    this->mainwindow_scale_slider_decrement->setKey({
+    this->mainwindow_scale_slider_decrement->setKeys({
             QKeySequence(Qt::CTRL | Qt::Key_Minus)
             });
 
@@ -24,11 +24,11 @@ Shortcuts::Shortcuts(QObject *parent) : QObject(parent) {
             Qt::Key_K
             });
     this->libraryview_first_item = new QShortcut(parent);
-    this->libraryview_first_item->setKey({
+    this->libraryview_first_item->setKeys({
             QKeySequence(Qt::Key_G, Qt::Key_G)
             });
     this->libraryview_last_item = new QShortcut(parent);
-    this->libraryview_last_item->setKey({
+    this->libraryview_last_item->setKeys({
             QKeySequence(Qt::ShiftModifier | Qt::Key_G)
             });
 
@@ -44,7 +44,7 @@ Shortcuts::Shortcuts(QObject *parent) : QObject(parent) {
             Qt::Key_H
             });
     this->imageview_load_images = new QShortcut(parent);
-    this->imageview_load_images->setKey({
+    this->imageview_load_images->setKeys({
             Qt::Key_O
             });
 
@@ -54,6 +54,24 @@ Shortcuts::Shortcuts(QObject *parent) : QObject(parent) {
             QKeySequence(Qt::CTRL | Qt::Key_F),
             Qt::Key_Slash
             });
+
+    this->search_move_char_forward = new QShortcut(parent);
+    this->search_move_char_forward->setKeys({
+            QKeySequence(Qt::CTRL | Qt::Key_L)
+            });
+    this->search_move_char_backward = new QShortcut(parent);
+    this->search_move_char_backward->setKeys({
+            QKeySequence(Qt::CTRL | Qt::Key_H)
+            });
+    this->search_move_word_forward = new QShortcut(parent);
+    this->search_move_word_forward->setKeys({
+            QKeySequence(Qt::ALT | Qt::Key_L)
+            });
+    this->search_move_word_backward = new QShortcut(parent);
+    this->search_move_word_backward->setKeys({
+            QKeySequence(Qt::ALT | Qt::Key_H)
+            });
+
 }
 
 Shortcuts::~Shortcuts() {
@@ -70,5 +88,9 @@ Shortcuts::~Shortcuts() {
     delete this->imageview_load_images;
 
     delete this->focus_search_input;
+    delete this->search_move_char_forward;
+    delete this->search_move_char_backward;
+    delete this->search_move_word_forward;
+    delete this->search_move_word_backward;
 }
 

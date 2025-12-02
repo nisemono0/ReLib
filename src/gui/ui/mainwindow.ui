@@ -230,7 +230,7 @@
     <string>Load a database</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+L</string>
+    <string>Ctrl+D, L</string>
    </property>
   </action>
   <action name="actionAddDir">
@@ -241,7 +241,7 @@
     <string>Add all archives in a directory</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+D</string>
+    <string>Ctrl+A, D</string>
    </property>
   </action>
   <action name="actionAddFile">
@@ -252,7 +252,7 @@
     <string>Add a single archive</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+A</string>
+    <string>Ctrl+A, F</string>
    </property>
   </action>
   <action name="actionExit">
@@ -277,7 +277,7 @@
     <string>Create a new database</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+C</string>
+    <string>Ctrl+D, C</string>
    </property>
   </action>
   <action name="actionUnloadDatabase">
@@ -291,7 +291,7 @@
     <string>Unload the loaded database</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+U</string>
+    <string>Ctrl+D, U</string>
    </property>
   </action>
   <action name="actionScaleImage">
@@ -307,6 +307,9 @@
    <property name="statusTip">
     <string>Enable or disables the image scaling</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S, S, I</string>
+   </property>
   </action>
   <action name="actionCheckDatabaseHashes">
    <property name="text">
@@ -314,6 +317,9 @@
    </property>
    <property name="statusTip">
     <string>Checks if the paths/hashes in the database match the ones on disk</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D, C, H</string>
    </property>
   </action>
   <action name="actionCheckDatabasePaths">
@@ -323,6 +329,9 @@
    <property name="statusTip">
     <string>Checks if the paths in database match the ones on disk</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+D, C, P</string>
+   </property>
   </action>
   <action name="actionShowLogs">
    <property name="text">
@@ -330,6 +339,9 @@
    </property>
    <property name="statusTip">
     <string>Shows the logs window</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I, L</string>
    </property>
   </action>
   <action name="actionFitInView">
@@ -345,6 +357,9 @@
    <property name="statusTip">
     <string>Fits the image in view</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S, V, F</string>
+   </property>
   </action>
   <action name="actionFitToWidth">
    <property name="checkable">
@@ -355,6 +370,9 @@
    </property>
    <property name="statusTip">
     <string>Fits the image to width</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S, V, W</string>
    </property>
   </action>
   <action name="actionFreeView">
@@ -378,6 +396,9 @@
    <property name="statusTip">
     <string>Enable or disables searching while typing in the searchbox</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S, S, T</string>
+   </property>
   </action>
   <action name="actionSelectFirstAfterSearch">
    <property name="checkable">
@@ -391,6 +412,9 @@
    </property>
    <property name="statusTip">
     <string>Enable or disables selecting the first result after search</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S, S, F</string>
    </property>
   </action>
   <action name="actionRememberSettings">
@@ -429,6 +453,9 @@
    </property>
    <property name="statusTip">
     <string>Removed entries from the database not found on disk (checks file paths)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D, R, E</string>
    </property>
   </action>
  </widget>
