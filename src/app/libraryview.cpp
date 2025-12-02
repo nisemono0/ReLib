@@ -16,10 +16,13 @@ LibraryView::LibraryView(QWidget *parent) : QListView(parent) {
 
     this->library_model = new LibraryModel(this);
 
+    this->library_delegate = new LibraryViewDelegate(this);
+
     this->library_model_proxy = new LibraryModelProxy(this);
     this->library_model_proxy->setSourceModel(this->library_model);
 
     this->setModel(this->library_model_proxy);
+    this->setItemDelegate(this->library_delegate);
 
     connect(this->selectionModel(), &QItemSelectionModel::currentChanged, this, &LibraryView::libraryView_selectionModel_currentChanged);
 
@@ -36,6 +39,8 @@ LibraryView::LibraryView(QWidget *parent) : QListView(parent) {
 LibraryView::~LibraryView() {
     delete this->library_model_proxy;
     delete this->library_model;
+
+    delete this->library_delegate;
 
     delete this->show_info_action;
     delete this->copy_item_name_action;

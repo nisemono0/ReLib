@@ -2,6 +2,7 @@
 
 #include "app/librarymodel.hpp"
 #include "app/librarymodelproxy.hpp"
+#include "app/libraryviewdelegate.hpp"
 
 #include <QListView>
 #include <QWidget>
@@ -19,6 +20,7 @@ public:
 private:
     LibraryModel *library_model;
     LibraryModelProxy *library_model_proxy;
+    LibraryViewDelegate *library_delegate;
 
     QString current_item_filesize = nullptr;
 

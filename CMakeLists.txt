@@ -17,6 +17,8 @@ qt_add_executable(ReLib
     src/app/librarymodelproxy.hpp
     src/app/libraryview.cpp
     src/app/libraryview.hpp
+    src/app/libraryviewdelegate.cpp
+    src/app/libraryviewdelegate.hpp
     src/base/clipboard.cpp
     src/base/clipboard.hpp
     src/base/dbworker.cpp
