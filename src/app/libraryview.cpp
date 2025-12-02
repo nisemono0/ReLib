@@ -110,7 +110,7 @@ QString LibraryView::getSelectedItemsData(LibraryModel::LibraryRole role) {
 
 void LibraryView::contextMenuEvent(QContextMenuEvent *event) {
     QListView::contextMenuEvent(event);
-    if (this->library_model_proxy->rowCount() != 0) {
+    if (this->library_model_proxy->hasItems()) {
         this->context_menu->popup(event->globalPos());
     }
 }
@@ -158,7 +158,7 @@ void LibraryView::receive_scrollToCurrentItem_request() {
 }
 
 void LibraryView::receive_selectNextItem_shortcut() {
-    if (this->library_model_proxy->rowCount() <= 0) {
+    if (!this->library_model_proxy->hasItems()) {
         return;
     }
 
@@ -177,7 +177,7 @@ void LibraryView::receive_selectNextItem_shortcut() {
 }
 
 void LibraryView::receive_selectPreviousItem_shortcut() {
-    if (this->library_model_proxy->rowCount() <= 0) {
+    if (!this->library_model_proxy->hasItems()) {
         return;
     }
 
@@ -188,6 +188,24 @@ void LibraryView::receive_selectPreviousItem_shortcut() {
             this->setCurrentIndex(previous_idx);
         }
     } else {
+        QModelIndex last_idx = this->library_model_proxy->getLastIndex();
+        if (last_idx.isValid()) {
+            this->setCurrentIndex(last_idx);
+        }
+    }
+}
+
+void LibraryView::receive_selectFirstItem_shortcut() {
+    if (this->library_model_proxy->hasItems()) {
+        QModelIndex first_idx = this->library_model_proxy->getFirstIndex();
+        if (first_idx.isValid()) {
+            this->setCurrentIndex(first_idx);
+        }
+    }
+}
+
+void LibraryView::receive_selectLastItem_shortcut() {
+    if (this->library_model_proxy->hasItems()) {
         QModelIndex last_idx = this->library_model_proxy->getLastIndex();
         if (last_idx.isValid()) {
             this->setCurrentIndex(last_idx);

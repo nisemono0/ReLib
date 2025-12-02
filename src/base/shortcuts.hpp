@@ -13,6 +13,8 @@ public:
     // LibraryView
     QShortcut *libraryview_next_item;
     QShortcut *libraryview_previous_item;
+    QShortcut *libraryview_first_item;
+    QShortcut *libraryview_last_item;
     // ImageView
     QShortcut *imageview_next_image;
     QShortcut *imageview_previous_image;

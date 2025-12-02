@@ -13,6 +13,14 @@ Shortcuts::Shortcuts(QObject *parent) : QObject(parent) {
             Qt::Key_Up,
             Qt::Key_K
             });
+    this->libraryview_first_item = new QShortcut(parent);
+    this->libraryview_first_item->setKey({
+            QKeySequence(Qt::Key_G, Qt::Key_G)
+            });
+    this->libraryview_last_item = new QShortcut(parent);
+    this->libraryview_last_item->setKey({
+            QKeySequence(Qt::ShiftModifier | Qt::Key_G)
+            });
     // ImageView
     this->imageview_next_image = new QShortcut(parent);
     this->imageview_next_image->setKeys({
@@ -39,9 +47,13 @@ Shortcuts::Shortcuts(QObject *parent) : QObject(parent) {
 Shortcuts::~Shortcuts() {
     delete this->libraryview_next_item;
     delete this->libraryview_previous_item;
+    delete this->libraryview_first_item;
+    delete this->libraryview_last_item;
+
     delete this->imageview_next_image;
     delete this->imageview_previous_image;
     delete this->imageview_load_images;
+
     delete this->focus_search_input;
 }
 

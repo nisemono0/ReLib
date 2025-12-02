@@ -61,6 +61,8 @@ public slots:
 
     void receive_selectNextItem_shortcut();
     void receive_selectPreviousItem_shortcut();
+    void receive_selectFirstItem_shortcut();
+    void receive_selectLastItem_shortcut();
 
 private slots:
     void libraryView_selectionModel_currentChanged(const QModelIndex &current, const QModelIndex &previous);

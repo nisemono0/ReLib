@@ -294,6 +294,8 @@ void MainWindow::setupShortcuts() {
     // LibraryView
     connect(this->shortcuts->libraryview_next_item, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectNextItem_shortcut);
     connect(this->shortcuts->libraryview_previous_item, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectPreviousItem_shortcut);
+    connect(this->shortcuts->libraryview_first_item, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectFirstItem_shortcut);
+    connect(this->shortcuts->libraryview_last_item, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectLastItem_shortcut);
     // ImageView
     connect(this->shortcuts->imageview_next_image, &QShortcut::activated, this->ui->imageView, &ImageView::receive_showNextImage_shortcut);
     connect(this->shortcuts->imageview_previous_image, &QShortcut::activated, this->ui->imageView, &ImageView::receive_showPreviousImage_shortcut);

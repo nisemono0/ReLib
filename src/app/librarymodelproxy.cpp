@@ -37,6 +37,13 @@ bool LibraryModelProxy::isIndexFiltered(const QModelIndex &index) {
     return !this->filterAcceptsRow(source_index.row(), source_index.parent());
 }
 
+bool LibraryModelProxy::hasItems() {
+    if (this->rowCount() > 0) {
+        return true;
+    }
+    return false;
+}
+
 QModelIndex LibraryModelProxy::getFirstIndex() {
     return this->index(0, 0);
 }

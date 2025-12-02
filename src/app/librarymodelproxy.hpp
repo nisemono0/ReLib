@@ -17,6 +17,9 @@ public:
     // Check if given index is filtered by the search or not
     bool isIndexFiltered(const QModelIndex &index);
 
+    // Returns true if proxy has items displayed
+    bool hasItems();
+
     // Return first visible index
     QModelIndex getFirstIndex();
     // Return last visible index

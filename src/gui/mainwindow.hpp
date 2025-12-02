@@ -27,7 +27,6 @@
 #include <QList>
 #include <QLabel>
 #include <QTimer>
-#include <QShortcut>
 
 
 namespace Ui {
