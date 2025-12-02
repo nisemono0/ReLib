@@ -10,6 +10,10 @@ public:
     explicit Shortcuts(QObject *parent = nullptr);
     ~Shortcuts();
 
+    // MainWindow
+    QShortcut *mainwindow_scale_slider_increment;
+    QShortcut *mainwindow_scale_slider_decrement;
+
     // LibraryView
     QShortcut *libraryview_next_item;
     QShortcut *libraryview_previous_item;

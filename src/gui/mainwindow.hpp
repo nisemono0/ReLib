@@ -151,8 +151,10 @@ private slots:
 
     // Menubar:Settings
     void actionScaleImage_toggled(bool checked);
-    void slider_scale_valueChanged(int value);
-    void slider_scale_actionTriggered(int action);
+    void scale_slider_valueChanged(int value);
+    void scale_slider_actionTriggered(int action);
+    void scale_slider_increment_shortcut();
+    void scale_slider_decrement_shortcut();
     void view_mode_actiongroup_triggered(QAction *action);
     void actionSearchWhileTyping_toggled(bool checked);
     void actionSelectFirstAfterSearch_toggled(bool checked);

@@ -2,6 +2,16 @@
 
 
 Shortcuts::Shortcuts(QObject *parent) : QObject(parent) {
+    // MainWindow
+    this->mainwindow_scale_slider_increment = new QShortcut(parent);
+    this->mainwindow_scale_slider_increment->setKey({
+            QKeySequence(Qt::CTRL | Qt::Key_Equal)
+            });
+    this->mainwindow_scale_slider_decrement = new QShortcut(parent);
+    this->mainwindow_scale_slider_decrement->setKey({
+            QKeySequence(Qt::CTRL | Qt::Key_Minus)
+            });
+
     // LibraryView
     this->libraryview_next_item = new QShortcut(parent);
     this->libraryview_next_item->setKeys({
@@ -21,6 +31,7 @@ Shortcuts::Shortcuts(QObject *parent) : QObject(parent) {
     this->libraryview_last_item->setKey({
             QKeySequence(Qt::ShiftModifier | Qt::Key_G)
             });
+
     // ImageView
     this->imageview_next_image = new QShortcut(parent);
     this->imageview_next_image->setKeys({
@@ -33,9 +44,10 @@ Shortcuts::Shortcuts(QObject *parent) : QObject(parent) {
             Qt::Key_H
             });
     this->imageview_load_images = new QShortcut(parent);
-    this->imageview_load_images->setKey(
+    this->imageview_load_images->setKey({
             Qt::Key_O
-            );
+            });
+
     // Search
     this->focus_search_input = new QShortcut(parent);
     this->focus_search_input->setKeys({
@@ -45,6 +57,9 @@ Shortcuts::Shortcuts(QObject *parent) : QObject(parent) {
 }
 
 Shortcuts::~Shortcuts() {
+    delete this->mainwindow_scale_slider_increment;
+    delete this->mainwindow_scale_slider_decrement;
+
     delete this->libraryview_next_item;
     delete this->libraryview_previous_item;
     delete this->libraryview_first_item;

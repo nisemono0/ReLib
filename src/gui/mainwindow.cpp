@@ -76,8 +76,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // Menubar:Settings
     connect(this->ui->actionScaleImage, &QAction::toggled, this, &MainWindow::actionScaleImage_toggled);
-    connect(this->scale_slider, &QSlider::valueChanged, this, &MainWindow::slider_scale_valueChanged);
-    connect(this->scale_slider, &QSlider::actionTriggered, this, &MainWindow::slider_scale_actionTriggered);
+    connect(this->scale_slider, &QSlider::valueChanged, this, &MainWindow::scale_slider_valueChanged);
+    connect(this->scale_slider, &QSlider::actionTriggered, this, &MainWindow::scale_slider_actionTriggered);
     connect(this->view_mode_actiongroup, &QActionGroup::triggered, this, &MainWindow::view_mode_actiongroup_triggered);
     connect(this->ui->actionSearchWhileTyping, &QAction::toggled, this, &MainWindow::actionSearchWhileTyping_toggled);
     connect(this->ui->actionSelectFirstAfterSearch, &QAction::toggled, this, &MainWindow::actionSelectFirstAfterSearch_toggled);
@@ -294,6 +294,10 @@ void MainWindow::updateUiSettings() {
 
 void MainWindow::setupShortcuts() {
     this->shortcuts = new Shortcuts(this);
+
+    // MainWindow
+    connect(this->shortcuts->mainwindow_scale_slider_increment, &QShortcut::activated, this, &MainWindow::scale_slider_increment_shortcut);
+    connect(this->shortcuts->mainwindow_scale_slider_decrement, &QShortcut::activated, this, &MainWindow::scale_slider_decrement_shortcut);
     // LibraryView
     connect(this->shortcuts->libraryview_next_item, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectNextItem_shortcut);
     connect(this->shortcuts->libraryview_previous_item, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectPreviousItem_shortcut);
@@ -504,21 +508,51 @@ void MainWindow::actionScaleImage_toggled(bool checked) {
     emit request_scaleAndFitImage();
 }
 
-void MainWindow::slider_scale_actionTriggered(int action) {
-    if (action == QSlider::SliderPageStepSub || action == QSlider::SliderPageStepAdd) {
-        int new_value = QStyle::sliderValueFromPosition(
-                this->scale_slider->minimum(),
-                this->scale_slider->maximum(),
-                this->scale_slider->mapFromGlobal(QCursor::pos()).x(),
-                this->scale_slider->width()
-                );
-        if (this->scale_slider->value() != new_value) {
-            this->scale_slider->setValue(new_value);
+void MainWindow::scale_slider_actionTriggered(int action) {
+    switch (action) {
+        case QSlider::SliderPageStepAdd:
+        case QSlider::SliderPageStepSub:
+        {
+            qDebug() << "PAGE";
+            int new_value = QStyle::sliderValueFromPosition(
+                    this->scale_slider->minimum(),
+                    this->scale_slider->maximum(),
+                    this->scale_slider->mapFromGlobal(QCursor::pos()).x(),
+                    this->scale_slider->width()
+                    );
+            if (this->scale_slider->value() != new_value) {
+                this->scale_slider->setValue(new_value);
+            }
+            break;
+        }
+        case QSlider::SliderSingleStepAdd:
+        {
+            int new_value = this->scale_slider->value() + 1;
+            if (new_value <= this->scale_slider->maximum() && new_value != this->scale_slider->value()) {
+                this->scale_slider->setValue(new_value);
+            }
+            break;
+        }
+        case QSlider::SliderSingleStepSub:
+        {
+            int new_value = this->scale_slider->value() - 1;
+            if (new_value >= this->scale_slider->minimum() && new_value != this->scale_slider->value()) {
+                this->scale_slider->setValue(new_value);
+            }
+            break;
         }
     }
 }
 
-void MainWindow::slider_scale_valueChanged(int value) {
+void MainWindow::scale_slider_increment_shortcut() {
+    this->scale_slider->triggerAction(QSlider::SliderSingleStepAdd);
+}
+
+void MainWindow::scale_slider_decrement_shortcut() {
+    this->scale_slider->triggerAction(QSlider::SliderSingleStepSub);
+}
+
+void MainWindow::scale_slider_valueChanged(int value) {
     Settings::scale_slider_value = value;
     Settings::updateImageScaleValue();
     QToolTip::showText(
