@@ -9,6 +9,7 @@
 
 #include "base/dbworker.hpp"
 #include "base/zipworker.hpp"
+#include "base/shortcuts.hpp"
 
 #include "utils/defs.hpp"
 
@@ -70,15 +71,7 @@ private:
     QString current_search;
 
     // Shortcuts
-    // LibraryView
-    QShortcut *libraryview_next_item;
-    QShortcut *libraryview_previous_item;
-    // ImageView
-    QShortcut *imageview_next_image;
-    QShortcut *imageview_previous_image;
-    QShortcut *imageview_load_images;
-    // Search
-    QShortcut *focus_search_input;
+    Shortcuts *shortcuts;
 
     // Open file dialog
     QString selectFile(const FileDialog::FileDialog DIALOG_TYPE);

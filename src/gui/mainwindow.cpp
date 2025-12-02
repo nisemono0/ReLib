@@ -188,12 +188,7 @@ MainWindow::~MainWindow() {
     delete this->log_dialog;
     delete this->manga_info_dialog;
 
-    delete this->libraryview_next_item;
-    delete this->libraryview_previous_item;
-    delete this->imageview_next_image;
-    delete this->imageview_previous_image;
-    delete this->imageview_load_images;
-    delete this->focus_search_input;
+    delete this->shortcuts;
 
     delete this->ui;
 }
@@ -295,48 +290,16 @@ void MainWindow::updateUiSettings() {
 }
 
 void MainWindow::setupShortcuts() {
+    this->shortcuts = new Shortcuts(this);
     // LibraryView
-    this->libraryview_next_item = new QShortcut(this);
-    this->libraryview_next_item->setKeys({
-            Qt::Key_Down,
-            Qt::Key_J
-            });
-    this->libraryview_previous_item = new QShortcut(this);
-    this->libraryview_previous_item->setKeys({
-            Qt::Key_Up,
-            Qt::Key_K
-            });
+    connect(this->shortcuts->libraryview_next_item, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectNextItem_shortcut);
+    connect(this->shortcuts->libraryview_previous_item, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectPreviousItem_shortcut);
     // ImageView
-    this->imageview_next_image = new QShortcut(this);
-    this->imageview_next_image->setKeys({
-            Qt::Key_Right,
-            Qt::Key_L
-            });
-    this->imageview_previous_image = new QShortcut(this);
-    this->imageview_previous_image->setKeys({
-            Qt::Key_Left,
-            Qt::Key_H
-            });
-    this->imageview_load_images = new QShortcut(this);
-    this->imageview_load_images->setKey(
-            Qt::Key_O
-            );
-    // Search
-    this->focus_search_input = new QShortcut(this);
-    this->focus_search_input->setKeys({
-            QKeySequence(Qt::CTRL | Qt::Key_F),
-            Qt::Key_Slash
-            });
-
-    // LibraryView
-    connect(this->libraryview_next_item, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectNextItem_shortcut);
-    connect(this->libraryview_previous_item, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectPreviousItem_shortcut);
-    // ImageView
-    connect(this->imageview_next_image, &QShortcut::activated, this->ui->imageView, &ImageView::receive_showNextImage_shortcut);
-    connect(this->imageview_previous_image, &QShortcut::activated, this->ui->imageView, &ImageView::receive_showPreviousImage_shortcut);
-    connect(this->imageview_load_images, &QShortcut::activated, this->ui->imageView, &ImageView::receive_loadImages_shortcut);
-    // Search input
-    connect(this->focus_search_input, &QShortcut::activated, this->ui->lineEditSearch, [=](){ this->ui->lineEditSearch->setFocus(); });
+    connect(this->shortcuts->imageview_next_image, &QShortcut::activated, this->ui->imageView, &ImageView::receive_showNextImage_shortcut);
+    connect(this->shortcuts->imageview_previous_image, &QShortcut::activated, this->ui->imageView, &ImageView::receive_showPreviousImage_shortcut);
+    connect(this->shortcuts->imageview_load_images, &QShortcut::activated, this->ui->imageView, &ImageView::receive_loadImages_shortcut);
+    // Search inpushortcuts->t
+    connect(this->shortcuts->focus_search_input, &QShortcut::activated, this->ui->lineEditSearch, [=](){ this->ui->lineEditSearch->setFocus(); });
 }
 
 void MainWindow::actionAddFile_triggered() {
