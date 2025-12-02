@@ -40,6 +40,8 @@ QVariant LibraryModel::data(const QModelIndex &index, int role) const {
     switch (role) {
         case Qt::DisplayRole:
             return manga.file_basename;
+        case Qt::ToolTipRole:
+            return manga.file_basename;
         case LibraryModel::FileHash:
             return manga.file_hash;
         case LibraryModel::FilePath:
