@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->scale_slider->setSingleStep(0);
     this->scale_slider->setPageStep(0);
     this->scale_slider->setValue(0);
+    this->scale_slider->setToolTip(QStringLiteral("Scale: %1").arg(QString::number(Settings::image_scale_value)));
     this->scale_slider_action->setDefaultWidget(this->scale_slider);
     this->ui->menuSettings->insertAction(this->ui->menuSettingsView->menuAction(), this->scale_slider_action);
     this->ui->menuSettings->insertSeparator(this->ui->menuSettingsView->menuAction());
@@ -281,6 +282,7 @@ void MainWindow::updateUiSettings() {
     if (Settings::remember_settings) {
         this->ui->actionScaleImage->setChecked(Settings::scale_image);
         this->scale_slider->setValue(Settings::scale_slider_value);
+        this->scale_slider->setToolTip(QStringLiteral("Scale: %1").arg(QString::number(Settings::image_scale_value)));
         this->ui->actionFitInView->setChecked(true);
         this->ui->actionSearchWhileTyping->setChecked(Settings::search_while_typing);
         this->ui->actionSelectFirstAfterSearch->setChecked(Settings::select_first_item);
@@ -509,6 +511,7 @@ void MainWindow::slider_scale_valueChanged(int value) {
             QStringLiteral("Scale: %1").arg(QString::number(Settings::image_scale_value)),
             this->scale_slider
             );
+    this->scale_slider->setToolTip(QStringLiteral("Scale: %1").arg(QString::number(Settings::image_scale_value)));
     emit request_scaleAndFitImage();
 }
 
