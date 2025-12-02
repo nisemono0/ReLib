@@ -29,6 +29,8 @@ qt_add_executable(ReLib
     src/base/log.hpp
     src/base/manga.cpp
     src/base/manga.hpp
+    src/base/mangatextedit.cpp
+    src/base/mangatextedit.hpp
     src/base/settings.cpp
     src/base/settings.hpp
     src/base/shortcuts.cpp

@@ -132,148 +132,181 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QPlainTextEdit" name="fileHashPlainTextEdit">
+      <widget class="MangaTextEdit" name="fileHashPlainTextEdit">
        <property name="enabled">
         <bool>true</bool>
        </property>
        <property name="contextMenuPolicy">
-        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+        <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
        </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
        <property name="readOnly">
         <bool>true</bool>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::TextInteractionFlag::NoTextInteraction</set>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QPlainTextEdit" name="filePathPlainTextEdit">
+      <widget class="MangaTextEdit" name="filePathPlainTextEdit">
        <property name="contextMenuPolicy">
-        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+        <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
        </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
        <property name="readOnly">
         <bool>true</bool>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::TextInteractionFlag::NoTextInteraction</set>
        </property>
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QPlainTextEdit" name="fileBasenamePlainTextEdit">
+      <widget class="MangaTextEdit" name="fileBasenamePlainTextEdit">
        <property name="contextMenuPolicy">
-        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+        <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
        </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
        <property name="readOnly">
         <bool>true</bool>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::TextInteractionFlag::NoTextInteraction</set>
        </property>
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QPlainTextEdit" name="titlePlainTextEdit">
+      <widget class="MangaTextEdit" name="titlePlainTextEdit">
        <property name="contextMenuPolicy">
-        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+        <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
        </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
        <property name="readOnly">
         <bool>true</bool>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::TextInteractionFlag::NoTextInteraction</set>
        </property>
       </widget>
      </item>
      <item row="4" column="1">
-      <widget class="QPlainTextEdit" name="artistPlainTextEdit">
+      <widget class="MangaTextEdit" name="artistPlainTextEdit">
        <property name="contextMenuPolicy">
-        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+        <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
        </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
        <property name="readOnly">
         <bool>true</bool>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::TextInteractionFlag::NoTextInteraction</set>
        </property>
       </widget>
      </item>
      <item row="5" column="1">
-      <widget class="QPlainTextEdit" name="parodyPlainTextEdit">
+      <widget class="MangaTextEdit" name="parodyPlainTextEdit">
        <property name="contextMenuPolicy">
-        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+        <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
        </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
        <property name="readOnly">
         <bool>true</bool>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::TextInteractionFlag::NoTextInteraction</set>
        </property>
       </widget>
      </item>
      <item row="6" column="1">
-      <widget class="QPlainTextEdit" name="circlePlainTextEdit">
+      <widget class="MangaTextEdit" name="circlePlainTextEdit">
        <property name="contextMenuPolicy">
-        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+        <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
        </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
        <property name="readOnly">
         <bool>true</bool>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::TextInteractionFlag::NoTextInteraction</set>
        </property>
       </widget>
      </item>
      <item row="7" column="1">
-      <widget class="QPlainTextEdit" name="magazinePlainTextEdit">
+      <widget class="MangaTextEdit" name="magazinePlainTextEdit">
        <property name="contextMenuPolicy">
-        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+        <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
        </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
        <property name="readOnly">
         <bool>true</bool>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::TextInteractionFlag::NoTextInteraction</set>
        </property>
       </widget>
      </item>
      <item row="8" column="1">
-      <widget class="QPlainTextEdit" name="eventPlainTextEdit">
+      <widget class="MangaTextEdit" name="eventPlainTextEdit">
        <property name="contextMenuPolicy">
-        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+        <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
        </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
        <property name="readOnly">
         <bool>true</bool>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::TextInteractionFlag::NoTextInteraction</set>
        </property>
       </widget>
      </item>
      <item row="9" column="1">
-      <widget class="QPlainTextEdit" name="publisherPlainTextEdit">
+      <widget class="MangaTextEdit" name="publisherPlainTextEdit">
        <property name="contextMenuPolicy">
-        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+        <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
        </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
        <property name="readOnly">
         <bool>true</bool>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::TextInteractionFlag::NoTextInteraction</set>
        </property>
       </widget>
      </item>
      <item row="10" column="1">
-      <widget class="QPlainTextEdit" name="tagsPlainTextEdit">
+      <widget class="MangaTextEdit" name="tagsPlainTextEdit">
        <property name="contextMenuPolicy">
-        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+        <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
        </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
        <property name="readOnly">
         <bool>true</bool>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::TextInteractionFlag::NoTextInteraction</set>
        </property>
       </widget>
      </item>
@@ -281,6 +314,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MangaTextEdit</class>
+   <extends>QPlainTextEdit</extends>
+   <header>base/mangatextedit.hpp</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

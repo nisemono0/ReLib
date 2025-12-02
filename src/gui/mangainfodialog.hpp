@@ -3,6 +3,7 @@
 #include "ui/ui_mangainfodialog.h"
 
 #include "base/manga.hpp"
+#include "base/mangatextedit.hpp"
 
 #include <QDialog>
 #include <QWidget>
