@@ -136,6 +136,9 @@
        <property name="enabled">
         <bool>true</bool>
        </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+       </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
@@ -146,6 +149,9 @@
      </item>
      <item row="1" column="1">
       <widget class="QPlainTextEdit" name="filePathPlainTextEdit">
+       <property name="contextMenuPolicy">
+        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+       </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
@@ -156,6 +162,9 @@
      </item>
      <item row="2" column="1">
       <widget class="QPlainTextEdit" name="fileBasenamePlainTextEdit">
+       <property name="contextMenuPolicy">
+        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+       </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
@@ -166,6 +175,9 @@
      </item>
      <item row="3" column="1">
       <widget class="QPlainTextEdit" name="titlePlainTextEdit">
+       <property name="contextMenuPolicy">
+        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+       </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
@@ -176,6 +188,9 @@
      </item>
      <item row="4" column="1">
       <widget class="QPlainTextEdit" name="artistPlainTextEdit">
+       <property name="contextMenuPolicy">
+        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+       </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
@@ -186,6 +201,9 @@
      </item>
      <item row="5" column="1">
       <widget class="QPlainTextEdit" name="parodyPlainTextEdit">
+       <property name="contextMenuPolicy">
+        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+       </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
@@ -196,6 +214,9 @@
      </item>
      <item row="6" column="1">
       <widget class="QPlainTextEdit" name="circlePlainTextEdit">
+       <property name="contextMenuPolicy">
+        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+       </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
@@ -206,6 +227,9 @@
      </item>
      <item row="7" column="1">
       <widget class="QPlainTextEdit" name="magazinePlainTextEdit">
+       <property name="contextMenuPolicy">
+        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+       </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
@@ -216,6 +240,9 @@
      </item>
      <item row="8" column="1">
       <widget class="QPlainTextEdit" name="eventPlainTextEdit">
+       <property name="contextMenuPolicy">
+        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+       </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
@@ -226,6 +253,9 @@
      </item>
      <item row="9" column="1">
       <widget class="QPlainTextEdit" name="publisherPlainTextEdit">
+       <property name="contextMenuPolicy">
+        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+       </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
@@ -236,6 +266,9 @@
      </item>
      <item row="10" column="1">
       <widget class="QPlainTextEdit" name="tagsPlainTextEdit">
+       <property name="contextMenuPolicy">
+        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+       </property>
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
