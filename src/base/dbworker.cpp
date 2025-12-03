@@ -94,36 +94,34 @@ QList<Manga> DBWorker::getAllDatabaseData() {
     return manga_list;
 }
 
-QList<PathHash> DBWorker::getPathHashDatabaseData() {
+QStringList DBWorker::getPathDatabaseData() {
     if (!this->isDatabaseLoaded()) {
         Log::warning(QStringLiteral("[DBWorker:getPathHashDatabaseData] Database not loaded"));
-        return QList<PathHash>();
+        return QStringList();
     }
 
-    QList<PathHash> path_hash_list = QList<PathHash>();
+    QStringList db_file_path_list = QStringList();
 
-    QSqlQuery select_pathhash_query = QSqlQuery(this->database);
+    QSqlQuery select_path_query = QSqlQuery(this->database);
 
-    if (!select_pathhash_query.prepare(DBOptions::SelectAllDBQuery)) {
-        QString prepare_error = select_pathhash_query.lastError().text();
-        Log::error(QStringLiteral("[DBWorker:select_pathhash:query.prepare] %1").arg(prepare_error));
-        return QList<PathHash>();
+    if (!select_path_query.prepare(DBOptions::SelectPathQuery)) {
+        QString prepare_error = select_path_query.lastError().text();
+        Log::error(QStringLiteral("[DBWorker:select_path:query.prepare] %1").arg(prepare_error));
+        return QStringList();
     }
 
-    if (!select_pathhash_query.exec()) {
-        QString query_error = select_pathhash_query.lastError().text();
+    if (!select_path_query.exec()) {
+        QString query_error = select_path_query.lastError().text();
         Log::error(QStringLiteral("[DBWorker:select_path:exec]: %1").arg(query_error));
-        return QList<PathHash>();
+        return QStringList();
     }
 
-    while (select_pathhash_query.next()) {
-        PathHash path_hash;
-        path_hash.file_hash = select_pathhash_query.value(0).toString();
-        path_hash.file_path = select_pathhash_query.value(1).toString();
-        path_hash_list.append(path_hash);
+    while (select_path_query.next()) {
+        qDebug() << select_path_query.value(0).toString();
+        db_file_path_list.append(select_path_query.value(0).toString());
     }
 
-    return path_hash_list;
+    return db_file_path_list;
 }
 
 void DBWorker::checkDatabaseFilehash(const PathHash &file) {
@@ -380,8 +378,8 @@ void DBWorker::receive_getAllDatabaseData_request() {
     emit send_DBWorker_data(this->getAllDatabaseData());
 }
 
-void DBWorker::receive_getPathHashDatabaseData_request(bool is_dir) {
-    emit send_DBWorker_pathhash_data(this->getPathHashDatabaseData(), is_dir);
+void DBWorker::receive_getPathDatabaseData_request(bool is_dir) {
+    emit send_DBWorker_path_data(this->getPathDatabaseData(), is_dir);
 }
 
 void DBWorker::receive_checkDatabaseHashes_request() {

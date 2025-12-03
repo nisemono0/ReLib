@@ -124,7 +124,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this, &MainWindow::request_insertInDatabase, this->db_worker, &DBWorker::receive_insertIntoDatabase_request);
     connect(this, &MainWindow::request_deleteFromDatabase, this->db_worker, &DBWorker::receive_deleteFromDatabase_request);
     connect(this, &MainWindow::request_getAllDatabaseData, this->db_worker, &DBWorker::receive_getAllDatabaseData_request);
-    connect(this, &MainWindow::request_getPathHashDatabaseData, this->db_worker, &DBWorker::receive_getPathHashDatabaseData_request);
+    connect(this, &MainWindow::request_getPathDatabaseData, this->db_worker, &DBWorker::receive_getPathDatabaseData_request);
     connect(this, &MainWindow::request_checkDatabaseHashes, this->db_worker, &DBWorker::receive_checkDatabaseHashes_request);
     connect(this, &MainWindow::request_checkDatabaseFilepaths, this->db_worker, &DBWorker::receive_checkDatabaseFilepaths_request);
 
@@ -137,7 +137,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->db_worker, &DBWorker::send_DBWorker_unloadDatabase_status, this, &MainWindow::receive_DBWorker_unloadDatabase_status);
     connect(this->db_worker, &DBWorker::send_DBWorker_progress, this, &MainWindow::receive_DBWorker_progress);
     connect(this->db_worker, &DBWorker::send_DBWorker_data, this, &MainWindow::receive_DBWorker_data);
-    connect(this->db_worker, &DBWorker::send_DBWorker_pathhash_data, this, &MainWindow::receive_DBWorker_pathhash_data);
+    connect(this->db_worker, &DBWorker::send_DBWorker_path_data, this, &MainWindow::receive_DBWorker_path_data);
 
     // Quit thread when result or info is received
     connect(this->zip_worker, &ZipWorker::send_ZipWorker_info, this->zip_thread, &QThread::quit);
@@ -145,7 +145,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->db_worker, &DBWorker::send_DBWorker_info, this->db_thread, &QThread::quit);
     connect(this->db_worker, &DBWorker::send_DBWorker_unloadDatabase_status, this->db_thread, &QThread::quit);
     connect(this->db_worker, &DBWorker::send_DBWorker_data, this->db_thread, &QThread::quit);
-    connect(this->db_worker, &DBWorker::send_DBWorker_pathhash_data, this->db_thread, &QThread::quit);
+    connect(this->db_worker, &DBWorker::send_DBWorker_path_data, this->db_thread, &QThread::quit);
 
     this->updateUiSettings();
     this->updateUiLock();
@@ -320,7 +320,7 @@ void MainWindow::actionAddFile_triggered() {
         QMessageBox::information(this, QStringLiteral("Add file"), QStringLiteral("Database busy"));
     } else {
         this->db_thread->start();
-        emit request_getPathHashDatabaseData(false);
+        emit request_getPathDatabaseData(false);
     }
 }
 
@@ -329,7 +329,7 @@ void MainWindow::actionAddDir_triggered() {
         QMessageBox::information(this, QStringLiteral("Add file"), QStringLiteral("Database busy"));
     } else {
         this->db_thread->start();
-        emit request_getPathHashDatabaseData(true);
+        emit request_getPathDatabaseData(true);
     }
 }
 
@@ -418,7 +418,7 @@ void MainWindow::receive_DBWorker_data(const QList<Manga> &data) {
     emit request_setMangaList(data);
 }
 
-void MainWindow::receive_DBWorker_pathhash_data(const QList<PathHash> &data, bool is_dir) {
+void MainWindow::receive_DBWorker_path_data(const QStringList &data, bool is_dir) {
     if (this->zip_thread->isRunning()) {
         QMessageBox::information(this, QStringLiteral("Add file(s)"), QStringLiteral("Action already running"));
     } else if (is_dir == true) {

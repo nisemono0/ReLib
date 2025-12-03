@@ -95,8 +95,8 @@ private:
 
 signals:
     // ZipWorker
-    void request_getFileJsonInfo(const QString &file_path, const QList<PathHash> &path_hash_list);
-    void request_getDirJsonInfo(const QString &dir_path, const QList<PathHash> &path_hash_list);
+    void request_getFileJsonInfo(const QString &file_path, const QStringList &db_file_path_list);
+    void request_getDirJsonInfo(const QString &dir_path, const QStringList &db_file_path_list);
 
     // DBWorker
     void request_createDatabase(const QString &file_path);
@@ -105,7 +105,7 @@ signals:
     void request_insertInDatabase(const QList<ZipData> &zip_data_list);
     void request_deleteFromDatabase(const QStringList &hash_list);
     void request_getAllDatabaseData();
-    void request_getPathHashDatabaseData(bool is_dir);
+    void request_getPathDatabaseData(bool is_dir);
     void request_checkDatabaseHashes();
     void request_checkDatabaseFilepaths();
 
@@ -131,7 +131,7 @@ public slots:
     void receive_DBWorker_unloadDatabase_status(bool status);
     void receive_DBWorker_progress(int progress);
     void receive_DBWorker_data(const QList<Manga> &data);
-    void receive_DBWorker_pathhash_data(const QList<PathHash> &data, bool is_dir);
+    void receive_DBWorker_path_data(const QStringList &data, bool is_dir);
 
     // LibraryView
     void receive_LibraryView_deleteFromDatabse_request(const QStringList &hash_list);

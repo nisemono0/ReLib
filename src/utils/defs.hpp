@@ -75,8 +75,8 @@ namespace DBOptions {
     // SELECt all besides primary key from database
     static const QString SelectAllDBQuery = QStringLiteral(
             "SELECT file_hash, file_path, info_json FROM %1;").arg(DBOptions::TableName);
-    static const QString SelectPathHashQuery = QStringLiteral(
-            "SELECT file_hash, file_path FROM %1;").arg(DBOptions::TableName);
+    static const QString SelectPathQuery = QStringLiteral(
+            "SELECT file_path FROM %1;").arg(DBOptions::TableName);
 };
 
 namespace FileDialog {

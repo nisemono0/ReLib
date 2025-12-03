@@ -21,15 +21,11 @@ ZipWorker::~ZipWorker() {
 
 }
 
-ZipWorker::ZipWorkerInfo ZipWorker::getZipInfo(const QString &file_path, const QList<PathHash> &path_hash_list) {
+ZipWorker::ZipWorkerInfo ZipWorker::getZipInfo(const QString &file_path, const QStringList &db_file_path_list) {
     ZipWorkerInfo ret_struct;
 
-    PathHash path_hash;
-    path_hash.file_path = file_path;
-    path_hash.file_hash = Utils::Fs::getSha251FromFile(file_path);
-
-    if (path_hash_list.contains(path_hash)) {
-        Log::warning(QStringLiteral("[File already in database]: %1").arg(file_path));
+    if (db_file_path_list.contains(file_path)) {
+        Log::warning(QStringLiteral("[File path already in database]: %1").arg(file_path));
         ret_struct.is_error = true;
         return ret_struct;
     }
@@ -48,19 +44,19 @@ ZipWorker::ZipWorkerInfo ZipWorker::getZipInfo(const QString &file_path, const Q
 
     ret_struct.zip_data.info_json = json_doc;
     ret_struct.zip_data.file_path = file_path;
-    ret_struct.zip_data.file_hash = path_hash.file_hash;
+    ret_struct.zip_data.file_hash = Utils::Fs::getSha251FromFile(file_path);
     ret_struct.is_error = false;
 
     return ret_struct;
 }
 
-void ZipWorker::receive_getFileJsonInfo_request(const QString &file_path, const QList<PathHash> &path_hash_list) {
+void ZipWorker::receive_getFileJsonInfo_request(const QString &file_path, const QStringList &db_file_path_list) {
     if (! Utils::Fs::fileExists(file_path)) {
         emit send_ZipWorker_info(QStringLiteral("Empty filename"));
         return;
     }
 
-    ZipWorkerInfo custom_ret = this->getZipInfo(file_path, path_hash_list);
+    ZipWorkerInfo custom_ret = this->getZipInfo(file_path, db_file_path_list);
 
     if (custom_ret.is_error) {
         emit send_ZipWorker_data(QList<ZipData>());
@@ -75,7 +71,7 @@ void ZipWorker::receive_getFileJsonInfo_request(const QString &file_path, const 
     emit send_ZipWorker_data(zip_data_list);
 }
 
-void ZipWorker::receive_getDirJsonInfo_request(const QString &dir_path, const QList<PathHash> &path_hash_list) {
+void ZipWorker::receive_getDirJsonInfo_request(const QString &dir_path, const QStringList &db_file_path_list) {
     QStringList files_list = Utils::Fs::getDirZipList(dir_path);
     qsizetype files_list_len = files_list.length();
 
@@ -103,8 +99,8 @@ void ZipWorker::receive_getDirJsonInfo_request(const QString &dir_path, const QL
         }
 
         // Start (current_batch_len) concurrent threads getting info.json QJsonObject from zip files
-        auto mapped_batch_results = QtConcurrent::blockingMapped(batch_file_list, [this, path_hash_list](const QString &file_path) {
-                return this->getZipInfo(file_path, path_hash_list);
+        auto mapped_batch_results = QtConcurrent::blockingMapped(batch_file_list, [this, db_file_path_list](const QString &file_path) {
+                return this->getZipInfo(file_path, db_file_path_list);
                 });
         for (auto batch_results_it : mapped_batch_results) {
             if (!batch_results_it.is_error) {
