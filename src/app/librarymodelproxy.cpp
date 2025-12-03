@@ -90,7 +90,6 @@ bool LibraryModelProxy::filterAcceptsRow(int source_row, const QModelIndex &sour
             return this->searchItemData(re_match.captured(1).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::FileHash).toStringList());
         }
 
-        // TODO(maybe): Add flag to search by OR instead of AND
         if (match_around.contains(QStringLiteral("title:"), Qt::CaseInsensitive)) {
             is_item_found = is_item_found && this->searchItemData(re_match.captured(1).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::Title).toStringList());
         }
