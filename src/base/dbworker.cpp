@@ -117,7 +117,6 @@ QStringList DBWorker::getPathDatabaseData() {
     }
 
     while (select_path_query.next()) {
-        qDebug() << select_path_query.value(0).toString();
         db_file_path_list.append(select_path_query.value(0).toString());
     }
 
