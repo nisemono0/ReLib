@@ -170,6 +170,7 @@ private slots:
     // Search
     void searchLineEdit_returnPressed();
     void focus_search_input_shortcut();
+    void unfocus_search_input_shortcut();
     void search_move_char_forward_shortcut();
     void search_move_char_backward_shortcut();
     void search_move_word_forward_shortcut();

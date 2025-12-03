@@ -309,6 +309,7 @@ void MainWindow::setupShortcuts() {
     connect(this->shortcuts->imageview_load_images, &QShortcut::activated, this->ui->imageView, &ImageView::receive_loadImages_shortcut);
     // Search input shortcuts
     connect(this->shortcuts->focus_search_input, &QShortcut::activated, this, &MainWindow::focus_search_input_shortcut);
+    connect(this->shortcuts->unfocus_search_input, &QShortcut::activated, this, &MainWindow::unfocus_search_input_shortcut);
     connect(this->shortcuts->search_move_char_forward, &QShortcut::activated, this, &MainWindow::search_move_char_forward_shortcut);
     connect(this->shortcuts->search_move_char_backward, &QShortcut::activated, this, &MainWindow::search_move_char_backward_shortcut);
     connect(this->shortcuts->search_move_word_forward, &QShortcut::activated, this, &MainWindow::search_move_word_forward_shortcut);
@@ -624,6 +625,12 @@ void MainWindow::searchLineEdit_returnPressed() {
 
 void MainWindow::focus_search_input_shortcut() {
    this->ui->searchLineEdit->setFocus();
+}
+
+void MainWindow::unfocus_search_input_shortcut() {
+    if (this->ui->searchLineEdit->hasFocus()) {
+        this->setFocus();
+    }
 }
 
 void MainWindow::search_move_char_forward_shortcut() {
