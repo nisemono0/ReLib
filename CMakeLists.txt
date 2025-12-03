@@ -19,6 +19,8 @@ qt_add_executable(ReLib
     src/app/libraryview.hpp
     src/app/libraryviewdelegate.cpp
     src/app/libraryviewdelegate.hpp
+    src/app/searchcompleter.cpp
+    src/app/searchcompleter.hpp
     src/app/searchlineedit.cpp
     src/app/searchlineedit.hpp
     src/base/clipboard.cpp
