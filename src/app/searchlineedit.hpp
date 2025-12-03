@@ -8,6 +8,7 @@
 #include <QWidget>
 #include <QLineEdit>
 #include <QList>
+#include <QKeyEvent>
 
 
 class SearchLineEdit : public QLineEdit {
@@ -18,6 +19,16 @@ public:
 
 private:
     SearchCompleter *search_completer;
+    // Inserts bracket in the text edit and moves the
+    // cursor back once; used to insert matching brackets
+    void insertMatchingBracket(const QString &bracket);
+    // Remove the matching bracket if it exists
+    // Example: pressing backspace here {|} would remove both {}
+    // Return true if successfull
+    bool removeMatchingBracket();
+
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
 
 signals:
     void request_updateCompletionMode(SearchCompleter::CompleterRole role, const QString &text);
