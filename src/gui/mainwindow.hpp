@@ -120,6 +120,9 @@ signals:
     void request_clearImageView();
     void request_scaleAndFitImage();
 
+    // Search
+    void request_setCompleterData(const QList<Manga> &data);
+
 public slots:
     // ZipWorker
     void receive_ZipWorker_info(const QString &info);

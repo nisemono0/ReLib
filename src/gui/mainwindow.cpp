@@ -95,8 +95,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // Search
     connect(this->ui->searchLineEdit, &QLineEdit::returnPressed, this, &MainWindow::searchLineEdit_returnPressed);
-    // Search while typing timer
     connect(this->search_timer, &QTimer::timeout, this, &MainWindow::search_while_typing_timeout);
+    connect(this, &MainWindow::request_setCompleterData, this->ui->searchLineEdit, &SearchLineEdit::receive_setCompleterData_request);
 
     // Library view
     connect(this, &MainWindow::request_setMangaList, this->ui->libraryView, &LibraryView::receive_setMangaList_request);
@@ -417,6 +417,7 @@ void MainWindow::receive_DBWorker_progress(int progress) {
 void MainWindow::receive_DBWorker_data(const QList<Manga> &data) {
     Log::info(QStringLiteral("[DBWorker received]: %1").arg(QString::number(data.length())));
     emit request_setMangaList(data);
+    emit request_setCompleterData(data);
 }
 
 void MainWindow::receive_DBWorker_path_data(const QStringList &data, bool is_dir) {
