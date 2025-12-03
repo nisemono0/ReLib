@@ -94,7 +94,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->ui->pushButtonRefresh, &QPushButton::clicked, this, &MainWindow::pushButtonRefresh_clicked);
 
     // Search
-    connect(this->ui->lineEditSearch, &QLineEdit::returnPressed, this, &MainWindow::lineEditSearch_returnPressed);
+    connect(this->ui->searchLineEdit, &QLineEdit::returnPressed, this, &MainWindow::searchLineEdit_returnPressed);
     // Search while typing timer
     connect(this->search_timer, &QTimer::timeout, this, &MainWindow::search_while_typing_timeout);
 
@@ -252,7 +252,7 @@ void MainWindow::updateUiLock() {
     this->ui->pushButtonRefresh->setEnabled(this->is_locked);
 
     // MainWindow:SearchInput
-    this->ui->lineEditSearch->setEnabled(this->is_locked);
+    this->ui->searchLineEdit->setEnabled(this->is_locked);
 
     // Update ui lock status
     this->is_locked = !this->is_locked;
@@ -263,12 +263,12 @@ void MainWindow::setNoDatabaseStatus() {
 }
 
 void MainWindow::clearSearchText() {
-    this->ui->lineEditSearch->setText("");
+    this->ui->searchLineEdit->setText("");
     this->current_search = "";
 }
 
 const QString MainWindow::getSearchText() {
-    this->current_search = this->ui->lineEditSearch->text();
+    this->current_search = this->ui->searchLineEdit->text();
     return this->current_search;
 }
 
@@ -617,36 +617,36 @@ void MainWindow::pushButtonRefresh_clicked() {
 }
 
 // Search
-void MainWindow::lineEditSearch_returnPressed() {
+void MainWindow::searchLineEdit_returnPressed() {
     emit request_setSearchText(this->getSearchText());
     this->ui->libraryView->setFocus();
 }
 
 void MainWindow::focus_search_input_shortcut() {
-   this->ui->lineEditSearch->setFocus();
+   this->ui->searchLineEdit->setFocus();
 }
 
 void MainWindow::search_move_char_forward_shortcut() {
-    if (this->ui->lineEditSearch->hasFocus()) {
-        this->ui->lineEditSearch->cursorForward(false);
+    if (this->ui->searchLineEdit->hasFocus()) {
+        this->ui->searchLineEdit->cursorForward(false);
     }
 }
 
 void MainWindow::search_move_char_backward_shortcut() {
-    if (this->ui->lineEditSearch->hasFocus()) {
-        this->ui->lineEditSearch->cursorBackward(false);
+    if (this->ui->searchLineEdit->hasFocus()) {
+        this->ui->searchLineEdit->cursorBackward(false);
     }
 }
 
 void MainWindow::search_move_word_forward_shortcut() {
-    if (this->ui->lineEditSearch->hasFocus()) {
-        this->ui->lineEditSearch->cursorWordForward(false);
+    if (this->ui->searchLineEdit->hasFocus()) {
+        this->ui->searchLineEdit->cursorWordForward(false);
     }
 }
 
 void MainWindow::search_move_word_backward_shortcut() {
-    if (this->ui->lineEditSearch->hasFocus()) {
-        this->ui->lineEditSearch->cursorWordBackward(false);
+    if (this->ui->searchLineEdit->hasFocus()) {
+        this->ui->searchLineEdit->cursorWordBackward(false);
     }
 }
 
@@ -661,7 +661,7 @@ void MainWindow::main_window_progress_dialog_canceled() {
 
 // Search while typing timer
 void MainWindow::search_while_typing_timeout() {
-    QString new_search = this->ui->lineEditSearch->text();
+    QString new_search = this->ui->searchLineEdit->text();
     if (!this->isLastSearchedText(new_search)) {
         this->current_search = new_search;
         emit request_setSearchText(new_search);

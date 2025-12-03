@@ -72,7 +72,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEditSearch"/>
+       <widget class="SearchLineEdit" name="searchLineEdit"/>
       </item>
      </layout>
     </item>
@@ -469,6 +469,11 @@
    <class>LibraryView</class>
    <extends>QListView</extends>
    <header>app/libraryview.hpp</header>
+  </customwidget>
+  <customwidget>
+   <class>SearchLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>app/searchlineedit.hpp</header>
   </customwidget>
  </customwidgets>
  <resources/>
