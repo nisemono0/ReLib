@@ -621,7 +621,6 @@ void MainWindow::pushButtonRefresh_clicked() {
 // Search
 void MainWindow::searchLineEdit_returnPressed() {
     emit request_setSearchText(this->getSearchText());
-    this->ui->libraryView->setFocus();
 }
 
 void MainWindow::focus_search_input_shortcut() {
