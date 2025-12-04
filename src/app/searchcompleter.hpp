@@ -32,15 +32,8 @@ public:
     // Sets the completer data based on the list of manga info
     void setCompleterData(const QList<Manga> &data);
 
-    // TODO: Split path by , and get the last
-    // this allows to auto complete multiple tags
-    virtual QStringList splitPath(const QString &path) const override {
-        qDebug() << "===============================";
-        qDebug() << "PREF:" << this->completionPrefix();
-        qDebug() << "PATH:" << path;
-        qDebug() << "===============================";
-        return QCompleter::splitPath(path);
-    }
+    // Makes it so i can have autocomplete when having multiple tags
+    virtual QStringList splitPath(const QString &path) const override;
 
 private:
     QStringListModel *completer_model;

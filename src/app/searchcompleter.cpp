@@ -72,6 +72,18 @@ void SearchCompleter::setCompleterData(const QList<Manga> &data) {
     }
 }
 
+// TODO: See why after inserting , the last completion is still showing
+QStringList SearchCompleter::splitPath(const QString &path) const {
+    if (path.isEmpty()) {
+        return QCompleter::splitPath(path);
+    }
+
+    QString last_item = path.split(",", Qt::SkipEmptyParts).last().trimmed();
+    qDebug() << last_item;
+    qDebug() << QCompleter::splitPath(path);
+    return QStringList(last_item);
+}
+
 bool SearchCompleter::hasEntry(SearchCompleter::CompleterRole role, const QString &entry) {
     if (this->completer_data[role].contains(entry, Qt::CaseInsensitive)) {
         return true;
