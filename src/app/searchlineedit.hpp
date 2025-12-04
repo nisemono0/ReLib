@@ -18,8 +18,11 @@ public:
     explicit SearchLineEdit(QWidget *parent = nullptr);
     ~SearchLineEdit();
 
+    void setCompleter(SearchCompleter *search_completer);
+    SearchCompleter* completer() const;
+
 private:
-    SearchCompleter *search_completer;
+    SearchCompleter *search_completer = nullptr;
 
     QRegularExpression completer_regex;
 
@@ -33,6 +36,10 @@ private:
     // Checks if current cursor position is inside the {} braces
     // of a matched namespace
     bool isCursorInsideBrace(const QString &matched_text, const QString &matched_namespace);
+    // This function checks if the next character is a closed bracket
+    // and jumps over it if the input is the same as bracket, otherwise
+    // it inserts bracket
+    void jumpOrInsertClosedBracket(const QString &bracket);
     // Returns the ComplerRole of the matched tag namespace; For example
     // for artist:{} this will return SearchCompleter::Artist role
     SearchCompleter::CompleterRole getCompleterRoleFromNamespace(const QString &matched_namespace);
@@ -48,5 +55,7 @@ public slots:
 
 private slots:
     void searchLineEdit_textEdited(const QString &text);
+    void insertCompleterText(const QString &text);
+
 };
 

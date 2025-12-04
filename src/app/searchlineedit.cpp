@@ -2,12 +2,10 @@
 
 
 SearchLineEdit::SearchLineEdit(QWidget *parent) : QLineEdit(parent) {
-    this->search_completer = new SearchCompleter(this);
-
-    this->setCompleter(this->search_completer);
+    this->setCompleter(new SearchCompleter(this));
 
     this->completer_regex = QRegularExpression(
-            QStringLiteral("((?:file_hash:|\\btitle:|\\bartist:|\\bparody:|\\bcircle:|\\bmagazine:|\\bevent:|\\bpublisher:|\\btag:)){([^}]*)}"),
+            QStringLiteral("((?:file_hash:|\\btitle:|\\bartist:|\\bparody:|\\bcircle:|\\bmagazine:|\\bevent:|\\bpublisher:|\\btag:)){([^}]+)}"),
             QRegularExpression::CaseInsensitiveOption);
     this->completer_regex.optimize();
 
@@ -17,6 +15,27 @@ SearchLineEdit::SearchLineEdit(QWidget *parent) : QLineEdit(parent) {
 
 SearchLineEdit::~SearchLineEdit() {
     delete this->search_completer;
+}
+
+void SearchLineEdit::setCompleter(SearchCompleter *search_completer) {
+    if (this->search_completer) {
+        this->search_completer->disconnect(this);
+        delete this->search_completer;
+    }
+
+    this->search_completer = search_completer;
+
+    if (!search_completer) {
+        return;
+    }
+
+    this->search_completer->setWidget(this);
+
+    connect(this->search_completer, qOverload<const QString&>(&QCompleter::activated), this, &SearchLineEdit::insertCompleterText, Qt::UniqueConnection);
+}
+
+SearchCompleter* SearchLineEdit::completer() const {
+    return this->search_completer;
 }
 
 void SearchLineEdit::insertMatchingBracket(const QString &bracket) {
@@ -64,6 +83,15 @@ bool SearchLineEdit::isCursorInsideBrace(const QString &matched_text, const QStr
     return false;
 }
 
+void SearchLineEdit::jumpOrInsertClosedBracket(const QString &bracket) {
+    int current_cursor_pos = this->cursorPosition();
+    if (this->text()[current_cursor_pos] == bracket) {
+        this->setCursorPosition(this->cursorPosition() + 1);
+    } else {
+        this->insert(bracket);
+    }
+}
+
 SearchCompleter::CompleterRole SearchLineEdit::getCompleterRoleFromNamespace(const QString &matched_namespace) {
     if (matched_namespace.compare(QStringLiteral("title:"), Qt::CaseInsensitive) == 0) {
         return SearchCompleter::Title;
@@ -97,33 +125,44 @@ SearchCompleter::CompleterRole SearchLineEdit::getCompleterRoleFromNamespace(con
 }
 
 void SearchLineEdit::keyPressEvent(QKeyEvent *event) {
-    bool backspace_pressed = false;
     switch (event->key()) {
         case Qt::Key_ParenLeft:
         {
             this->insertMatchingBracket(QStringLiteral(")"));
             break;
         }
+        case Qt::Key_ParenRight:
+        {
+            this->jumpOrInsertClosedBracket(QStringLiteral(")"));
+            return;
+        }
         case Qt::Key_BracketLeft:
         {
             this->insertMatchingBracket(QStringLiteral("]"));
             break;
+        }
+        case Qt::Key_BracketRight:
+        {
+            this->jumpOrInsertClosedBracket(QStringLiteral("]"));
+            return;
         }
         case Qt::Key_BraceLeft:
         {
             this->insertMatchingBracket(QStringLiteral("}"));
             break;
         }
+        case Qt::Key_BraceRight:
+        {
+            this->jumpOrInsertClosedBracket(QStringLiteral("}"));
+            return;
+        }
         case Qt::Key_Backspace:
         {
-            backspace_pressed = this->removeMatchingBracket();
-            break;
+            if (this->removeMatchingBracket()) {
+                return;
+            }
         }
     };
-
-    if (backspace_pressed) {
-        return;
-    }
 
     QLineEdit::keyPressEvent(event);
 }
@@ -143,5 +182,12 @@ void SearchLineEdit::searchLineEdit_textEdited(const QString &text) {
         }
     }
     emit request_updateCompletionMode(SearchCompleter::Disabled, "");
+}
+
+void SearchLineEdit::insertCompleterText(const QString &text) {
+    if (this->search_completer->widget() != this) {
+        return;
+    }
+    this->insert(text);
 }
 
