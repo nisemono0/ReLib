@@ -9,6 +9,9 @@ SearchCompleter::SearchCompleter(QObject *parent) : QCompleter(parent) {
     this->setCaseSensitivity(Qt::CaseInsensitive);
     this->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
     this->setFilterMode(Qt::MatchContains);
+    this->setCompletionMode(QCompleter::PopupCompletion);
+
+    this->current_completer_role = SearchCompleter::Disabled;
 }
 
 SearchCompleter::~SearchCompleter() {
@@ -82,9 +85,15 @@ void SearchCompleter::insertEntry(SearchCompleter::CompleterRole role, const QSt
 
 void SearchCompleter::updateCompletionMode(SearchCompleter::CompleterRole role) {
     this->completer_model->setStringList(this->completer_data[role]);
+    this->current_completer_role = role;
 }
 
-void SearchCompleter::receive_updateCompletionMode_request(SearchCompleter::CompleterRole role, const QString &text) {
-    // TODO: setup completer here
+void SearchCompleter::receive_updateCompletionMode_request(SearchCompleter::CompleterRole role, const QString &prefix) {
+    if (this->current_completer_role != role) {
+        this->updateCompletionMode(role);
+        this->setCompletionPrefix(prefix);
+    } else {
+        this->setCompletionPrefix(prefix);
+    }
 }
 

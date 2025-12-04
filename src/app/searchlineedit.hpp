@@ -9,6 +9,7 @@
 #include <QLineEdit>
 #include <QList>
 #include <QKeyEvent>
+#include <QRegularExpression>
 
 
 class SearchLineEdit : public QLineEdit {
@@ -19,6 +20,9 @@ public:
 
 private:
     SearchCompleter *search_completer;
+
+    QRegularExpression completer_regex;
+
     // Inserts bracket in the text edit and moves the
     // cursor back once; used to insert matching brackets
     void insertMatchingBracket(const QString &bracket);
@@ -26,17 +30,23 @@ private:
     // Example: pressing backspace here {|} would remove both {}
     // Return true if successfull
     bool removeMatchingBracket();
+    // Checks if current cursor position is inside the {} braces
+    // of a matched namespace
+    bool isCursorInsideBrace(const QString &matched_text, const QString &matched_namespace);
+    // Returns the ComplerRole of the matched tag namespace; For example
+    // for artist:{} this will return SearchCompleter::Artist role
+    SearchCompleter::CompleterRole getCompleterRoleFromNamespace(const QString &matched_namespace);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
 
 signals:
-    void request_updateCompletionMode(SearchCompleter::CompleterRole role, const QString &text);
+    void request_updateCompletionMode(SearchCompleter::CompleterRole role, const QString &prefix);
 
 public slots:
     void receive_setCompleterData_request(const QList<Manga> &data);
 
 private slots:
-    void searchLineEdit_textChanged(const QString &text);
+    void searchLineEdit_textEdited(const QString &text);
 };
 
