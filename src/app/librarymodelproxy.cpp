@@ -8,7 +8,7 @@ LibraryModelProxy::LibraryModelProxy(QObject *parent) : QSortFilterProxyModel(pa
     this->search_text = "";
 
     this->search_regex = QRegularExpression(
-            QStringLiteral("(?:file_hash:|\\btitle:|\\bartist:|\\bparody:|\\bcircle:|\\bmagazine:|\\bevent:|\\bpublisher:|\\btag:){([^}]+)}"),
+            QStringLiteral("((?:file_hash:|\\btitle:|\\bartist:|\\bparody:|\\bcircle:|\\bmagazine:|\\bevent:|\\bpublisher:|\\btag:)){([^}]+)}"),
             QRegularExpression::CaseInsensitiveOption);
     this->search_regex.optimize();
 
@@ -81,45 +81,49 @@ bool LibraryModelProxy::filterAcceptsRow(int source_row, const QModelIndex &sour
 
     for (auto re_match : this->search_regex.globalMatch(search_string)) {
         // capture(0) contains the whole matched text, ex: artist:{a1, a2}
-        // capture(1) contains the text inside {}, ex: a1, a2
+        // capture(1) contains the namespace text, ex: artist:
+        // capture(2) contains the text inside {}, ex: a1, a2
+
         QString match_around = re_match.captured(0);
+        QString match_namespace = re_match.captured(1);
+
         search_string = search_string.remove(match_around, Qt::CaseSensitive).trimmed();
 
         // If we search by hash we dont need to check for other types, just return
-        if (match_around.contains(QStringLiteral("file_hash:"), Qt::CaseInsensitive)) {
-            return this->searchItemData(re_match.captured(1).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::FileHash).toStringList());
+        if (match_namespace.compare(QStringLiteral("file_hash:"), Qt::CaseInsensitive) == 0) {
+            return this->searchItemData(re_match.captured(2).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::FileHash).toStringList());
         }
 
-        if (match_around.contains(QStringLiteral("title:"), Qt::CaseInsensitive)) {
-            is_item_found = is_item_found && this->searchItemData(re_match.captured(1).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::Title).toStringList());
+        if (match_namespace.compare(QStringLiteral("title:"), Qt::CaseInsensitive) == 0) {
+            is_item_found = is_item_found && this->searchItemData(re_match.captured(2).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::Title).toStringList());
         }
 
-        if (match_around.contains(QStringLiteral("artist:"), Qt::CaseInsensitive)) {
-            is_item_found = is_item_found && this->searchItemData(re_match.captured(1).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::Artist).toStringList());
+        if (match_namespace.compare(QStringLiteral("artist:"), Qt::CaseInsensitive) == 0) {
+            is_item_found = is_item_found && this->searchItemData(re_match.captured(2).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::Artist).toStringList());
         }
 
-        if (match_around.contains(QStringLiteral("parody:"), Qt::CaseInsensitive)) {
-            is_item_found = is_item_found && this->searchItemData(re_match.captured(1).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::Parody).toStringList());
+        if (match_namespace.compare(QStringLiteral("parody:"), Qt::CaseInsensitive) == 0) {
+            is_item_found = is_item_found && this->searchItemData(re_match.captured(2).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::Parody).toStringList());
         }
 
-        if (match_around.contains(QStringLiteral("circle:"), Qt::CaseInsensitive)) {
-            is_item_found = is_item_found && this->searchItemData(re_match.captured(1).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::Circle).toStringList());
+        if (match_namespace.compare(QStringLiteral("circle:"), Qt::CaseInsensitive) == 0) {
+            is_item_found = is_item_found && this->searchItemData(re_match.captured(2).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::Circle).toStringList());
         }
 
-        if (match_around.contains(QStringLiteral("magazine:"), Qt::CaseInsensitive)) {
-            is_item_found = is_item_found && this->searchItemData(re_match.captured(1).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::Magazine).toStringList());
+        if (match_namespace.compare(QStringLiteral("magazine:"), Qt::CaseInsensitive) == 0) {
+            is_item_found = is_item_found && this->searchItemData(re_match.captured(2).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::Magazine).toStringList());
         }
 
-        if (match_around.contains(QStringLiteral("event:"), Qt::CaseInsensitive)) {
-            is_item_found = is_item_found && this->searchItemData(re_match.captured(1).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::Event).toStringList());
+        if (match_namespace.compare(QStringLiteral("event:"), Qt::CaseInsensitive) == 0) {
+            is_item_found = is_item_found && this->searchItemData(re_match.captured(2).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::Event).toStringList());
         }
 
-        if (match_around.contains(QStringLiteral("publisher:"), Qt::CaseInsensitive)) {
-            is_item_found = is_item_found && this->searchItemData(re_match.captured(1).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::Publisher).toStringList());
+        if (match_namespace.compare(QStringLiteral("publisher:"), Qt::CaseInsensitive) == 0) {
+            is_item_found = is_item_found && this->searchItemData(re_match.captured(2).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::Publisher).toStringList());
         }
 
-        if (match_around.contains(QStringLiteral("tag:"), Qt::CaseInsensitive)) {
-            is_item_found = is_item_found && this->searchItemData(re_match.captured(1).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::Tags).toStringList());
+        if (match_namespace.compare(QStringLiteral("tag:"), Qt::CaseInsensitive) == 0) {
+            is_item_found = is_item_found && this->searchItemData(re_match.captured(2).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::Tags).toStringList());
         }
     }
 
