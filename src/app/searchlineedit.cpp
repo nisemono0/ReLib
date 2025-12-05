@@ -9,7 +9,9 @@ SearchLineEdit::SearchLineEdit(QWidget *parent) : QLineEdit(parent) {
             QRegularExpression::CaseInsensitiveOption);
     this->completer_regex.optimize();
 
+    // Line edit
     connect(this, &QLineEdit::textEdited, this, &SearchLineEdit::searchLineEdit_textEdited);
+    // Completer
     connect(this, &SearchLineEdit::request_updateCompletionMode, this->search_completer, &SearchCompleter::receive_updateCompletionMode_request);
 }
 
@@ -31,7 +33,7 @@ void SearchLineEdit::setCompleter(SearchCompleter *search_completer) {
 
     this->search_completer->setWidget(this);
 
-    connect(this->search_completer, qOverload<const QString&>(&QCompleter::activated), this, &SearchLineEdit::insertCompleterText, Qt::UniqueConnection);
+    connect(this->search_completer, qOverload<const QString&>(&QCompleter::activated), this, &SearchLineEdit::receive_completerText, Qt::UniqueConnection);
 }
 
 SearchCompleter* SearchLineEdit::completer() const {
@@ -185,7 +187,7 @@ void SearchLineEdit::searchLineEdit_textEdited(const QString &text) {
     emit request_updateCompletionMode(SearchCompleter::Disabled, "");
 }
 
-void SearchLineEdit::insertCompleterText(const QString &completer_text) {
+void SearchLineEdit::receive_completerText(const QString &completer_text) {
     if (this->search_completer->widget() != this) {
         return;
     }

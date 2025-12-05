@@ -109,6 +109,7 @@ void SearchCompleter::receive_updateCompletionMode_request(SearchCompleter::Comp
     } else {
         this->setCompletionPrefix(prefix);
     }
+
     this->complete();
 }
 

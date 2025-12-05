@@ -31,7 +31,6 @@ public:
 
     // Sets the completer data based on the list of manga info
     void setCompleterData(const QList<Manga> &data);
-
     // Makes it so i can have autocomplete when having multiple tags
     QStringList splitPath(const QString &path) const override;
 
