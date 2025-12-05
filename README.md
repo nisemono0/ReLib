@@ -1,7 +1,7 @@
 <h1 align="center"> ReLib </h1>
 <p align="center">
   Qt program to search/read my manga library <br>
-  Rewrite of <a href="https://github.com/nisemono0/HLib">HLib</a> with added multithreading, tag search and autocompletion (autocompletion is WIP) <br>
+  Rewrite of <a href="https://github.com/nisemono0/HLib">HLib</a> with added multithreading, tag search and autocompletion <br>
 </p>
 
 ## Info
@@ -52,7 +52,7 @@ Tag namespace search has the following format:
   - This returns entries that contain `term_1` <ins>**AND**</ins> `term_2`.
 
 Available namespaces: `file_hash` `title` `artist` `parody` `circle` `magazine` `event` `publisher` `tag`. <br>
-  - When using the `file_hash` namespace the rest are ignored
+  - When using the `file_hash` namespace, the rest are ignored.
 
 Autocompletion is triggered when inside a namespace search. <br>
   - For example when typing `artist:{arti|}` a popup will appear with artist tags containing the word `arti`.
