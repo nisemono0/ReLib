@@ -138,6 +138,13 @@ void SearchCompleter::clear() {
     this->popup()->hide();
 }
 
+bool SearchCompleter::isDefaultCompletion() {
+    if (this->current_completer_role == SearchCompleter::Default) {
+        return true;
+    }
+    return false;
+}
+
 bool SearchCompleter::hasEntry(SearchCompleter::CompleterRole role, const QString &entry) {
     if (this->completer_data[role].contains(entry, Qt::CaseInsensitive)) {
         return true;
@@ -156,15 +163,14 @@ void SearchCompleter::updateCompletionMode(SearchCompleter::CompleterRole role) 
 
 void SearchCompleter::setupDefaultCompleterData() {
     this->completer_data[SearchCompleter::Default] = QStringList({
-            QStringLiteral("file_hash:"),
-            QStringLiteral("title:"),
-            QStringLiteral("artist:"),
-            QStringLiteral("parody:"),
-            QStringLiteral("circle:"),
-            QStringLiteral("magazine:"),
-            QStringLiteral("event:"),
-            QStringLiteral("publisher:"),
-            QStringLiteral("tags:"),
+            QStringLiteral("title:{}"),
+            QStringLiteral("artist:{}"),
+            QStringLiteral("parody:{}"),
+            QStringLiteral("circle:{}"),
+            QStringLiteral("magazine:{}"),
+            QStringLiteral("event:{}"),
+            QStringLiteral("publisher:{}"),
+            QStringLiteral("tags:{}"),
             });
 }
 

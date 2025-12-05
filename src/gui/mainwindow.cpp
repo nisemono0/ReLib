@@ -590,7 +590,6 @@ void MainWindow::actionAutocompleteSearch_toggled(bool checked) {
     if (checked) {
         this->ui->searchLineEdit->clearCompleter();
     }
-    qDebug() << Settings::autocomplete_search; // TODO: REMOVE
 }
 
 void MainWindow::actionSearchWhileTyping_toggled(bool checked) {

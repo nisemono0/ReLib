@@ -44,6 +44,8 @@ public:
     void selectPreviousEntry();
     // Clears completion prefix and hides the popup
     void clear();
+    // Returns true if using default completions
+    bool isDefaultCompletion();
 
 private:
     QStringListModel *completer_model;

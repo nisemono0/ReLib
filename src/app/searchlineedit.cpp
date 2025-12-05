@@ -244,6 +244,10 @@ void SearchLineEdit::receive_completerText(const QString &completer_text) {
     QString new_text = this->text().replace(replace_last_pos, prefix_len, completer_text);
     int new_cursor_pos = current_cursor_pos - prefix_len + completer_text_len;
 
+    if (this->search_completer->isDefaultCompletion()) {
+        new_cursor_pos -= 1;
+    }
+
     this->setText(new_text);
     this->setCursorPosition(new_cursor_pos);
 }
