@@ -285,6 +285,7 @@ void MainWindow::updateUiSettings() {
         this->scale_slider->setValue(Settings::scale_slider_value);
         this->scale_slider->setToolTip(QStringLiteral("Scale: %1").arg(QString::number(Settings::image_scale_value)));
         this->ui->actionFitInView->setChecked(true);
+        this->ui->actionAutocompleteSearch->setChecked(Settings::autocomplete_search);
         this->ui->actionSearchWhileTyping->setChecked(Settings::search_while_typing);
         this->ui->actionSelectFirstAfterSearch->setChecked(Settings::select_first_item);
         this->ui->actionRememberSettings->setChecked(Settings::remember_settings);
