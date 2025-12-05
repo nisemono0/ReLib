@@ -78,9 +78,12 @@ QStringList SearchCompleter::splitPath(const QString &path) const {
         return QCompleter::splitPath(path);
     }
 
-    QString last_item = path.split(",", Qt::SkipEmptyParts).last().trimmed();
-    qDebug() << last_item;
-    qDebug() << QCompleter::splitPath(path);
+    QString last_item = path.split(",", Qt::KeepEmptyParts).last().trimmed();
+
+    if (last_item.isEmpty()) {
+        return QCompleter::splitPath(path);
+    }
+
     return QStringList(last_item);
 }
 
