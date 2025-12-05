@@ -72,7 +72,6 @@ void SearchCompleter::setCompleterData(const QList<Manga> &data) {
     }
 }
 
-// TODO: See why after inserting , the last completion is still showing
 QStringList SearchCompleter::splitPath(const QString &path) const {
     if (path.isEmpty()) {
         return QCompleter::splitPath(path);
