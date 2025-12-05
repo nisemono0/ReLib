@@ -18,7 +18,8 @@ SearchCompleter::SearchCompleter(QObject *parent) : QCompleter(parent) {
     this->popup()->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->popup()->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    this->current_completer_role = SearchCompleter::Disabled;
+    this->setupDefaultCompleterData();
+    this->updateCompletionMode(SearchCompleter::Default);
 }
 
 SearchCompleter::~SearchCompleter() {
@@ -27,10 +28,6 @@ SearchCompleter::~SearchCompleter() {
 
 void SearchCompleter::setCompleterData(const QList<Manga> &data) {
     for (auto manga : data) {
-        if (!this->hasEntry(SearchCompleter::Basename, manga.file_basename)) {
-            this->insertEntry(SearchCompleter::Basename, manga.file_basename);
-        }
-
         if (!this->hasEntry(SearchCompleter::Title, manga.title)) {
             this->insertEntry(SearchCompleter::Title, manga.title);
         }
@@ -84,8 +81,17 @@ QStringList SearchCompleter::splitPath(const QString &path) const {
         return QCompleter::splitPath(path);
     }
 
-    QString last_item = path.split(",", Qt::KeepEmptyParts).last().trimmed();
+    // Split on empty space when using the default completer data
+    if (this->current_completer_role == SearchCompleter::Default) {
+        QString last_item = path.split(" ", Qt::KeepEmptyParts).last().trimmed();
+        if (last_item.isEmpty()) {
+            return QCompleter::splitPath(path);
+        }
+        return QStringList(last_item);
+    }
 
+    // When using tags split on comma
+    QString last_item = path.split(",", Qt::KeepEmptyParts).last().trimmed();
     if (last_item.isEmpty()) {
         return QCompleter::splitPath(path);
     }
@@ -148,6 +154,20 @@ void SearchCompleter::updateCompletionMode(SearchCompleter::CompleterRole role) 
     this->current_completer_role = role;
 }
 
+void SearchCompleter::setupDefaultCompleterData() {
+    this->completer_data[SearchCompleter::Default] = QStringList({
+            QStringLiteral("file_hash:"),
+            QStringLiteral("title:"),
+            QStringLiteral("artist:"),
+            QStringLiteral("parody:"),
+            QStringLiteral("circle:"),
+            QStringLiteral("magazine:"),
+            QStringLiteral("event:"),
+            QStringLiteral("publisher:"),
+            QStringLiteral("tags:"),
+            });
+}
+
 void SearchCompleter::receive_updateCompletionMode_request(SearchCompleter::CompleterRole role, const QString &prefix) {
     if (this->current_completer_role != role) {
         this->updateCompletionMode(role);
@@ -155,7 +175,6 @@ void SearchCompleter::receive_updateCompletionMode_request(SearchCompleter::Comp
     } else {
         this->setCompletionPrefix(prefix);
     }
-
     this->showPopup();
 }
 

@@ -14,16 +14,15 @@ class SearchCompleter : public QCompleter {
     Q_OBJECT;
 public:
     enum CompleterRole {
-        Disabled  = Qt::UserRole + 1,
-        Basename  = Qt::UserRole + 2,
-        Title     = Qt::UserRole + 3,
-        Artist    = Qt::UserRole + 4,
-        Parody    = Qt::UserRole + 5,
-        Circle    = Qt::UserRole + 6,
-        Magazine  = Qt::UserRole + 7,
-        Event     = Qt::UserRole + 8,
-        Publisher = Qt::UserRole + 9,
-        Tags      = Qt::UserRole + 10,
+        Default   = Qt::UserRole + 1,
+        Title     = Qt::UserRole + 2,
+        Artist    = Qt::UserRole + 3,
+        Parody    = Qt::UserRole + 4,
+        Circle    = Qt::UserRole + 5,
+        Magazine  = Qt::UserRole + 6,
+        Event     = Qt::UserRole + 7,
+        Publisher = Qt::UserRole + 8,
+        Tags      = Qt::UserRole + 9,
     };
 
     explicit SearchCompleter(QObject *parent = nullptr);
@@ -58,6 +57,8 @@ private:
     void insertEntry(SearchCompleter::CompleterRole role, const QString &entry);
     // Set the model stringlist to the one coresponding to role
     void updateCompletionMode(SearchCompleter::CompleterRole role);
+    // Set up the Default completer data (tags namespaces names)
+    void setupDefaultCompleterData();
 
 signals:
 

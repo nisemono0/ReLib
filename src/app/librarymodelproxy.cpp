@@ -8,7 +8,7 @@ LibraryModelProxy::LibraryModelProxy(QObject *parent) : QSortFilterProxyModel(pa
     this->search_text = "";
 
     this->search_regex = QRegularExpression(
-            QStringLiteral("((?:file_hash:|\\btitle:|\\bartist:|\\bparody:|\\bcircle:|\\bmagazine:|\\bevent:|\\bpublisher:|\\btag:)){([^}]+)}"),
+            QStringLiteral("((?:file_hash:|\\btitle:|\\bartist:|\\bparody:|\\bcircle:|\\bmagazine:|\\bevent:|\\bpublisher:|\\btags:)){([^}]+)}"),
             QRegularExpression::CaseInsensitiveOption);
     this->search_regex.optimize();
 
@@ -122,7 +122,7 @@ bool LibraryModelProxy::filterAcceptsRow(int source_row, const QModelIndex &sour
             is_item_found = is_item_found && this->searchItemData(re_match.captured(2).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::Publisher).toStringList());
         }
 
-        if (match_namespace.compare(QStringLiteral("tag:"), Qt::CaseInsensitive) == 0) {
+        if (match_namespace.compare(QStringLiteral("tags:"), Qt::CaseInsensitive) == 0) {
             is_item_found = is_item_found && this->searchItemData(re_match.captured(2).split(",", Qt::SkipEmptyParts), item->data(idx, LibraryModel::Tags).toStringList());
         }
     }

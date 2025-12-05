@@ -7,7 +7,7 @@ SearchLineEdit::SearchLineEdit(QWidget *parent) : QLineEdit(parent) {
     this->setCompleter(new SearchCompleter(this));
 
     this->completer_regex = QRegularExpression(
-            QStringLiteral("((?:file_hash:|\\btitle:|\\bartist:|\\bparody:|\\bcircle:|\\bmagazine:|\\bevent:|\\bpublisher:|\\btag:)){([^}]+)}"),
+            QStringLiteral("((?:file_hash:|\\btitle:|\\bartist:|\\bparody:|\\bcircle:|\\bmagazine:|\\bevent:|\\bpublisher:|\\btags:)){([^}]+)}"),
             QRegularExpression::CaseInsensitiveOption);
     this->completer_regex.optimize();
 
@@ -148,11 +148,11 @@ SearchCompleter::CompleterRole SearchLineEdit::getCompleterRoleFromNamespace(con
         return SearchCompleter::Publisher;
     }
 
-    if (matched_namespace.compare(QStringLiteral("tag:"), Qt::CaseInsensitive) == 0) {
+    if (matched_namespace.compare(QStringLiteral("tags:"), Qt::CaseInsensitive) == 0) {
         return SearchCompleter::Tags;
     }
 
-    return SearchCompleter::Basename;
+    return SearchCompleter::Title;
 }
 
 void SearchLineEdit::keyPressEvent(QKeyEvent *event) {
@@ -216,7 +216,8 @@ void SearchLineEdit::searchLineEdit_textEdited(const QString &text) {
             return;
         }
     }
-    emit request_updateCompletionMode(SearchCompleter::Disabled, "");
+
+    emit request_updateCompletionMode(SearchCompleter::Default, text);
 }
 
 void SearchLineEdit::receive_completerText(const QString &completer_text) {
