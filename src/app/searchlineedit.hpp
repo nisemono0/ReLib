@@ -29,6 +29,8 @@ public:
     void selectNextCompletion();
     // Selects the previous completer entry
     void selectPreviousCompletion();
+    // Clears the completion
+    void clearCompleter();
 
 private:
     SearchCompleter *search_completer = nullptr;

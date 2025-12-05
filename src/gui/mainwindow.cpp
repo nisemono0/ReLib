@@ -38,7 +38,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->scale_slider->setToolTip(QStringLiteral("Scale: %1").arg(QString::number(Settings::image_scale_value)));
     this->scale_slider_action->setDefaultWidget(this->scale_slider);
     this->ui->menuSettings->insertAction(this->ui->menuSettingsView->menuAction(), this->scale_slider_action);
-    this->ui->menuSettings->insertSeparator(this->ui->menuSettingsView->menuAction());
 
     this->view_mode_actiongroup = new QActionGroup(this->ui->menuSettingsView);
     this->view_mode_actiongroup->addAction(this->ui->actionFitInView);
@@ -79,6 +78,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->scale_slider, &QSlider::valueChanged, this, &MainWindow::scale_slider_valueChanged);
     connect(this->scale_slider, &QSlider::actionTriggered, this, &MainWindow::scale_slider_actionTriggered);
     connect(this->view_mode_actiongroup, &QActionGroup::triggered, this, &MainWindow::view_mode_actiongroup_triggered);
+    connect(this->ui->actionAutocompleteSearch, &QAction::toggled, this, &MainWindow::actionAutocompleteSearch_toggled);
     connect(this->ui->actionSearchWhileTyping, &QAction::toggled, this, &MainWindow::actionSearchWhileTyping_toggled);
     connect(this->ui->actionSelectFirstAfterSearch, &QAction::toggled, this, &MainWindow::actionSelectFirstAfterSearch_toggled);
     connect(this->ui->actionRememberSettings, &QAction::toggled, this, &MainWindow::actionRememberSettings_toggled);
@@ -583,6 +583,14 @@ void MainWindow::view_mode_actiongroup_triggered(QAction *action) {
         Settings::imageview_option = ImageOptions::FitInView;
     }
     emit request_scaleAndFitImage();
+}
+
+void MainWindow::actionAutocompleteSearch_toggled(bool checked) {
+    Settings::autocomplete_search = checked;
+    if (checked) {
+        this->ui->searchLineEdit->clearCompleter();
+    }
+    qDebug() << Settings::autocomplete_search; // TODO: REMOVE
 }
 
 void MainWindow::actionSearchWhileTyping_toggled(bool checked) {

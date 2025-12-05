@@ -14,6 +14,7 @@ public:
 
     static ImageOptions::ImageOptions imageview_option;
 
+    static bool autocomplete_search;
     static bool search_while_typing;
     static bool select_first_item;
 

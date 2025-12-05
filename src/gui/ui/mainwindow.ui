@@ -200,6 +200,8 @@
     </widget>
     <addaction name="actionScaleImage"/>
     <addaction name="menuSettingsView"/>
+    <addaction name="separator"/>
+    <addaction name="actionAutocompleteSearch"/>
     <addaction name="actionSearchWhileTyping"/>
     <addaction name="actionSelectFirstAfterSearch"/>
     <addaction name="separator"/>
@@ -305,10 +307,10 @@
     <string>Scale image to window</string>
    </property>
    <property name="statusTip">
-    <string>Enable or disables the image scaling</string>
+    <string>Enable or disable the image scaling</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+S, S, I</string>
+    <string>Ctrl+S, I, S</string>
    </property>
   </action>
   <action name="actionCheckDatabaseHashes">
@@ -358,7 +360,7 @@
     <string>Fits the image in view</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+S, V, F</string>
+    <string>Ctrl+S, I, F</string>
    </property>
   </action>
   <action name="actionFitToWidth">
@@ -372,7 +374,7 @@
     <string>Fits the image to width</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+S, V, W</string>
+    <string>Ctrl+S, I, W</string>
    </property>
   </action>
   <action name="actionFreeView">
@@ -390,11 +392,17 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Search while typing</string>
    </property>
    <property name="statusTip">
-    <string>Enable or disables searching while typing in the searchbox</string>
+    <string>Enable or disable searching while typing in the searchbox</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S, S, T</string>
@@ -411,7 +419,7 @@
     <string>Select first item after search</string>
    </property>
    <property name="statusTip">
-    <string>Enable or disables selecting the first result after search</string>
+    <string>Enable or disable selecting the first result after search</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S, S, F</string>
@@ -456,6 +464,26 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+D, R, E</string>
+   </property>
+  </action>
+  <action name="actionAutocompleteSearch">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Autocomplete search</string>
+   </property>
+   <property name="iconText">
+    <string>Autocomplete search</string>
+   </property>
+   <property name="statusTip">
+    <string>Enable or disable autocomplete when searching</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S, S, A</string>
    </property>
   </action>
  </widget>

@@ -11,6 +11,7 @@ float Settings::image_scale_value = 1.0;
 
 ImageOptions::ImageOptions Settings::imageview_option = ImageOptions::FitInView;
 
+bool Settings::autocomplete_search = true;
 bool Settings::search_while_typing = false;
 bool Settings::select_first_item = false;
 
@@ -29,6 +30,7 @@ void Settings::saveSettings() {
     Settings::settings.setValue(QStringLiteral("scale_image"), Settings::scale_image);
     Settings::settings.setValue(QStringLiteral("scale_slider_value"), Settings::scale_slider_value);
 
+    Settings::settings.setValue(QStringLiteral("autocomplete_search"), Settings::autocomplete_search);
     Settings::settings.setValue(QStringLiteral("search_while_typing"), Settings::search_while_typing);
     Settings::settings.setValue(QStringLiteral("select_first_item"), Settings::select_first_item);
 
@@ -49,6 +51,7 @@ void Settings::loadSettings() {
 
     Settings::imageview_option = ImageOptions::FitInView;
 
+    Settings::autocomplete_search = Settings::settings.value(QStringLiteral("autocomplete_search"), true).toBool();
     Settings::search_while_typing = Settings::settings.value(QStringLiteral("search_while_typing"), false).toBool();
     Settings::select_first_item = Settings::settings.value(QStringLiteral("select_first_item"), false).toBool();
 
@@ -77,6 +80,7 @@ void Settings::loadDefaultSettings() {
 
     Settings::imageview_option = ImageOptions::FitInView;
 
+    Settings::autocomplete_search = true;
     Settings::search_while_typing = false;
     Settings::select_first_item = false;
 

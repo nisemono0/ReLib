@@ -43,6 +43,8 @@ public:
     void selectNextEntry();
     // Select previous popup entry
     void selectPreviousEntry();
+    // Clears completion prefix and hides the popup
+    void clear();
 
 private:
     QStringListModel *completer_model;

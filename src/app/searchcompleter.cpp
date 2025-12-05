@@ -127,6 +127,11 @@ void SearchCompleter::selectPreviousEntry() {
     this->popup()->setCurrentIndex(previous_idx);
 }
 
+void SearchCompleter::clear() {
+    this->setCompletionPrefix("");
+    this->popup()->hide();
+}
+
 bool SearchCompleter::hasEntry(SearchCompleter::CompleterRole role, const QString &entry) {
     if (this->completer_data[role].contains(entry, Qt::CaseInsensitive)) {
         return true;

@@ -160,6 +160,7 @@ private slots:
     void scale_slider_increment_shortcut();
     void scale_slider_decrement_shortcut();
     void view_mode_actiongroup_triggered(QAction *action);
+    void actionAutocompleteSearch_toggled(bool checked);
     void actionSearchWhileTyping_toggled(bool checked);
     void actionSelectFirstAfterSearch_toggled(bool checked);
     void actionRememberSettings_toggled(bool checked);

@@ -1,5 +1,7 @@
 #include "app/searchlineedit.hpp"
 
+#include "base/settings.hpp"
+
 
 SearchLineEdit::SearchLineEdit(QWidget *parent) : QLineEdit(parent) {
     this->setCompleter(new SearchCompleter(this));
@@ -60,6 +62,10 @@ void SearchLineEdit::selectPreviousCompletion() {
     if (this->search_completer->isPopupVisible()) {
         this->search_completer->selectPreviousEntry();
     }
+}
+
+void SearchLineEdit::clearCompleter() {
+    this->search_completer->clear();
 }
 
 void SearchLineEdit::insertMatchingBracket(const QString &bracket) {
@@ -197,6 +203,10 @@ void SearchLineEdit::receive_setCompleterData_request(const QList<Manga> &data) 
 }
 
 void SearchLineEdit::searchLineEdit_textEdited(const QString &text) {
+    if (!Settings::autocomplete_search) {
+        return;
+    }
+
     for (auto re_match : this->completer_regex.globalMatch(text)) {
         // capture(0) contains the whole matched text, ex: artist:{a1, a2}
         // capture(1) contains the namespace text, ex: artist:
