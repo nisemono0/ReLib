@@ -40,6 +40,28 @@ SearchCompleter* SearchLineEdit::completer() const {
     return this->search_completer;
 }
 
+void SearchLineEdit::hideCompleter() {
+    if (this->search_completer->isPopupVisible()) {
+        this->search_completer->hidePopup();
+    }
+}
+
+bool SearchLineEdit::isCompleterVisible() {
+    return this->search_completer->isPopupVisible();
+}
+
+void SearchLineEdit::selectNextCompletion() {
+    if (this->search_completer->isPopupVisible()) {
+        this->search_completer->selectNextEntry();
+    }
+}
+
+void SearchLineEdit::selectPreviousCompletion() {
+    if (this->search_completer->isPopupVisible()) {
+        this->search_completer->selectPreviousEntry();
+    }
+}
+
 void SearchLineEdit::insertMatchingBracket(const QString &bracket) {
     this->insert(bracket);
     this->setCursorPosition(this->cursorPosition() - 1);
@@ -89,7 +111,7 @@ void SearchLineEdit::jumpOrInsertClosedBracket(const QString &bracket) {
     int current_cursor_pos = this->cursorPosition();
     if (this->text()[current_cursor_pos] == bracket) {
         this->setCursorPosition(this->cursorPosition() + 1);
-        // TODO: closed the popup here
+        this->search_completer->hidePopup();
     } else {
         this->insert(bracket);
     }

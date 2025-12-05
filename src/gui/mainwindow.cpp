@@ -314,6 +314,8 @@ void MainWindow::setupShortcuts() {
     connect(this->shortcuts->search_move_char_backward, &QShortcut::activated, this, &MainWindow::search_move_char_backward_shortcut);
     connect(this->shortcuts->search_move_word_forward, &QShortcut::activated, this, &MainWindow::search_move_word_forward_shortcut);
     connect(this->shortcuts->search_move_word_backward, &QShortcut::activated, this, &MainWindow::search_move_word_backward_shortcut);
+    connect(this->shortcuts->search_select_next_completion, &QShortcut::activated, this, &MainWindow::search_select_next_completion_shortcut);
+    connect(this->shortcuts->search_select_previous_completion, &QShortcut::activated, this, &MainWindow::search_select_previous_completion_shortcut);
 }
 
 void MainWindow::actionAddFile_triggered() {
@@ -620,6 +622,9 @@ void MainWindow::pushButtonRefresh_clicked() {
 
 // Search
 void MainWindow::searchLineEdit_returnPressed() {
+    if (this->ui->searchLineEdit->isCompleterVisible()) {
+        return;
+    }
     emit request_setSearchText(this->getSearchText());
 }
 
@@ -628,7 +633,9 @@ void MainWindow::focus_search_input_shortcut() {
 }
 
 void MainWindow::unfocus_search_input_shortcut() {
-    if (this->ui->searchLineEdit->hasFocus()) {
+    if (this->ui->searchLineEdit->isCompleterVisible()) {
+        this->ui->searchLineEdit->hideCompleter();
+    } else if (this->ui->searchLineEdit->hasFocus()) {
         this->setFocus();
     }
 }
@@ -655,6 +662,14 @@ void MainWindow::search_move_word_backward_shortcut() {
     if (this->ui->searchLineEdit->hasFocus()) {
         this->ui->searchLineEdit->cursorWordBackward(false);
     }
+}
+
+void MainWindow::search_select_next_completion_shortcut() {
+    this->ui->searchLineEdit->selectNextCompletion();
+}
+
+void MainWindow::search_select_previous_completion_shortcut() {
+    this->ui->searchLineEdit->selectPreviousCompletion();
 }
 
 // Progress dialog

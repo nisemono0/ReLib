@@ -74,7 +74,16 @@ Shortcuts::Shortcuts(QObject *parent) : QObject(parent) {
     this->search_move_word_backward->setKeys({
             QKeySequence(Qt::ALT | Qt::Key_H)
             });
-
+    this->search_select_next_completion = new QShortcut(parent);
+    this->search_select_next_completion->setKeys({
+            Qt::Key_Tab,
+            QKeySequence(Qt::CTRL | Qt::Key_J)
+            });
+    this->search_select_previous_completion = new QShortcut(parent);
+    this->search_select_previous_completion->setKeys({
+            Qt::Key_Backtab,
+            QKeySequence(Qt::CTRL | Qt::Key_K)
+            });
 }
 
 Shortcuts::~Shortcuts() {
@@ -96,5 +105,7 @@ Shortcuts::~Shortcuts() {
     delete this->search_move_char_backward;
     delete this->search_move_word_forward;
     delete this->search_move_word_backward;
+    delete this->search_select_next_completion;
+    delete this->search_select_previous_completion;
 }
 

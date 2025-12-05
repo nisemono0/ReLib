@@ -33,6 +33,16 @@ public:
     void setCompleterData(const QList<Manga> &data);
     // Makes it so i can have autocomplete when having multiple tags
     QStringList splitPath(const QString &path) const override;
+    // True if popup is visible
+    bool isPopupVisible();
+    // Hides the popup
+    void hidePopup();
+    // Shows the popup and select the first entry
+    void showPopup();
+    // Select next popup entry
+    void selectNextEntry();
+    // Select previous popup entry
+    void selectPreviousEntry();
 
 private:
     QStringListModel *completer_model;

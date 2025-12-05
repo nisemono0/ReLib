@@ -1,5 +1,8 @@
 #include "app/searchcompleter.hpp"
 
+#include <QAbstractItemView>
+#include <QScrollBar>
+
 
 SearchCompleter::SearchCompleter(QObject *parent) : QCompleter(parent) {
     this->completer_model = new QStringListModel(this);
@@ -10,6 +13,10 @@ SearchCompleter::SearchCompleter(QObject *parent) : QCompleter(parent) {
     this->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
     this->setFilterMode(Qt::MatchContains);
     this->setCompletionMode(QCompleter::PopupCompletion);
+    this->setMaxVisibleItems(10);
+
+    this->popup()->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->popup()->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     this->current_completer_role = SearchCompleter::Disabled;
 }
@@ -86,6 +93,40 @@ QStringList SearchCompleter::splitPath(const QString &path) const {
     return QStringList(last_item);
 }
 
+bool SearchCompleter::isPopupVisible() {
+    return this->popup()->isVisible();
+}
+
+void SearchCompleter::hidePopup() {
+    this->popup()->hide();
+}
+
+void SearchCompleter::showPopup() {
+    this->complete();
+}
+
+void SearchCompleter::selectNextEntry() {
+    QModelIndex current_idx = this->popup()->currentIndex();
+
+    int total_rows = this->popup()->model()->rowCount();
+    int next_row = (current_idx.row() + 1) % total_rows;
+
+    QModelIndex next_idx = this->popup()->model()->index(next_row, 0);
+
+    this->popup()->setCurrentIndex(next_idx);
+}
+
+void SearchCompleter::selectPreviousEntry() {
+    QModelIndex current_idx = this->popup()->currentIndex();
+
+    int total_rows = this->popup()->model()->rowCount();
+    int previous_row = (current_idx.row() - 1 + total_rows) % total_rows;
+
+    QModelIndex previous_idx = this->popup()->model()->index(previous_row, 0);
+
+    this->popup()->setCurrentIndex(previous_idx);
+}
+
 bool SearchCompleter::hasEntry(SearchCompleter::CompleterRole role, const QString &entry) {
     if (this->completer_data[role].contains(entry, Qt::CaseInsensitive)) {
         return true;
@@ -110,6 +151,6 @@ void SearchCompleter::receive_updateCompletionMode_request(SearchCompleter::Comp
         this->setCompletionPrefix(prefix);
     }
 
-    this->complete();
+    this->showPopup();
 }
 

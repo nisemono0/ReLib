@@ -21,6 +21,15 @@ public:
     void setCompleter(SearchCompleter *search_completer);
     SearchCompleter* completer() const;
 
+    // Hides the completion window if visible
+    void hideCompleter();
+    // True if completer window is visible
+    bool isCompleterVisible();
+    // Selects the next completer entry
+    void selectNextCompletion();
+    // Selects the previous completer entry
+    void selectPreviousCompletion();
+
 private:
     SearchCompleter *search_completer = nullptr;
 

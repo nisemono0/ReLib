@@ -32,6 +32,8 @@ public:
     QShortcut *search_move_char_backward;
     QShortcut *search_move_word_forward;
     QShortcut *search_move_word_backward;
+    QShortcut *search_select_next_completion;
+    QShortcut *search_select_previous_completion;
 
 };
 
