@@ -17,7 +17,6 @@ bool Settings::select_first_item = false;
 
 bool Settings::remember_settings = false;
 
-bool Settings::load_last_database = false;
 QString Settings::last_database_path = QString();
 
 QString Settings::last_add_file_dialog_path = QDir::homePath();
@@ -36,7 +35,6 @@ void Settings::saveSettings() {
 
     Settings::settings.setValue(QStringLiteral("remember_settings"), Settings::remember_settings);
 
-    Settings::settings.setValue(QStringLiteral("load_last_database"), Settings::load_last_database);
     Settings::settings.setValue(QStringLiteral("last_database_path"), Settings::last_database_path);
 
     Settings::settings.setValue(QStringLiteral("last_add_file_dialog_path"), Settings::last_add_file_dialog_path);
@@ -57,7 +55,6 @@ void Settings::loadSettings() {
 
     Settings::remember_settings = Settings::settings.value(QStringLiteral("remember_settings"), false).toBool();
 
-    Settings::load_last_database = Settings::settings.value(QStringLiteral("load_last_database"), false).toBool();
     Settings::last_database_path = Settings::settings.value(QStringLiteral("last_database_path"), QString()).toString();
 
     Settings::last_add_file_dialog_path = Settings::settings.value(QStringLiteral("last_add_file_dialog_path"), QDir::homePath()).toString();
@@ -70,7 +67,6 @@ void Settings::loadSettings() {
     } else {
         Settings::updateImageScaleValue();
     }
-
 }
 
 void Settings::loadDefaultSettings() {
@@ -85,8 +81,6 @@ void Settings::loadDefaultSettings() {
     Settings::select_first_item = false;
 
     Settings::remember_settings = false;
-
-    Settings::load_last_database = false;
 
     Settings::last_database_path = QString();
 }

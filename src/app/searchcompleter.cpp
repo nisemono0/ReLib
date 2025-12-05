@@ -113,24 +113,30 @@ void SearchCompleter::showPopup() {
 
 void SearchCompleter::selectNextEntry() {
     QModelIndex current_idx = this->popup()->currentIndex();
-
     int total_rows = this->popup()->model()->rowCount();
-    int next_row = (current_idx.row() + 1) % total_rows;
 
-    QModelIndex next_idx = this->popup()->model()->index(next_row, 0);
-
-    this->popup()->setCurrentIndex(next_idx);
+    if (current_idx.isValid()) {
+        int next_row = (current_idx.row() + 1) % total_rows;
+        QModelIndex next_idx = this->popup()->model()->index(next_row, 0);
+        this->popup()->setCurrentIndex(next_idx);
+    } else {
+        QModelIndex first_idx = this->popup()->model()->index(0, 0);
+        this->popup()->setCurrentIndex(first_idx);
+    }
 }
 
 void SearchCompleter::selectPreviousEntry() {
     QModelIndex current_idx = this->popup()->currentIndex();
-
     int total_rows = this->popup()->model()->rowCount();
-    int previous_row = (current_idx.row() - 1 + total_rows) % total_rows;
 
-    QModelIndex previous_idx = this->popup()->model()->index(previous_row, 0);
-
-    this->popup()->setCurrentIndex(previous_idx);
+    if (current_idx.isValid()) {
+        int previous_row = (current_idx.row() - 1 + total_rows) % total_rows;
+        QModelIndex previous_idx = this->popup()->model()->index(previous_row, 0);
+        this->popup()->setCurrentIndex(previous_idx);
+    } else {
+        QModelIndex last_idx = this->popup()->model()->index(total_rows - 1, 0);
+        this->popup()->setCurrentIndex(last_idx);
+    }
 }
 
 void SearchCompleter::clear() {

@@ -82,7 +82,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->ui->actionSearchWhileTyping, &QAction::toggled, this, &MainWindow::actionSearchWhileTyping_toggled);
     connect(this->ui->actionSelectFirstAfterSearch, &QAction::toggled, this, &MainWindow::actionSelectFirstAfterSearch_toggled);
     connect(this->ui->actionRememberSettings, &QAction::toggled, this, &MainWindow::actionRememberSettings_toggled);
-    connect(this->ui->actionLoadLastDatabase, &QAction::toggled, this, &MainWindow::actionLoadLastDatabase_toggled);
 
     // Menubar:Info
     connect(this->ui->actionShowLogs, &QAction::triggered, this->log_dialog, &LogDialog::receive_showLogDialog_request);
@@ -289,7 +288,6 @@ void MainWindow::updateUiSettings() {
         this->ui->actionSearchWhileTyping->setChecked(Settings::search_while_typing);
         this->ui->actionSelectFirstAfterSearch->setChecked(Settings::select_first_item);
         this->ui->actionRememberSettings->setChecked(Settings::remember_settings);
-        this->ui->actionLoadLastDatabase->setChecked(Settings::load_last_database);
     }
 }
 
@@ -479,6 +477,8 @@ void MainWindow::actionLoadDatabase_triggered() {
         if (Utils::Str::isNullOrEmpty(file_path)) {
             return;
         }
+        Settings::last_select_database_dialog_path = Utils::Fs::getAbsolutePath(file_path);
+        Settings::last_database_path = file_path;
         this->db_thread->start();
         emit request_loadDatabase(file_path);
     }
@@ -522,7 +522,6 @@ void MainWindow::scale_slider_actionTriggered(int action) {
         case QSlider::SliderPageStepAdd:
         case QSlider::SliderPageStepSub:
         {
-            qDebug() << "PAGE";
             int new_value = QStyle::sliderValueFromPosition(
                     this->scale_slider->minimum(),
                     this->scale_slider->maximum(),
@@ -608,10 +607,6 @@ void MainWindow::actionSelectFirstAfterSearch_toggled(bool checked) {
 
 void MainWindow::actionRememberSettings_toggled(bool checked) {
     Settings::remember_settings = checked;
-}
-
-void MainWindow::actionLoadLastDatabase_toggled(bool checked) {
-    Settings::load_last_database = checked;
 }
 
 // Buttons

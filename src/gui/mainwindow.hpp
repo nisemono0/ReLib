@@ -164,7 +164,6 @@ private slots:
     void actionSearchWhileTyping_toggled(bool checked);
     void actionSelectFirstAfterSearch_toggled(bool checked);
     void actionRememberSettings_toggled(bool checked);
-    void actionLoadLastDatabase_toggled(bool checked);
 
     // Buttons
     void pushButtonSearch_clicked();
