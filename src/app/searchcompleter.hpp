@@ -33,7 +33,7 @@ public:
     void setCompleterData(const QList<Manga> &data);
 
     // Makes it so i can have autocomplete when having multiple tags
-    virtual QStringList splitPath(const QString &path) const override;
+    QStringList splitPath(const QString &path) const override;
 
 private:
     QStringListModel *completer_model;

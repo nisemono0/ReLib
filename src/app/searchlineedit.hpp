@@ -55,7 +55,7 @@ public slots:
 
 private slots:
     void searchLineEdit_textEdited(const QString &text);
-    void insertCompleterText(const QString &text);
+    void insertCompleterText(const QString &completer_text);
 
 };
 

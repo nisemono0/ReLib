@@ -87,6 +87,7 @@ void SearchLineEdit::jumpOrInsertClosedBracket(const QString &bracket) {
     int current_cursor_pos = this->cursorPosition();
     if (this->text()[current_cursor_pos] == bracket) {
         this->setCursorPosition(this->cursorPosition() + 1);
+        // TODO: closed the popup here
     } else {
         this->insert(bracket);
     }
@@ -184,10 +185,31 @@ void SearchLineEdit::searchLineEdit_textEdited(const QString &text) {
     emit request_updateCompletionMode(SearchCompleter::Disabled, "");
 }
 
-void SearchLineEdit::insertCompleterText(const QString &text) {
+void SearchLineEdit::insertCompleterText(const QString &completer_text) {
     if (this->search_completer->widget() != this) {
         return;
     }
-    this->insert(text);
+
+    QString last_prefix = this->search_completer->splitPath(
+            this->search_completer->completionPrefix()
+            ).last();
+    if (last_prefix.isEmpty()) {
+        return;
+    }
+
+    int replace_last_pos = this->text().lastIndexOf(last_prefix, Qt::CaseSensitive);
+    if (replace_last_pos == -1) {
+        return;
+    }
+
+    int prefix_len = last_prefix.length();
+    int current_cursor_pos = this->cursorPosition();
+    int completer_text_len = completer_text.length();
+
+    QString new_text = this->text().replace(replace_last_pos, prefix_len, completer_text);
+    int new_cursor_pos = current_cursor_pos - prefix_len + completer_text_len;
+
+    this->setText(new_text);
+    this->setCursorPosition(new_cursor_pos);
 }
 
