@@ -206,7 +206,6 @@
     <addaction name="actionSelectFirstAfterSearch"/>
     <addaction name="separator"/>
     <addaction name="actionRememberSettings"/>
-    <addaction name="actionLoadLastDatabase"/>
    </widget>
    <widget class="QMenu" name="menuInfo">
     <property name="title">
@@ -434,17 +433,6 @@
    </property>
    <property name="statusTip">
     <string>Remember last used settings</string>
-   </property>
-  </action>
-  <action name="actionLoadLastDatabase">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Load last used DB</string>
-   </property>
-   <property name="statusTip">
-    <string>Load (if possible) the last used database</string>
    </property>
   </action>
   <action name="actionShowAbout">

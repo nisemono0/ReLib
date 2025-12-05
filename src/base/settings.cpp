@@ -17,8 +17,6 @@ bool Settings::select_first_item = false;
 
 bool Settings::remember_settings = false;
 
-QString Settings::last_database_path = QString();
-
 QString Settings::last_add_file_dialog_path = QDir::homePath();
 QString Settings::last_add_dir_dialog_path= QDir::homePath();
 QString Settings::last_select_database_dialog_path = QDir::homePath();
@@ -34,8 +32,6 @@ void Settings::saveSettings() {
     Settings::settings.setValue(QStringLiteral("select_first_item"), Settings::select_first_item);
 
     Settings::settings.setValue(QStringLiteral("remember_settings"), Settings::remember_settings);
-
-    Settings::settings.setValue(QStringLiteral("last_database_path"), Settings::last_database_path);
 
     Settings::settings.setValue(QStringLiteral("last_add_file_dialog_path"), Settings::last_add_file_dialog_path);
     Settings::settings.setValue(QStringLiteral("last_add_dir_dialog_path"), Settings::last_add_dir_dialog_path);
@@ -54,8 +50,6 @@ void Settings::loadSettings() {
     Settings::select_first_item = Settings::settings.value(QStringLiteral("select_first_item"), false).toBool();
 
     Settings::remember_settings = Settings::settings.value(QStringLiteral("remember_settings"), false).toBool();
-
-    Settings::last_database_path = Settings::settings.value(QStringLiteral("last_database_path"), QString()).toString();
 
     Settings::last_add_file_dialog_path = Settings::settings.value(QStringLiteral("last_add_file_dialog_path"), QDir::homePath()).toString();
     Settings::last_add_dir_dialog_path = Settings::settings.value(QStringLiteral("last_add_dir_dialog_path"), QDir::homePath()).toString();
@@ -81,8 +75,6 @@ void Settings::loadDefaultSettings() {
     Settings::select_first_item = false;
 
     Settings::remember_settings = false;
-
-    Settings::last_database_path = QString();
 }
 
 void Settings::updateImageScaleValue() {

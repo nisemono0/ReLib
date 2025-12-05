@@ -462,8 +462,6 @@ void MainWindow::actionCreateDatabase_triggered() {
         if (Utils::Str::isNullOrEmpty(file_path)) {
             return;
         }
-        Settings::last_select_database_dialog_path = Utils::Fs::getAbsolutePath(file_path);
-        Settings::last_database_path = file_path;
         this->db_thread->start();
         emit request_createDatabase(file_path);
     }
@@ -478,7 +476,6 @@ void MainWindow::actionLoadDatabase_triggered() {
             return;
         }
         Settings::last_select_database_dialog_path = Utils::Fs::getAbsolutePath(file_path);
-        Settings::last_database_path = file_path;
         this->db_thread->start();
         emit request_loadDatabase(file_path);
     }

@@ -20,8 +20,6 @@ public:
 
     static bool remember_settings;
 
-    static QString last_database_path;
-
     static QString last_add_file_dialog_path;
     static QString last_add_dir_dialog_path;
     static QString last_select_database_dialog_path;
