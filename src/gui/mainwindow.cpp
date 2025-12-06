@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->scale_slider->setToolTip(QStringLiteral("Scale: %1").arg(QString::number(Settings::image_scale_value)));
     this->scale_slider_action->setDefaultWidget(this->scale_slider);
     this->ui->menuSettings->insertAction(this->ui->menuSettingsView->menuAction(), this->scale_slider_action);
+    this->ui->menuSettings->insertSeparator(this->ui->menuSettingsView->menuAction());
 
     this->view_mode_actiongroup = new QActionGroup(this->ui->menuSettingsView);
     this->view_mode_actiongroup->addAction(this->ui->actionFitInView);
