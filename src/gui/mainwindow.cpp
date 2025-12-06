@@ -380,7 +380,6 @@ void MainWindow::receive_DBWorker_loadDatabase_status(bool status) {
     if (status) {
         this->updateUiLock();
         emit request_getAllDatabaseData();
-        QMessageBox::information(this, QStringLiteral("Database"), QStringLiteral("Database loaded"));
     } else {
         this->db_thread->quit();
         QMessageBox::information(this, QStringLiteral("Database"), QStringLiteral("Database not loaded"));
@@ -394,7 +393,6 @@ void MainWindow::receive_DBWorker_unloadDatabase_status(bool status) {
         this->clearSearchText();
         this->setNoDatabaseStatus();
         this->updateUiLock();
-        QMessageBox::information(this, QStringLiteral("Database"), QStringLiteral("Database unloaded"));
     } else {
         QMessageBox::information(this, QStringLiteral("Database"), QStringLiteral("Could not unload the database"));
     }

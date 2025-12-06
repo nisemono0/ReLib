@@ -67,6 +67,10 @@ ImageView::~ImageView() {
         }
         this->image_thread->deleteLater();
     }
+
+    delete this->image_worker;
+    delete this->image_thread;
+
     delete this->image_scene;
 
     delete this->load_images_action;
