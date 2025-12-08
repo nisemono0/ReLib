@@ -46,7 +46,7 @@ private:
     bool removeMatchingBracket();
     // Checks if current cursor position is inside the {} braces
     // of a matched namespace
-    bool isCursorInsideBrace(const QString &matched_text, const QString &matched_namespace);
+    bool isCursorInsideBrace(const QString &whole_text, const QString &namespace_text, const QString &tags_text);
     // This function checks if the next character is a closed bracket
     // and jumps over it if the input is the same as bracket, otherwise
     // it inserts bracket

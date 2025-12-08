@@ -94,22 +94,23 @@ bool SearchLineEdit::removeMatchingBracket() {
     return false;
 }
 
-bool SearchLineEdit::isCursorInsideBrace(const QString &matched_text, const QString &matched_namespace) {
-    int search_from_index = 0;
-    int text_idx = 0;
-    do {
-        text_idx = this->text().indexOf(matched_text, search_from_index);
-        int first_brace_pos = text_idx + matched_namespace.length();
-        int last_brace_pos = text_idx + matched_text.length() - 1;
-        int current_cursor_pos = this->cursorPosition();
+bool SearchLineEdit::isCursorInsideBrace(const QString &whole_text, const QString &namespace_text, const QString &tags_text) {
+    int current_cursor_pos = this->cursorPosition();
+    int namespace_len = namespace_text.length();
+    int tags_len = tags_text.length();
 
-        if (first_brace_pos <= current_cursor_pos && current_cursor_pos <= last_brace_pos) {
+    QString line_text = this->text();
+
+    int whole_text_start_pos = line_text.indexOf(whole_text);
+    while (whole_text_start_pos != -1) {
+        int namespace_start_pos = whole_text_start_pos + namespace_len;
+        int namespace_end_pos = namespace_start_pos + tags_len + 1;
+
+        if (namespace_start_pos < current_cursor_pos && current_cursor_pos <= namespace_end_pos) {
             return true;
         }
-
-        search_from_index += matched_text.length();
-    } while (text_idx != -1);
-
+        whole_text_start_pos = line_text.indexOf(whole_text, namespace_end_pos);
+    }
     return false;
 }
 
@@ -211,7 +212,10 @@ void SearchLineEdit::searchLineEdit_textEdited(const QString &text) {
         // capture(0) contains the whole matched text, ex: artist:{a1, a2}
         // capture(1) contains the namespace text, ex: artist:
         // capture(2) contains the text inside {}, ex: a1, a2
-        if (this->isCursorInsideBrace(re_match.captured(0), re_match.captured(1))) {
+        QString whole_text = re_match.captured(0);
+        QString namepsace_text = re_match.captured(1);
+        QString tags_text = re_match.captured(2);
+        if (this->isCursorInsideBrace(whole_text, namepsace_text, tags_text)) {
             emit request_updateCompletionMode(this->getCompleterRoleFromNamespace(re_match.captured(1)), re_match.captured(2));
             return;
         }
