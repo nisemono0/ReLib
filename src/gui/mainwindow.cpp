@@ -21,9 +21,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->libraryview_status = new QLabel(this);
     this->ui->statusBar->addWidget(this->libraryview_status);
     this->libraryview_status->setIndent(4);
+
     this->imageview_status = new QLabel(this);
     this->ui->statusBar->addPermanentWidget(this->imageview_status);
     this->setNoDatabaseStatus();
+
+    this->ui->splitterExplorer->setSizes({
+            this->ui->libraryView->width()
+            });
 
     this->scale_slider_action = new QWidgetAction(this->ui->menuSettings);
     this->scale_slider = new QSlider(this->ui->menuSettings);
@@ -94,9 +99,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(this->ui->pushButtonRefresh, &QPushButton::clicked, this, &MainWindow::pushButtonRefresh_clicked);
 
     // Search
-    connect(this->ui->searchLineEdit, &QLineEdit::returnPressed, this, &MainWindow::searchLineEdit_returnPressed);
+    connect(this->ui->searchPlainTextEdit, &SearchPlainTextEdit::returnPressed, this, &MainWindow::searchPlainTextEdit_returnPressed);
     connect(this->search_timer, &QTimer::timeout, this, &MainWindow::search_while_typing_timeout);
-    connect(this, &MainWindow::request_setCompleterData, this->ui->searchLineEdit, &SearchLineEdit::receive_setCompleterData_request);
+    connect(this, &MainWindow::request_setCompleterData, this->ui->searchPlainTextEdit, &SearchPlainTextEdit::receive_setCompleterData_request);
 
     // Library view
     connect(this, &MainWindow::request_setMangaList, this->ui->libraryView, &LibraryView::receive_setMangaList_request);
@@ -252,7 +257,7 @@ void MainWindow::updateUiLock() {
     this->ui->pushButtonRefresh->setEnabled(this->is_locked);
 
     // MainWindow:SearchInput
-    this->ui->searchLineEdit->setEnabled(this->is_locked);
+    this->ui->searchPlainTextEdit->setEnabled(this->is_locked);
 
     // Update ui lock status
     this->is_locked = !this->is_locked;
@@ -263,12 +268,12 @@ void MainWindow::setNoDatabaseStatus() {
 }
 
 void MainWindow::clearSearchText() {
-    this->ui->searchLineEdit->setText("");
+    this->ui->searchPlainTextEdit->setPlainText("");
     this->current_search = "";
 }
 
 const QString MainWindow::getSearchText() {
-    this->current_search = this->ui->searchLineEdit->text();
+    this->current_search = this->ui->searchPlainTextEdit->toPlainText();
     return this->current_search;
 }
 
@@ -584,7 +589,7 @@ void MainWindow::view_mode_actiongroup_triggered(QAction *action) {
 void MainWindow::actionAutocompleteSearch_toggled(bool checked) {
     Settings::autocomplete_search = checked;
     if (checked) {
-        this->ui->searchLineEdit->clearCompleter();
+        this->ui->searchPlainTextEdit->clearCompleter();
     }
 }
 
@@ -620,55 +625,55 @@ void MainWindow::pushButtonRefresh_clicked() {
 }
 
 // Search
-void MainWindow::searchLineEdit_returnPressed() {
-    if (this->ui->searchLineEdit->isCompleterVisible()) {
+void MainWindow::searchPlainTextEdit_returnPressed() {
+    if (this->ui->searchPlainTextEdit->isCompleterVisible()) {
         return;
     }
     emit request_setSearchText(this->getSearchText());
 }
 
 void MainWindow::focus_search_input_shortcut() {
-   this->ui->searchLineEdit->setFocus();
+   this->ui->searchPlainTextEdit->setFocus();
 }
 
 void MainWindow::unfocus_search_input_shortcut() {
-    if (this->ui->searchLineEdit->isCompleterVisible()) {
-        this->ui->searchLineEdit->hideCompleter();
-    } else if (this->ui->searchLineEdit->hasFocus()) {
+    if (this->ui->searchPlainTextEdit->isCompleterVisible()) {
+        this->ui->searchPlainTextEdit->hideCompleter();
+    } else if (this->ui->searchPlainTextEdit->hasFocus()) {
         this->setFocus();
     }
 }
 
 void MainWindow::search_move_char_forward_shortcut() {
-    if (this->ui->searchLineEdit->hasFocus()) {
-        this->ui->searchLineEdit->cursorForward(false);
+    if (this->ui->searchPlainTextEdit->hasFocus()) {
+        //TODO this->ui->searchPlainTextEdit->cursorForward(false);
     }
 }
 
 void MainWindow::search_move_char_backward_shortcut() {
-    if (this->ui->searchLineEdit->hasFocus()) {
-        this->ui->searchLineEdit->cursorBackward(false);
+    if (this->ui->searchPlainTextEdit->hasFocus()) {
+        //TODO this->ui->searchPlainTextEdit->cursorBackward(false);
     }
 }
 
 void MainWindow::search_move_word_forward_shortcut() {
-    if (this->ui->searchLineEdit->hasFocus()) {
-        this->ui->searchLineEdit->cursorWordForward(false);
+    if (this->ui->searchPlainTextEdit->hasFocus()) {
+        //TODO this->ui->searchPlainTextEdit->cursorWordForward(false);
     }
 }
 
 void MainWindow::search_move_word_backward_shortcut() {
-    if (this->ui->searchLineEdit->hasFocus()) {
-        this->ui->searchLineEdit->cursorWordBackward(false);
+    if (this->ui->searchPlainTextEdit->hasFocus()) {
+        //TODO this->ui->searchPlainTextEdit->cursorWordBackward(false);
     }
 }
 
 void MainWindow::search_select_next_completion_shortcut() {
-    this->ui->searchLineEdit->selectNextCompletion();
+    this->ui->searchPlainTextEdit->selectNextCompletion();
 }
 
 void MainWindow::search_select_previous_completion_shortcut() {
-    this->ui->searchLineEdit->selectPreviousCompletion();
+    this->ui->searchPlainTextEdit->selectPreviousCompletion();
 }
 
 // Progress dialog
@@ -682,7 +687,7 @@ void MainWindow::main_window_progress_dialog_canceled() {
 
 // Search while typing timer
 void MainWindow::search_while_typing_timeout() {
-    QString new_search = this->ui->searchLineEdit->text();
+    QString new_search = this->ui->searchPlainTextEdit->toPlainText();
     if (!this->isLastSearchedText(new_search)) {
         this->current_search = new_search;
         emit request_setSearchText(new_search);

@@ -113,7 +113,7 @@
     <item>
      <widget class="QSplitter" name="splitterExplorer">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -142,7 +142,7 @@
        </property>
        <property name="minimumSize">
         <size>
-         <width>150</width>
+         <width>254</width>
          <height>0</height>
         </size>
        </property>

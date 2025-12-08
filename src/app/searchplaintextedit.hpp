@@ -6,17 +6,17 @@
 
 #include <QObject>
 #include <QWidget>
-#include <QLineEdit>
+#include <QPlainTextEdit>
 #include <QList>
 #include <QKeyEvent>
 #include <QRegularExpression>
 
 
-class SearchLineEdit : public QLineEdit {
+class SearchPlainTextEdit : public QPlainTextEdit {
     Q_OBJECT;
 public:
-    explicit SearchLineEdit(QWidget *parent = nullptr);
-    ~SearchLineEdit();
+    explicit SearchPlainTextEdit(QWidget *parent = nullptr);
+    ~SearchPlainTextEdit();
 
     void setCompleter(SearchCompleter *search_completer);
     SearchCompleter* completer() const;
@@ -47,7 +47,7 @@ private:
     // Checks if current cursor position is inside the {} braces
     // of a matched namespace; if current_cursor_pos is not given
     // the method cursorPosition(); will be used to get it
-    bool isCursorInsideBrace(const QString &whole_text, const QString &namespace_text, const QString &tags_text, int current_cursor_pos = -1);
+    bool isCursorInsideBrace(const QString &whole_text, const QString &namespace_text, const QString &tags_text);
     // This function checks if the next character is a closed bracket
     // and jumps over it if the input is the same as bracket, otherwise
     // it inserts bracket
@@ -61,13 +61,14 @@ protected:
 
 signals:
     void request_updateCompletionMode(SearchCompleter::CompleterRole role, const QString &prefix);
+    void returnPressed();
 
 public slots:
     void receive_setCompleterData_request(const QList<Manga> &data);
 
 private slots:
-    void searchLineEdit_textEdited(const QString &text);
-    void searchLineEdit_cursorPositionChanged(int old_pos, int new_pos);
+    void searchPlainTextEdit_textEdited();
+    void searchPlainTextEdit_cursorPositionChanged();
 
     void receive_completerText(const QString &completer_text);
 

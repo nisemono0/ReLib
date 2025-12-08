@@ -6,7 +6,7 @@
 
 #include "app/imageview.hpp"
 #include "app/libraryview.hpp"
-#include "app/searchlineedit.hpp"
+#include "app/searchplaintextedit.hpp"
 
 #include "base/dbworker.hpp"
 #include "base/zipworker.hpp"
@@ -171,7 +171,7 @@ private slots:
     void pushButtonRefresh_clicked();
 
     // Search
-    void searchLineEdit_returnPressed();
+    void searchPlainTextEdit_returnPressed();
     void focus_search_input_shortcut();
     void unfocus_search_input_shortcut();
     void search_move_char_forward_shortcut();

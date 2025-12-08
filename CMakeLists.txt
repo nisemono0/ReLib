@@ -21,8 +21,8 @@ qt_add_executable(ReLib
     src/app/libraryviewdelegate.hpp
     src/app/searchcompleter.cpp
     src/app/searchcompleter.hpp
-    src/app/searchlineedit.cpp
-    src/app/searchlineedit.hpp
+    src/app/searchplaintextedit.cpp
+    src/app/searchplaintextedit.hpp
     src/base/clipboard.cpp
     src/base/clipboard.hpp
     src/base/dbworker.cpp
