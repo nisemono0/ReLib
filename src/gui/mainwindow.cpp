@@ -646,25 +646,25 @@ void MainWindow::unfocus_search_input_shortcut() {
 
 void MainWindow::search_move_char_forward_shortcut() {
     if (this->ui->searchPlainTextEdit->hasFocus()) {
-        //TODO this->ui->searchPlainTextEdit->cursorForward(false);
+        this->ui->searchPlainTextEdit->moveCursor(QTextCursor::Right);
     }
 }
 
 void MainWindow::search_move_char_backward_shortcut() {
     if (this->ui->searchPlainTextEdit->hasFocus()) {
-        //TODO this->ui->searchPlainTextEdit->cursorBackward(false);
+        this->ui->searchPlainTextEdit->moveCursor(QTextCursor::Left);
     }
 }
 
 void MainWindow::search_move_word_forward_shortcut() {
     if (this->ui->searchPlainTextEdit->hasFocus()) {
-        //TODO this->ui->searchPlainTextEdit->cursorWordForward(false);
+        this->ui->searchPlainTextEdit->moveCursor(QTextCursor::WordRight);
     }
 }
 
 void MainWindow::search_move_word_backward_shortcut() {
     if (this->ui->searchPlainTextEdit->hasFocus()) {
-        //TODO this->ui->searchPlainTextEdit->cursorWordBackward(false);
+        this->ui->searchPlainTextEdit->moveCursor(QTextCursor::WordLeft);
     }
 }
 
