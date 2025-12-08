@@ -13,6 +13,8 @@ SearchLineEdit::SearchLineEdit(QWidget *parent) : QLineEdit(parent) {
 
     // Line edit
     connect(this, &QLineEdit::textEdited, this, &SearchLineEdit::searchLineEdit_textEdited);
+    connect(this, &QLineEdit::cursorPositionChanged, this, &SearchLineEdit::searchLineEdit_cursorPositionChanged);
+
     // Completer
     connect(this, &SearchLineEdit::request_updateCompletionMode, this->search_completer, &SearchCompleter::receive_updateCompletionMode_request);
 }
@@ -94,8 +96,11 @@ bool SearchLineEdit::removeMatchingBracket() {
     return false;
 }
 
-bool SearchLineEdit::isCursorInsideBrace(const QString &whole_text, const QString &namespace_text, const QString &tags_text) {
-    int current_cursor_pos = this->cursorPosition();
+bool SearchLineEdit::isCursorInsideBrace(const QString &whole_text, const QString &namespace_text, const QString &tags_text, int current_cursor_pos) {
+    if (current_cursor_pos == -1) {
+        current_cursor_pos = this->cursorPosition();
+    }
+
     int namespace_len = namespace_text.length();
     int tags_len = tags_text.length();
 
@@ -222,6 +227,22 @@ void SearchLineEdit::searchLineEdit_textEdited(const QString &text) {
     }
 
     emit request_updateCompletionMode(SearchCompleter::Default, text);
+}
+
+void SearchLineEdit::searchLineEdit_cursorPositionChanged(int old_pos, int new_pos) {
+    Q_UNUSED(old_pos);
+
+    // Same as searchLineEdit_textEdited but uses new_pos
+    // Hides the completion popup if cursor is outside braces
+    for (auto re_match : this->completer_regex.globalMatch(this->text())) {
+        QString whole_text = re_match.captured(0);
+        QString namespace_text = re_match.captured(1);
+        QString tags_text = re_match.captured(2);
+        if (!this->isCursorInsideBrace(whole_text, namespace_text, tags_text, new_pos)) {
+            this->search_completer->hidePopup();
+        }
+    }
+
 }
 
 void SearchLineEdit::receive_completerText(const QString &completer_text) {

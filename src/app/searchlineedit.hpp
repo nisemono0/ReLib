@@ -45,8 +45,9 @@ private:
     // Return true if successfull
     bool removeMatchingBracket();
     // Checks if current cursor position is inside the {} braces
-    // of a matched namespace
-    bool isCursorInsideBrace(const QString &whole_text, const QString &namespace_text, const QString &tags_text);
+    // of a matched namespace; if current_cursor_pos is not given
+    // the method cursorPosition(); will be used to get it
+    bool isCursorInsideBrace(const QString &whole_text, const QString &namespace_text, const QString &tags_text, int current_cursor_pos = -1);
     // This function checks if the next character is a closed bracket
     // and jumps over it if the input is the same as bracket, otherwise
     // it inserts bracket
@@ -66,6 +67,7 @@ public slots:
 
 private slots:
     void searchLineEdit_textEdited(const QString &text);
+    void searchLineEdit_cursorPositionChanged(int old_pos, int new_pos);
 
     void receive_completerText(const QString &completer_text);
 
