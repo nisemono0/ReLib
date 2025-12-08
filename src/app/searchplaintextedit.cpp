@@ -82,7 +82,7 @@ bool SearchPlainTextEdit::removeMatchingBracket() {
     int cursor_position = tc.position();
     QString current_text = this->toPlainText();
 
-    if (cursor_position == 0 || cursor_position == current_text.length()) {
+    if (tc.atStart() || tc.atEnd()) {
         return false;
     }
 
