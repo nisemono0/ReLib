@@ -22,7 +22,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayoutSearch" stretch="0,0,0,1">
+     <layout class="QHBoxLayout" name="horizontalLayoutSearch" stretch="0,0,0,0">
       <item>
        <widget class="QPushButton" name="pushButtonSearch">
         <property name="sizePolicy">
@@ -72,7 +72,41 @@
        </widget>
       </item>
       <item>
-       <widget class="SearchLineEdit" name="searchLineEdit"/>
+       <widget class="SearchPlainTextEdit" name="searchPlainTextEdit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>26</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>26</height>
+         </size>
+        </property>
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+        </property>
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+        </property>
+        <property name="undoRedoEnabled">
+         <bool>false</bool>
+        </property>
+        <property name="maximumBlockCount">
+         <number>1</number>
+        </property>
+        <property name="placeholderText">
+         <string>Library search...</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -487,9 +521,9 @@
    <header>app/libraryview.hpp</header>
   </customwidget>
   <customwidget>
-   <class>SearchLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>app/searchlineedit.hpp</header>
+   <class>SearchPlainTextEdit</class>
+   <extends>QPlainTextEdit</extends>
+   <header>app/searchplaintextedit.hpp</header>
   </customwidget>
  </customwidgets>
  <resources/>
