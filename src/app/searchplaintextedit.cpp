@@ -71,31 +71,32 @@ void SearchPlainTextEdit::clearCompleter() {
 }
 
 void SearchPlainTextEdit::insertMatchingBracket(const QString &bracket) {
-    // TODO
-    // this->insert(bracket);
-    // this->setCursorPosition(this->cursorPosition() - 1);
+    QTextCursor tc = this->textCursor();
+    tc.insertText(bracket);
+    tc.movePosition(QTextCursor::PreviousCharacter);
+    this->setTextCursor(tc);
 }
 
 bool SearchPlainTextEdit::removeMatchingBracket() {
-    // TODO
-    // int cursor_position = this->cursorPosition();
-    // QString current_text = this->text();
+    QTextCursor tc = this->textCursor();
+    int cursor_position = tc.position();
+    QString current_text = this->toPlainText();
 
-    // if (cursor_position == 0 || cursor_position == current_text.length()) {
-    //     return false;
-    // }
+    if (cursor_position == 0 || cursor_position == current_text.length()) {
+        return false;
+    }
 
-    // if (
-    //     (current_text[cursor_position - 1] == QStringLiteral("(") && current_text[cursor_position] == QStringLiteral(")")) ||
-    //     (current_text[cursor_position - 1] == QStringLiteral("[") && current_text[cursor_position] == QStringLiteral("]")) ||
-    //     (current_text[cursor_position - 1] == QStringLiteral("{") && current_text[cursor_position] == QStringLiteral("}"))
-    //    ) {
-    //     this->backspace();
-    //     this->del();
-    //     return true;
-    // }
+    if (
+        (current_text[cursor_position - 1] == QStringLiteral("(") && current_text[cursor_position] == QStringLiteral(")")) ||
+        (current_text[cursor_position - 1] == QStringLiteral("[") && current_text[cursor_position] == QStringLiteral("]")) ||
+        (current_text[cursor_position - 1] == QStringLiteral("{") && current_text[cursor_position] == QStringLiteral("}"))
+       ) {
+        tc.deletePreviousChar();
+        tc.deleteChar();
+        return true;
+    }
 
-    // return false;
+    return false;
 }
 
 bool SearchPlainTextEdit::isCursorInsideBrace(const QString &whole_text, const QString &namespace_text, const QString &tags_text) {
@@ -121,14 +122,18 @@ bool SearchPlainTextEdit::isCursorInsideBrace(const QString &whole_text, const Q
 }
 
 void SearchPlainTextEdit::jumpOrInsertClosedBracket(const QString &bracket) {
-    // TODO
-    // int current_cursor_pos = this->cursorPosition();
-    // if (this->text()[current_cursor_pos] == bracket) {
-    //     this->setCursorPosition(this->cursorPosition() + 1);
-    //     this->search_completer->hidePopup();
-    // } else {
-    //     this->insert(bracket);
-    // }
+    QString current_text = this->toPlainText();
+
+    QTextCursor tc = this->textCursor();
+    int cursor_pos = tc.position();
+
+    if (current_text[cursor_pos] == bracket) {
+        tc.movePosition(QTextCursor::NextCharacter);
+        this->setTextCursor(tc);
+        this->search_completer->hidePopup();
+    } else {
+        tc.insertText(bracket);
+    }
 }
 
 SearchCompleter::CompleterRole SearchPlainTextEdit::getCompleterRoleFromNamespace(const QString &matched_namespace) {
@@ -200,6 +205,7 @@ void SearchPlainTextEdit::keyPressEvent(QKeyEvent *event) {
             if (this->removeMatchingBracket()) {
                 return;
             }
+            break;
         }
         // Simulate QLineEdit returnPressed signal
         case Qt::Key_Return:
