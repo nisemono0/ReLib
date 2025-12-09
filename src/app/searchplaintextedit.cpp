@@ -6,6 +6,9 @@
 
 
 SearchPlainTextEdit::SearchPlainTextEdit(QWidget *parent) : QPlainTextEdit(parent) {
+    this->default_stylesheet = this->styleSheet();
+    this->focused_stylesheet = QStringLiteral("QPlainTextEdit { border: 1px solid dimgray }");
+
     this->setCompleter(new SearchCompleter(this));
 
     this->completer_regex = QRegularExpression(
@@ -158,6 +161,23 @@ SearchCompleter::CompleterRole SearchPlainTextEdit::getCompleterRoleFromNamespac
     return SearchCompleter::Title;
 }
 
+void SearchPlainTextEdit::focusInEvent(QFocusEvent *event) {
+    // Receive keyboard focus events for the widget
+    if (this->search_completer) {
+        this->search_completer->setWidget(this);
+    }
+
+    this->setStyleSheet(this->focused_stylesheet);
+
+    QPlainTextEdit::focusInEvent(event);
+}
+
+void SearchPlainTextEdit::focusOutEvent(QFocusEvent *event) {
+    this->setStyleSheet(this->default_stylesheet);
+
+    QPlainTextEdit::focusOutEvent(event);
+}
+
 void SearchPlainTextEdit::keyPressEvent(QKeyEvent *event) {
     // Disable the QPlainTextEdit keys and let them be
     // handled by the completion popup if it's visible
@@ -275,20 +295,6 @@ void SearchPlainTextEdit::keyPressEvent(QKeyEvent *event) {
     };
 
     QPlainTextEdit::keyPressEvent(event);
-}
-
-void SearchPlainTextEdit::focusInEvent(QFocusEvent *event) {
-    // TODO: Add a custom stylesheet to show that the text input is focused
-    // Receive keyboard focus events for the widget
-    if (this->search_completer) {
-        this->search_completer->setWidget(this);
-    }
-    QPlainTextEdit::focusInEvent(event);
-}
-
-void SearchPlainTextEdit::focusOutEvent(QFocusEvent *event) {
-    // TODO: Reset to the default styleshee when search input is no longer focused
-    QPlainTextEdit::focusOutEvent(event);
 }
 
 void SearchPlainTextEdit::receive_setCompleterData_request(const QList<Manga> &data) {

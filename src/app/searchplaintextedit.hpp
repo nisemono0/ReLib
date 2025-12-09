@@ -33,6 +33,9 @@ private:
 
     QRegularExpression completer_regex;
 
+    QString default_stylesheet;
+    QString focused_stylesheet;
+
     // Inserts bracket in the text edit and moves the
     // cursor back once; used to insert matching brackets
     void insertMatchingBracket(const QString &bracket);
@@ -53,9 +56,9 @@ private:
     SearchCompleter::CompleterRole getCompleterRoleFromNamespace(const QString &matched_namespace);
 
 protected:
-    void keyPressEvent(QKeyEvent *event) override;
     void focusInEvent(QFocusEvent *event) override;
     void focusOutEvent(QFocusEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 signals:
     void request_updateCompletionMode(SearchCompleter::CompleterRole role, const QString &prefix);
