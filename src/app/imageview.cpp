@@ -168,6 +168,36 @@ void ImageView::fitImage() {
     };
 }
 
+void ImageView::showJumpToImageDialog() {
+    if (this->jump_image_dialog) {
+        this->jump_image_dialog->activateWindow();
+    } else {
+        if (this->image_scene->isCoverImage()) {
+            return;
+        }
+        int current_image_number = this->image_scene->getCurrentImageNumber();
+        int total_image_number = this->image_scene->getTotalImagesNumber();
+
+        this->jump_image_dialog = new QInputDialog(this);
+        this->jump_image_dialog->setLabelText(QStringLiteral("Jump to image [%1/%2]").arg(
+                    QStringLiteral("1"),
+                    QString::number(total_image_number)
+                    ));
+        this->jump_image_dialog->setAttribute(Qt::WA_DeleteOnClose);
+        this->jump_image_dialog->setInputMode(QInputDialog::IntInput);
+        this->jump_image_dialog->setFixedSize(this->jump_image_dialog->size());
+        this->jump_image_dialog->setIntRange(1, total_image_number);
+        this->jump_image_dialog->setIntValue(current_image_number + 1);
+        this->jump_image_dialog->setIntStep(1);
+        this->jump_image_dialog->show();
+        this->jump_image_dialog->activateWindow();
+        // Input dialog accept/cancel
+        connect(this->jump_image_dialog, &QInputDialog::intValueSelected, this, [this](int value){
+                this->image_scene->jumpToImage(value - 1);
+                });
+    }
+}
+
 void ImageView::scaleAndFitCurrentImage() {
     this->image_scene->setViewWindowSize(QWidget::window()->size());
     this->image_scene->scaleCurrentImage();
@@ -336,33 +366,7 @@ void ImageView::copy_image_action_triggered() {
 }
 
 void ImageView::jump_image_action_triggered() {
-    if (this->jump_image_dialog) {
-        this->jump_image_dialog->activateWindow();
-    } else {
-        if (this->image_scene->isCoverImage()) {
-            return;
-        }
-        int current_image_number = this->image_scene->getCurrentImageNumber();
-        int total_image_number = this->image_scene->getTotalImagesNumber();
-
-        this->jump_image_dialog = new QInputDialog(this);
-        this->jump_image_dialog->setLabelText(QStringLiteral("Jump to image [%1/%2]").arg(
-                    QStringLiteral("1"),
-                    QString::number(total_image_number)
-                    ));
-        this->jump_image_dialog->setAttribute(Qt::WA_DeleteOnClose);
-        this->jump_image_dialog->setInputMode(QInputDialog::IntInput);
-        this->jump_image_dialog->setFixedSize(this->jump_image_dialog->size());
-        this->jump_image_dialog->setIntRange(1, total_image_number);
-        this->jump_image_dialog->setIntValue(current_image_number + 1);
-        this->jump_image_dialog->setIntStep(1);
-        this->jump_image_dialog->show();
-        this->jump_image_dialog->activateWindow();
-        // Input dialog accept/cancel
-        connect(this->jump_image_dialog, &QInputDialog::intValueSelected, this, [this](int value){
-                this->image_scene->jumpToImage(value - 1);
-                });
-    }
+    this->showJumpToImageDialog();
 }
 
 void ImageView::scroll_item_action_triggered() {
@@ -425,6 +429,10 @@ void ImageView::receive_loadImages_shortcut() {
         this->image_thread->start();
         emit request_getArchiveImages(this->current_item_path);
     }
+}
+
+void ImageView::receive_showJumpToImageDialog_shortcut() {
+    this->showJumpToImageDialog();
 }
 
 void ImageView::receive_fitImage_request() {

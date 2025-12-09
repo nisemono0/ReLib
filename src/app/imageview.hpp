@@ -55,6 +55,8 @@ private:
     void scaleAndFitCurrentImage();
     void fitImage();
 
+    void showJumpToImageDialog();
+
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
@@ -84,6 +86,7 @@ public slots:
     void receive_showNextImage_shortcut();
     void receive_showPreviousImage_shortcut();
     void receive_loadImages_shortcut();
+    void receive_showJumpToImageDialog_shortcut();
 
 private slots:
     void load_images_action_triggered();

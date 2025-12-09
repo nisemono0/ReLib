@@ -303,15 +303,19 @@ void MainWindow::setupShortcuts() {
     // MainWindow settings
     connect(this->shortcuts->mainwindow_scale_slider_increment, &QShortcut::activated, this, &MainWindow::scale_slider_increment_shortcut);
     connect(this->shortcuts->mainwindow_scale_slider_decrement, &QShortcut::activated, this, &MainWindow::scale_slider_decrement_shortcut);
+
     // LibraryView
     connect(this->shortcuts->libraryview_next_item, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectNextItem_shortcut);
     connect(this->shortcuts->libraryview_previous_item, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectPreviousItem_shortcut);
     connect(this->shortcuts->libraryview_first_item, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectFirstItem_shortcut);
     connect(this->shortcuts->libraryview_last_item, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectLastItem_shortcut);
+
     // ImageView
     connect(this->shortcuts->imageview_next_image, &QShortcut::activated, this->ui->imageView, &ImageView::receive_showNextImage_shortcut);
     connect(this->shortcuts->imageview_previous_image, &QShortcut::activated, this->ui->imageView, &ImageView::receive_showPreviousImage_shortcut);
     connect(this->shortcuts->imageview_load_images, &QShortcut::activated, this->ui->imageView, &ImageView::receive_loadImages_shortcut);
+    connect(this->shortcuts->jump_to_image, &QShortcut::activated, this->ui->imageView, &ImageView::receive_showJumpToImageDialog_shortcut);
+
     // Search input shortcuts
     connect(this->shortcuts->focus_search_input, &QShortcut::activated, this, &MainWindow::focus_search_input_shortcut);
     connect(this->shortcuts->unfocus_search_input, &QShortcut::activated, this, &MainWindow::unfocus_search_input_shortcut);

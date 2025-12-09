@@ -24,6 +24,7 @@ public:
     QShortcut *imageview_next_image;
     QShortcut *imageview_previous_image;
     QShortcut *imageview_load_images;
+    QShortcut *jump_to_image;
 
     // Search
     QShortcut *focus_search_input;

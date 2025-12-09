@@ -47,6 +47,10 @@ Shortcuts::Shortcuts(QObject *parent) : QObject(parent) {
     this->imageview_load_images->setKeys({
             Qt::Key_O
             });
+    this->jump_to_image = new QShortcut(parent);
+    this->jump_to_image->setKeys({
+            QKeySequence(Qt::Key_G, Qt::Key_I)
+            });
 
     // Search
     this->focus_search_input = new QShortcut(parent);
@@ -72,6 +76,7 @@ Shortcuts::~Shortcuts() {
     delete this->imageview_next_image;
     delete this->imageview_previous_image;
     delete this->imageview_load_images;
+    delete this->jump_to_image;
 
     delete this->focus_search_input;
     delete this->unfocus_search_input;
