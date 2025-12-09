@@ -143,10 +143,7 @@ void LibraryView::receive_setSearchText_request(const QString &search_text) {
 }
 
 void LibraryView::receive_selectRandomManga_request() {
-    QModelIndex random_index = this->library_model_proxy->getRandomIndex();
-    if (random_index.isValid()) {
-        this->setCurrentIndex(random_index);
-    }
+    this->selectRandomManga();
 }
 
 void LibraryView::receive_showMangaInfoDialog_request() {
@@ -213,6 +210,10 @@ void LibraryView::receive_selectLastItem_shortcut() {
     }
 }
 
+void LibraryView::receive_selectRandomManga_shortcut() {
+    this->selectRandomManga();
+}
+
 void LibraryView::libraryView_selectionModel_currentChanged(const QModelIndex &current, const QModelIndex &previous) {
     // this prevents the filter model from selecting a new item
     // if the previous one got filtered out (is not visible)
@@ -266,6 +267,14 @@ void LibraryView::scrollToCurrentItem() {
     QModelIndex selected_idx = this->currentIndex();
     if (selected_idx.isValid()) {
         this->scrollTo(selected_idx, QAbstractItemView::PositionAtCenter);
+    }
+}
+
+void LibraryView::selectRandomManga() {
+    QModelIndex random_index = this->library_model_proxy->getRandomIndex();
+    if (random_index.isValid()) {
+        this->setCurrentIndex(random_index);
+        this->scrollTo(random_index, QAbstractItemView::PositionAtCenter);
     }
 }
 

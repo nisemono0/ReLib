@@ -42,6 +42,8 @@ private:
 
     void scrollToCurrentItem();
 
+    void selectRandomManga();
+
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
 
@@ -66,6 +68,7 @@ public slots:
     void receive_selectPreviousItem_shortcut();
     void receive_selectFirstItem_shortcut();
     void receive_selectLastItem_shortcut();
+    void receive_selectRandomManga_shortcut();
 
 private slots:
     void libraryView_selectionModel_currentChanged(const QModelIndex &current, const QModelIndex &previous);

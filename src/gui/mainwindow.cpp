@@ -268,7 +268,7 @@ void MainWindow::setNoDatabaseStatus() {
 }
 
 void MainWindow::clearSearchText() {
-    this->ui->searchPlainTextEdit->setPlainText("");
+    this->ui->searchPlainTextEdit->clear();
     this->current_search = "";
 }
 
@@ -303,22 +303,24 @@ void MainWindow::setupShortcuts() {
     // MainWindow settings
     connect(this->shortcuts->mainwindow_scale_slider_increment, &QShortcut::activated, this, &MainWindow::scale_slider_increment_shortcut);
     connect(this->shortcuts->mainwindow_scale_slider_decrement, &QShortcut::activated, this, &MainWindow::scale_slider_decrement_shortcut);
+    connect(this->shortcuts->mainwindow_refresh_search, &QShortcut::activated, this, &MainWindow::refresh_search_shortcut);
 
     // LibraryView
     connect(this->shortcuts->libraryview_next_item, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectNextItem_shortcut);
     connect(this->shortcuts->libraryview_previous_item, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectPreviousItem_shortcut);
     connect(this->shortcuts->libraryview_first_item, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectFirstItem_shortcut);
     connect(this->shortcuts->libraryview_last_item, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectLastItem_shortcut);
+    connect(this->shortcuts->libraryview_select_random, &QShortcut::activated, this->ui->libraryView, &LibraryView::receive_selectRandomManga_shortcut);
 
     // ImageView
     connect(this->shortcuts->imageview_next_image, &QShortcut::activated, this->ui->imageView, &ImageView::receive_showNextImage_shortcut);
     connect(this->shortcuts->imageview_previous_image, &QShortcut::activated, this->ui->imageView, &ImageView::receive_showPreviousImage_shortcut);
     connect(this->shortcuts->imageview_load_images, &QShortcut::activated, this->ui->imageView, &ImageView::receive_loadImages_shortcut);
-    connect(this->shortcuts->jump_to_image, &QShortcut::activated, this->ui->imageView, &ImageView::receive_showJumpToImageDialog_shortcut);
+    connect(this->shortcuts->imageview_jump_to_image, &QShortcut::activated, this->ui->imageView, &ImageView::receive_showJumpToImageDialog_shortcut);
 
     // Search input shortcuts
-    connect(this->shortcuts->focus_search_input, &QShortcut::activated, this, &MainWindow::focus_search_input_shortcut);
-    connect(this->shortcuts->unfocus_search_input, &QShortcut::activated, this, &MainWindow::unfocus_search_input_shortcut);
+    connect(this->shortcuts->search_focus_input, &QShortcut::activated, this, &MainWindow::search_focus_input_shortcut);
+    connect(this->shortcuts->search_unfocus_input, &QShortcut::activated, this, &MainWindow::search_unfocus_input_shortcut);
 }
 
 bool MainWindow::focusNextPrevChild(bool next) {
@@ -622,8 +624,8 @@ void MainWindow::pushButtonRandom_clicked() {
 }
 
 void MainWindow::pushButtonRefresh_clicked() {
-    this->clearSearchText();
     emit request_setSearchText("");
+    this->clearSearchText();
 }
 
 // Search
@@ -634,16 +636,21 @@ void MainWindow::searchPlainTextEdit_returnPressed() {
     emit request_setSearchText(this->getSearchText());
 }
 
-void MainWindow::focus_search_input_shortcut() {
+void MainWindow::search_focus_input_shortcut() {
    this->ui->searchPlainTextEdit->setFocus();
 }
 
-void MainWindow::unfocus_search_input_shortcut() {
+void MainWindow::search_unfocus_input_shortcut() {
     if (this->ui->searchPlainTextEdit->isCompleterVisible()) {
         this->ui->searchPlainTextEdit->hideCompleter();
     } else if (this->ui->searchPlainTextEdit->hasFocus()) {
         this->setFocus();
     }
+}
+
+void MainWindow::refresh_search_shortcut() {
+    emit request_setSearchText("");
+    this->clearSearchText();
 }
 
 // Progress dialog

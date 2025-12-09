@@ -176,14 +176,16 @@ private slots:
 
     // Search
     void searchPlainTextEdit_returnPressed();
-    void focus_search_input_shortcut();
-    void unfocus_search_input_shortcut();
+    void search_focus_input_shortcut();
+    void search_unfocus_input_shortcut();
+    void refresh_search_shortcut();
 
     // Progress dialog
     void main_window_progress_dialog_canceled();
 
     // Search while typing timer
     void search_while_typing_timeout();
+
 
 };
 
