@@ -325,18 +325,25 @@ void SearchPlainTextEdit::searchPlainTextEdit_textChanged() {
 }
 
 void SearchPlainTextEdit::searchPlainTextEdit_cursorPositionChanged() {
-    // Same as searchPlainTextEdit_textEdited but hides
+    // Same as searchPlainTextEdit_textChanged but hides
     // the completion popup if cursor is outside braces
+
+    bool is_inside_brace = false;
+
     QString text = this->toPlainText();
     for (auto re_match : this->completer_regex.globalMatch(text)) {
         QString whole_text = re_match.captured(0);
         QString namespace_text = re_match.captured(1);
         QString tags_text = re_match.captured(2);
-        if (!this->isCursorInsideBrace(whole_text, namespace_text, tags_text)) {
-            this->search_completer->hidePopup();
+        if (this->isCursorInsideBrace(whole_text, namespace_text, tags_text)) {
+            is_inside_brace = true;
+            break;
         }
     }
 
+    if (!is_inside_brace && this->search_completer->isPopupVisible()) {
+        this->search_completer->hidePopup();
+    }
 }
 
 void SearchPlainTextEdit::receive_completerText(const QString &completer_text) {
