@@ -28,10 +28,6 @@ public:
     // Search
     QShortcut *focus_search_input;
     QShortcut *unfocus_search_input;
-    QShortcut *search_move_char_forward;
-    QShortcut *search_move_char_backward;
-    QShortcut *search_move_word_forward;
-    QShortcut *search_move_word_backward;
 
 };
 

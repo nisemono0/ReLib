@@ -2,6 +2,8 @@
 
 #include "base/settings.hpp"
 
+#include <QApplication>
+
 
 SearchPlainTextEdit::SearchPlainTextEdit(QWidget *parent) : QPlainTextEdit(parent) {
     this->setCompleter(new SearchCompleter(this));
@@ -12,7 +14,7 @@ SearchPlainTextEdit::SearchPlainTextEdit(QWidget *parent) : QPlainTextEdit(paren
     this->completer_regex.optimize();
 
     // Plain text edit
-    connect(this, &QPlainTextEdit::textChanged, this, &SearchPlainTextEdit::searchPlainTextEdit_textEdited);
+    connect(this, &QPlainTextEdit::textChanged, this, &SearchPlainTextEdit::searchPlainTextEdit_textChanged);
     connect(this, &QPlainTextEdit::cursorPositionChanged, this, &SearchPlainTextEdit::searchPlainTextEdit_cursorPositionChanged);
 
     // Completer
@@ -59,18 +61,18 @@ void SearchPlainTextEdit::clearCompleter() {
 }
 
 void SearchPlainTextEdit::insertMatchingBracket(const QString &bracket) {
-    QTextCursor tc = this->textCursor();
-    tc.insertText(bracket);
-    tc.movePosition(QTextCursor::PreviousCharacter);
-    this->setTextCursor(tc);
+    QTextCursor text_cursor = this->textCursor();
+    text_cursor.insertText(bracket);
+    text_cursor.movePosition(QTextCursor::PreviousCharacter);
+    this->setTextCursor(text_cursor);
 }
 
 bool SearchPlainTextEdit::removeMatchingBracket() {
-    QTextCursor tc = this->textCursor();
-    int cursor_position = tc.position();
+    QTextCursor text_cursor = this->textCursor();
+    int cursor_position = text_cursor.position();
     QString current_text = this->toPlainText();
 
-    if (tc.atStart() || tc.atEnd()) {
+    if (text_cursor.atStart() || text_cursor.atEnd()) {
         return false;
     }
 
@@ -79,8 +81,8 @@ bool SearchPlainTextEdit::removeMatchingBracket() {
         (current_text[cursor_position - 1] == QStringLiteral("[") && current_text[cursor_position] == QStringLiteral("]")) ||
         (current_text[cursor_position - 1] == QStringLiteral("{") && current_text[cursor_position] == QStringLiteral("}"))
        ) {
-        tc.deletePreviousChar();
-        tc.deleteChar();
+        text_cursor.deletePreviousChar();
+        text_cursor.deleteChar();
         return true;
     }
 
@@ -88,8 +90,8 @@ bool SearchPlainTextEdit::removeMatchingBracket() {
 }
 
 bool SearchPlainTextEdit::isCursorInsideBrace(const QString &whole_text, const QString &namespace_text, const QString &tags_text) {
-    QTextCursor tc = this->textCursor();
-    int current_cursor_pos = tc.position();
+    QTextCursor text_cursor = this->textCursor();
+    int current_cursor_pos = text_cursor.position();
 
     int namespace_len = namespace_text.length();
     int tags_len = tags_text.length();
@@ -112,15 +114,15 @@ bool SearchPlainTextEdit::isCursorInsideBrace(const QString &whole_text, const Q
 void SearchPlainTextEdit::jumpOrInsertClosedBracket(const QString &bracket) {
     QString current_text = this->toPlainText();
 
-    QTextCursor tc = this->textCursor();
-    int cursor_pos = tc.position();
+    QTextCursor text_cursor = this->textCursor();
+    int cursor_pos = text_cursor.position();
 
     if (current_text[cursor_pos] == bracket) {
-        tc.movePosition(QTextCursor::NextCharacter);
-        this->setTextCursor(tc);
+        text_cursor.movePosition(QTextCursor::NextCharacter);
+        this->setTextCursor(text_cursor);
         this->search_completer->hidePopup();
     } else {
-        tc.insertText(bracket);
+        text_cursor.insertText(bracket);
     }
 }
 
@@ -178,13 +180,29 @@ void SearchPlainTextEdit::keyPressEvent(QKeyEvent *event) {
                 this->search_completer->selectPreviousEntry();
                 return;
             }
+            case Qt::Key_J:
+            {
+                if (QApplication::keyboardModifiers() == Qt::ControlModifier) {
+                    this->search_completer->selectNextEntry();
+                    return;
+                }
+                break;
+            }
+            case Qt::Key_K:
+            {
+                if (QApplication::keyboardModifiers() == Qt::ControlModifier) {
+                    this->search_completer->selectPreviousEntry();
+                    return;
+                }
+                break;
+            }
             default:
                 break;
         }
     }
 
-    // TODO: Handle the base/shortcuts for search in this event
     switch (event->key()) {
+        // Insert matching/jump over/delete matching bracket
         case Qt::Key_ParenLeft:
         {
             this->insertMatchingBracket(QStringLiteral(")"));
@@ -222,6 +240,29 @@ void SearchPlainTextEdit::keyPressEvent(QKeyEvent *event) {
             }
             break;
         }
+        // SearchPlainTextEdit cursor movement
+        case Qt::Key_L:
+        {
+            if (QApplication::keyboardModifiers() == Qt::ControlModifier) {
+                this->moveCursor(QTextCursor::Right);
+                return;
+            } else if (QApplication::keyboardModifiers() == Qt::AltModifier) {
+                this->moveCursor(QTextCursor::WordRight);
+                return;
+            }
+            break;
+        }
+        case Qt::Key_H:
+        {
+            if (QApplication::keyboardModifiers() == Qt::ControlModifier) {
+                this->moveCursor(QTextCursor::Left);
+                return;
+            } else if (QApplication::keyboardModifiers() == Qt::AltModifier) {
+                this->moveCursor(QTextCursor::WordLeft);
+                return;
+            }
+            break;
+        }
         // Simulate QLineEdit returnPressed signal
         case Qt::Key_Enter:
         case Qt::Key_Return:
@@ -254,7 +295,7 @@ void SearchPlainTextEdit::receive_setCompleterData_request(const QList<Manga> &d
     this->search_completer->setCompleterData(data);
 }
 
-void SearchPlainTextEdit::searchPlainTextEdit_textEdited() {
+void SearchPlainTextEdit::searchPlainTextEdit_textChanged() {
     if (!Settings::autocomplete_search) {
         return;
     }
@@ -278,9 +319,8 @@ void SearchPlainTextEdit::searchPlainTextEdit_textEdited() {
 }
 
 void SearchPlainTextEdit::searchPlainTextEdit_cursorPositionChanged() {
-
-    // Same as searchPlainTextEdit_textEdited but uses new_pos
-    // Hides the completion popup if cursor is outside braces
+    // Same as searchPlainTextEdit_textEdited but hides
+    // the completion popup if cursor is outside braces
     QString text = this->toPlainText();
     for (auto re_match : this->completer_regex.globalMatch(text)) {
         QString whole_text = re_match.captured(0);
@@ -305,23 +345,19 @@ void SearchPlainTextEdit::receive_completerText(const QString &completer_text) {
         return;
     }
 
-    // int replace_last_pos = this->text().lastIndexOf(last_prefix, Qt::CaseSensitive);
-    // if (replace_last_pos == -1) {
-    //     return;
-    // }
+    QTextCursor text_cursor = this->textCursor();
 
-    // int prefix_len = last_prefix.length();
-    // int current_cursor_pos = this->cursorPosition();
-    // int completer_text_len = completer_text.length();
+    text_cursor.movePosition(QTextCursor::Left);
+    text_cursor.select(QTextCursor::WordUnderCursor);
 
-    // QString new_text = this->text().replace(replace_last_pos, prefix_len, completer_text);
-    // int new_cursor_pos = current_cursor_pos - prefix_len + completer_text_len;
+    text_cursor.insertText(completer_text);
 
-    // if (this->search_completer->isDefaultCompletion()) {
-    //     new_cursor_pos -= 1;
-    // }
+    if (this->search_completer->isDefaultCompletion()) {
+        text_cursor.movePosition(QTextCursor::Left);
+    }
 
-    // this->setText(new_text);
-    // this->setCursorPosition(new_cursor_pos);
+    this->setTextCursor(text_cursor);
+
+    this->search_completer->hidePopup();
 }
 

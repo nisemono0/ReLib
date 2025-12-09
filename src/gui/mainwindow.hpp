@@ -174,10 +174,6 @@ private slots:
     void searchPlainTextEdit_returnPressed();
     void focus_search_input_shortcut();
     void unfocus_search_input_shortcut();
-    void search_move_char_forward_shortcut();
-    void search_move_char_backward_shortcut();
-    void search_move_word_forward_shortcut();
-    void search_move_word_backward_shortcut();
 
     // Progress dialog
     void main_window_progress_dialog_canceled();

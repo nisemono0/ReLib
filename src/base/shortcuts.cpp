@@ -58,22 +58,6 @@ Shortcuts::Shortcuts(QObject *parent) : QObject(parent) {
     this->unfocus_search_input->setKeys({
             Qt::Key_Escape
             });
-    this->search_move_char_forward = new QShortcut(parent);
-    this->search_move_char_forward->setKeys({
-            QKeySequence(Qt::CTRL | Qt::Key_L)
-            });
-    this->search_move_char_backward = new QShortcut(parent);
-    this->search_move_char_backward->setKeys({
-            QKeySequence(Qt::CTRL | Qt::Key_H)
-            });
-    this->search_move_word_forward = new QShortcut(parent);
-    this->search_move_word_forward->setKeys({
-            QKeySequence(Qt::ALT | Qt::Key_L)
-            });
-    this->search_move_word_backward = new QShortcut(parent);
-    this->search_move_word_backward->setKeys({
-            QKeySequence(Qt::ALT | Qt::Key_H)
-            });
 }
 
 Shortcuts::~Shortcuts() {
@@ -91,9 +75,5 @@ Shortcuts::~Shortcuts() {
 
     delete this->focus_search_input;
     delete this->unfocus_search_input;
-    delete this->search_move_char_forward;
-    delete this->search_move_char_backward;
-    delete this->search_move_word_forward;
-    delete this->search_move_word_backward;
 }
 

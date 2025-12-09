@@ -315,10 +315,6 @@ void MainWindow::setupShortcuts() {
     // Search input shortcuts
     connect(this->shortcuts->focus_search_input, &QShortcut::activated, this, &MainWindow::focus_search_input_shortcut);
     connect(this->shortcuts->unfocus_search_input, &QShortcut::activated, this, &MainWindow::unfocus_search_input_shortcut);
-    connect(this->shortcuts->search_move_char_forward, &QShortcut::activated, this, &MainWindow::search_move_char_forward_shortcut);
-    connect(this->shortcuts->search_move_char_backward, &QShortcut::activated, this, &MainWindow::search_move_char_backward_shortcut);
-    connect(this->shortcuts->search_move_word_forward, &QShortcut::activated, this, &MainWindow::search_move_word_forward_shortcut);
-    connect(this->shortcuts->search_move_word_backward, &QShortcut::activated, this, &MainWindow::search_move_word_backward_shortcut);
 }
 
 void MainWindow::actionAddFile_triggered() {
@@ -639,30 +635,6 @@ void MainWindow::unfocus_search_input_shortcut() {
         this->ui->searchPlainTextEdit->hideCompleter();
     } else if (this->ui->searchPlainTextEdit->hasFocus()) {
         this->setFocus();
-    }
-}
-
-void MainWindow::search_move_char_forward_shortcut() {
-    if (this->ui->searchPlainTextEdit->hasFocus()) {
-        this->ui->searchPlainTextEdit->moveCursor(QTextCursor::Right);
-    }
-}
-
-void MainWindow::search_move_char_backward_shortcut() {
-    if (this->ui->searchPlainTextEdit->hasFocus()) {
-        this->ui->searchPlainTextEdit->moveCursor(QTextCursor::Left);
-    }
-}
-
-void MainWindow::search_move_word_forward_shortcut() {
-    if (this->ui->searchPlainTextEdit->hasFocus()) {
-        this->ui->searchPlainTextEdit->moveCursor(QTextCursor::WordRight);
-    }
-}
-
-void MainWindow::search_move_word_backward_shortcut() {
-    if (this->ui->searchPlainTextEdit->hasFocus()) {
-        this->ui->searchPlainTextEdit->moveCursor(QTextCursor::WordLeft);
     }
 }
 

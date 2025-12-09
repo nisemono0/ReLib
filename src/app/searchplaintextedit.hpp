@@ -65,7 +65,7 @@ public slots:
     void receive_setCompleterData_request(const QList<Manga> &data);
 
 private slots:
-    void searchPlainTextEdit_textEdited();
+    void searchPlainTextEdit_textChanged();
     void searchPlainTextEdit_cursorPositionChanged();
 
     void receive_completerText(const QString &completer_text);
