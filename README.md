@@ -59,6 +59,9 @@ Autocompletion is triggered when inside a namespace search. <br>
   - Works for all namespaces.
   - Can be slow-ish sometimes when a **LOT** of tags are present.
 
+## Shortcuts
+WIP
+
 ## Dependencies (Arch Linux)
 `qt6-base` <br> 
 `quazip-qt6` <br>
