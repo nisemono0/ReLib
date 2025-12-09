@@ -8,6 +8,8 @@
 int main (int argc, char *argv[]) {
     QApplication app(argc, argv);
 
+    QApplication::setCursorFlashTime(App::CursorBlinkInterval);
+
     QApplication::setOrganizationDomain(App::OrgName);
     QApplication::setApplicationName(App::AppName);
 

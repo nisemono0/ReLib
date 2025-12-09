@@ -35,9 +35,10 @@ struct NumberImage {
 };
 
 namespace App {
-    static const QString AppName = QStringLiteral("ReLib");
-    static const QString OrgName = QStringLiteral("ReLib");
-    static const QString Style   = QStringLiteral("Fusion");
+    static const QString AppName   = QStringLiteral("ReLib");
+    static const QString OrgName   = QStringLiteral("ReLib");
+    static const QString Style     = QStringLiteral("Fusion");
+    static int CursorBlinkInterval = 0;
 };
 
 namespace ImageOptions {
