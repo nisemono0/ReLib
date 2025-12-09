@@ -351,7 +351,7 @@
     <string>Check database hashes</string>
    </property>
    <property name="statusTip">
-    <string>Checks if the paths/hashes in the database match the ones on disk</string>
+    <string>Checks if the hashes in the database match the ones on disk</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+D, C, H</string>
