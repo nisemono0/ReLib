@@ -25,10 +25,6 @@ public:
     void hideCompleter();
     // True if completer window is visible
     bool isCompleterVisible();
-    // Selects the next completer entry
-    void selectNextCompletion();
-    // Selects the previous completer entry
-    void selectPreviousCompletion();
     // Clears the completion
     void clearCompleter();
 
@@ -58,6 +54,8 @@ private:
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
+    void focusInEvent(QFocusEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
 
 signals:
     void request_updateCompletionMode(SearchCompleter::CompleterRole role, const QString &prefix);

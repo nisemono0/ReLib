@@ -54,18 +54,6 @@ bool SearchPlainTextEdit::isCompleterVisible() {
     return this->search_completer->isPopupVisible();
 }
 
-void SearchPlainTextEdit::selectNextCompletion() {
-    if (this->search_completer->isPopupVisible()) {
-        this->search_completer->selectNextEntry();
-    }
-}
-
-void SearchPlainTextEdit::selectPreviousCompletion() {
-    if (this->search_completer->isPopupVisible()) {
-        this->search_completer->selectPreviousEntry();
-    }
-}
-
 void SearchPlainTextEdit::clearCompleter() {
     this->search_completer->clear();
 }
@@ -100,25 +88,25 @@ bool SearchPlainTextEdit::removeMatchingBracket() {
 }
 
 bool SearchPlainTextEdit::isCursorInsideBrace(const QString &whole_text, const QString &namespace_text, const QString &tags_text) {
-    // TODO
-    // current_cursor_pos = this->cursorPosition();
+    QTextCursor tc = this->textCursor();
+    int current_cursor_pos = tc.position();
 
-    // int namespace_len = namespace_text.length();
-    // int tags_len = tags_text.length();
+    int namespace_len = namespace_text.length();
+    int tags_len = tags_text.length();
 
-    // QString line_text = this->text();
+    QString text = this->toPlainText();
 
-    // int whole_text_start_pos = line_text.indexOf(whole_text);
-    // while (whole_text_start_pos != -1) {
-    //     int namespace_start_pos = whole_text_start_pos + namespace_len;
-    //     int namespace_end_pos = namespace_start_pos + tags_len + 1;
+    int whole_text_start_pos = text.indexOf(whole_text);
+    while (whole_text_start_pos != -1) {
+        int namespace_start_pos = whole_text_start_pos + namespace_len;
+        int namespace_end_pos = namespace_start_pos + tags_len + 1;
 
-    //     if (namespace_start_pos < current_cursor_pos && current_cursor_pos <= namespace_end_pos) {
-    //         return true;
-    //     }
-    //     whole_text_start_pos = line_text.indexOf(whole_text, namespace_end_pos);
-    // }
-    // return false;
+        if (namespace_start_pos < current_cursor_pos && current_cursor_pos <= namespace_end_pos) {
+            return true;
+        }
+        whole_text_start_pos = text.indexOf(whole_text, namespace_end_pos);
+    }
+    return false;
 }
 
 void SearchPlainTextEdit::jumpOrInsertClosedBracket(const QString &bracket) {
@@ -169,6 +157,33 @@ SearchCompleter::CompleterRole SearchPlainTextEdit::getCompleterRoleFromNamespac
 }
 
 void SearchPlainTextEdit::keyPressEvent(QKeyEvent *event) {
+    // Disable the QPlainTextEdit keys and let them be
+    // handled by the completion popup if it's visible
+    if (this->search_completer && this->search_completer->isPopupVisible()) {
+        switch (event->key()) {
+            case Qt::Key_Enter:
+            case Qt::Key_Return:
+            case Qt::Key_Escape:
+            {
+                event->ignore();
+                return;
+            }
+            case Qt::Key_Tab:
+            {
+                this->search_completer->selectNextEntry();
+                return;
+            }
+            case Qt::Key_Backtab:
+            {
+                this->search_completer->selectPreviousEntry();
+                return;
+            }
+            default:
+                break;
+        }
+    }
+
+    // TODO: Handle the base/shortcuts for search in this event
     switch (event->key()) {
         case Qt::Key_ParenLeft:
         {
@@ -208,14 +223,31 @@ void SearchPlainTextEdit::keyPressEvent(QKeyEvent *event) {
             break;
         }
         // Simulate QLineEdit returnPressed signal
+        case Qt::Key_Enter:
         case Qt::Key_Return:
         {
             emit returnPressed();
             return;
         }
+        default:
+            break;
     };
 
     QPlainTextEdit::keyPressEvent(event);
+}
+
+void SearchPlainTextEdit::focusInEvent(QFocusEvent *event) {
+    // TODO: Add a custom stylesheet to show that the text input is focused
+    // Receive keyboard focus events for the widget
+    if (this->search_completer) {
+        this->search_completer->setWidget(this);
+    }
+    QPlainTextEdit::focusInEvent(event);
+}
+
+void SearchPlainTextEdit::focusOutEvent(QFocusEvent *event) {
+    // TODO: Reset to the default styleshee when search input is no longer focused
+    QPlainTextEdit::focusOutEvent(event);
 }
 
 void SearchPlainTextEdit::receive_setCompleterData_request(const QList<Manga> &data) {
@@ -223,55 +255,55 @@ void SearchPlainTextEdit::receive_setCompleterData_request(const QList<Manga> &d
 }
 
 void SearchPlainTextEdit::searchPlainTextEdit_textEdited() {
-    // TODO
-    // if (!Settings::autocomplete_search) {
-    //     return;
-    // }
+    if (!Settings::autocomplete_search) {
+        return;
+    }
 
-    // for (auto re_match : this->completer_regex.globalMatch(text)) {
-    //     // capture(0) contains the whole matched text, ex: artist:{a1, a2}
-    //     // capture(1) contains the namespace text, ex: artist:
-    //     // capture(2) contains the text inside {}, ex: a1, a2
-    //     QString whole_text = re_match.captured(0);
-    //     QString namepsace_text = re_match.captured(1);
-    //     QString tags_text = re_match.captured(2);
-    //     if (this->isCursorInsideBrace(whole_text, namepsace_text, tags_text)) {
-    //         emit request_updateCompletionMode(this->getCompleterRoleFromNamespace(re_match.captured(1)), re_match.captured(2));
-    //         return;
-    //     }
-    // }
+    QString text = this->toPlainText();
 
-    // emit request_updateCompletionMode(SearchCompleter::Default, text);
+    for (auto re_match : this->completer_regex.globalMatch(text)) {
+        // capture(0) contains the whole matched text, ex: artist:{a1, a2}
+        // capture(1) contains the namespace text, ex: artist:
+        // capture(2) contains the text inside {}, ex: a1, a2
+        QString whole_text = re_match.captured(0);
+        QString namepsace_text = re_match.captured(1);
+        QString tags_text = re_match.captured(2);
+        if (this->isCursorInsideBrace(whole_text, namepsace_text, tags_text)) {
+            emit request_updateCompletionMode(this->getCompleterRoleFromNamespace(re_match.captured(1)), re_match.captured(2));
+            return;
+        }
+    }
+
+    emit request_updateCompletionMode(SearchCompleter::Default, text);
 }
 
 void SearchPlainTextEdit::searchPlainTextEdit_cursorPositionChanged() {
 
     // Same as searchPlainTextEdit_textEdited but uses new_pos
     // Hides the completion popup if cursor is outside braces
-    // TODO
-    // for (auto re_match : this->completer_regex.globalMatch(this->text())) {
-    //     QString whole_text = re_match.captured(0);
-    //     QString namespace_text = re_match.captured(1);
-    //     QString tags_text = re_match.captured(2);
-    //     if (!this->isCursorInsideBrace(whole_text, namespace_text, tags_text)) {
-    //         this->search_completer->hidePopup();
-    //     }
-    // }
+    QString text = this->toPlainText();
+    for (auto re_match : this->completer_regex.globalMatch(text)) {
+        QString whole_text = re_match.captured(0);
+        QString namespace_text = re_match.captured(1);
+        QString tags_text = re_match.captured(2);
+        if (!this->isCursorInsideBrace(whole_text, namespace_text, tags_text)) {
+            this->search_completer->hidePopup();
+        }
+    }
 
 }
 
 void SearchPlainTextEdit::receive_completerText(const QString &completer_text) {
-    // TODO
-    // if (this->search_completer->widget() != this) {
-    //     return;
-    // }
+    if (this->search_completer->widget() != this) {
+        return;
+    }
 
-    // QString last_prefix = this->search_completer->splitPath(
-    //         this->search_completer->completionPrefix()
-    //         ).last();
-    // if (last_prefix.isEmpty()) {
-    //     return;
-    // }
+    QString last_prefix = this->search_completer->splitPath(
+            this->search_completer->completionPrefix()
+            ).last();
+    if (last_prefix.isEmpty()) {
+        return;
+    }
 
     // int replace_last_pos = this->text().lastIndexOf(last_prefix, Qt::CaseSensitive);
     // if (replace_last_pos == -1) {
