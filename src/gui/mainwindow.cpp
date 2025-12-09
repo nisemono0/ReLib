@@ -317,6 +317,10 @@ void MainWindow::setupShortcuts() {
     connect(this->shortcuts->unfocus_search_input, &QShortcut::activated, this, &MainWindow::unfocus_search_input_shortcut);
 }
 
+bool MainWindow::focusNextPrevChild(bool next) {
+    return false;
+}
+
 void MainWindow::actionAddFile_triggered() {
     if (this->db_thread->isRunning()) {
         QMessageBox::information(this, QStringLiteral("Add file"), QStringLiteral("Database busy"));

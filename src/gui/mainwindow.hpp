@@ -94,6 +94,10 @@ private:
     // Init shortcuts
     void setupShortcuts();
 
+protected:
+    // Disable tab/shift+tab widget selection
+    bool focusNextPrevChild(bool next) override;
+
 signals:
     // ZipWorker
     void request_getFileJsonInfo(const QString &file_path, const QStringList &db_file_path_list);
