@@ -319,8 +319,6 @@ void MainWindow::setupShortcuts() {
     connect(this->shortcuts->search_move_char_backward, &QShortcut::activated, this, &MainWindow::search_move_char_backward_shortcut);
     connect(this->shortcuts->search_move_word_forward, &QShortcut::activated, this, &MainWindow::search_move_word_forward_shortcut);
     connect(this->shortcuts->search_move_word_backward, &QShortcut::activated, this, &MainWindow::search_move_word_backward_shortcut);
-    connect(this->shortcuts->search_select_next_completion, &QShortcut::activated, this, &MainWindow::search_select_next_completion_shortcut);
-    connect(this->shortcuts->search_select_previous_completion, &QShortcut::activated, this, &MainWindow::search_select_previous_completion_shortcut);
 }
 
 void MainWindow::actionAddFile_triggered() {
@@ -666,14 +664,6 @@ void MainWindow::search_move_word_backward_shortcut() {
     if (this->ui->searchPlainTextEdit->hasFocus()) {
         this->ui->searchPlainTextEdit->moveCursor(QTextCursor::WordLeft);
     }
-}
-
-void MainWindow::search_select_next_completion_shortcut() {
-    this->ui->searchPlainTextEdit->selectNextCompletion();
-}
-
-void MainWindow::search_select_previous_completion_shortcut() {
-    this->ui->searchPlainTextEdit->selectPreviousCompletion();
 }
 
 // Progress dialog

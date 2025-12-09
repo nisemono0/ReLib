@@ -178,8 +178,6 @@ private slots:
     void search_move_char_backward_shortcut();
     void search_move_word_forward_shortcut();
     void search_move_word_backward_shortcut();
-    void search_select_next_completion_shortcut();
-    void search_select_previous_completion_shortcut();
 
     // Progress dialog
     void main_window_progress_dialog_canceled();
