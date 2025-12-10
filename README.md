@@ -60,10 +60,78 @@ Autocompletion is triggered when inside a namespace search. <br>
   - Can be slow-ish sometimes when a **LOT** of tags are present.
 
 ## Shortcuts
-WIP
+### File
+Keybind | Description
+|:-:|:-:|
+`Ctrl+A F` | Open add file to database dialog
+`Ctrl+A D` | Open add directory to database dialog
+`Ctrl+Q` | Quit
+
+### Database
+Keybind | Description
+|:-:|:-:|
+`Ctrl+D C` | Open create database dialog
+`Ctrl+D L` | Open load database dialog
+`Ctrl+D U` | Unload the database
+`Ctrl+D C H` | Start a databse file hash check
+`Ctrl+D C P` | Start a database file path check
+`Ctrl+D R E` | Remove entries from the database not found on disk
+
+### Settings
+Keybind | Description
+|:-:|:-:|
+`Ctrl+S I S` | Enable/Disable image scaling
+`Ctrl+=` | Increase scale value
+`Ctrl+-` | Decrease scale value
+`Ctrl+S I F` | Fit image in view
+`Ctrl+S I W` | Fit image to width
+`Ctrl+S S A` | Enable/Disable search autocomplete
+`Ctrl+S S T` | Enable/Disable automatic searching while typing
+`Ctrl+S S F` | Enable/Disable selecting first item after a search
+
+### Info
+Keybind | Descriptio
+|:-:|:-:|
+`Ctrl+I L` | Show log window
+
+### Library view
+Keybind | Description
+|:-:|:-:|
+`Down`, `j` | Select next library item
+`Up`, `k` | Select previous library item
+`gg` | Select first library item
+`Shift+G` | Select last library item
+`Ctrl+R` | Select random library item
+
+### Image view
+Keybind | Description
+|:-:|:-:|
+`Right`, `l` | Go to next image
+`Left`, `h` | Go to previous image
+`o` | Load all images of current library item
+`gi` | Open jump to image menu (only works if all images are loaded)
+
+### Search
+Keybind | Description
+|:-:|:-:|
+`Ctrl+C` | Refresh search
+`Ctrl+F`, `/` | Focus the search input
+`Esc` | Unfocus the search input if focused
+`Ctrl+L` | Move text cursor once right
+`Ctrl+H` | Move text cursor once left
+`Alt+L` | Move text cursor one word right
+`ALt+H` | Move text cursor once word left
+`Enter` | Search
+
+### Completer
+Keybind | Description
+|:-:|:-:|
+`Enter` | Insert selected completion
+`Tab`, `Ctrl+J` | Select next completion
+`Shift+Tab`, `Ctrl+k` | Select previous completion
 
 ## Dependencies (Arch Linux)
-`qt6-base` <br> 
+`qt6-base` <br>
 `quazip-qt6` <br>
 `cmake (compile)` <br>
 
@@ -76,3 +144,5 @@ The binary is `./build/ReLib`. <br>
 ## Compile (Windows)
 In theory compiling should work on windows too. <br>
 Never tested, nor do I care if it works or not since I'm not using Windows. <br>
+
+
