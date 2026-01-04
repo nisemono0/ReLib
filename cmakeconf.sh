@@ -27,5 +27,5 @@ echo "[!!!] (Optional) Manually merge cmakeconf.sh added options in CMakeLists.t
 
 if [ "$1" == "--compile" ]; then
     cmake -B build -DCMAKE_BUILD_TYPE=Release
-    cmake --build build -j $(nrproc --all)
+    cmake --build build -j
 fi
