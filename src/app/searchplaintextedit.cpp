@@ -334,6 +334,11 @@ void SearchPlainTextEdit::searchPlainTextEdit_textChanged() {
 void SearchPlainTextEdit::searchPlainTextEdit_cursorPositionChanged() {
     // Same as searchPlainTextEdit_textChanged but hides
     // the completion popup if cursor is outside braces
+    // does nothing if the default completion is shown
+
+    if (this->search_completer->isDefaultCompletion()) {
+        return;
+    }
 
     bool is_inside_brace = false;
 
