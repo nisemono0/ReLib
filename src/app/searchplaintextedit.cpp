@@ -311,6 +311,10 @@ void SearchPlainTextEdit::searchPlainTextEdit_textChanged() {
 
     QString text = this->toPlainText();
 
+    if (text.isEmpty()) {
+        return;
+    }
+
     for (auto re_match : this->completer_regex.globalMatch(text)) {
         // capture(0) contains the whole matched text, ex: artist:{a1, a2}
         // capture(1) contains the namespace text, ex: artist:
