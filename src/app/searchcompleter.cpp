@@ -184,14 +184,14 @@ void SearchCompleter::updateCompletionMode(SearchCompleter::CompleterRole role) 
 
 void SearchCompleter::setupDefaultCompleterData() {
     this->completer_data[SearchCompleter::Default] = QStringList({
-            QStringLiteral("title:{}"),
-            QStringLiteral("artist:{}"),
-            QStringLiteral("parody:{}"),
-            QStringLiteral("circle:{}"),
-            QStringLiteral("magazine:{}"),
-            QStringLiteral("event:{}"),
-            QStringLiteral("publisher:{}"),
-            QStringLiteral("tags:{}"),
+            QStringLiteral("title"),
+            QStringLiteral("artist"),
+            QStringLiteral("parody"),
+            QStringLiteral("circle"),
+            QStringLiteral("magazine"),
+            QStringLiteral("event"),
+            QStringLiteral("publisher"),
+            QStringLiteral("tags"),
             });
 }
 

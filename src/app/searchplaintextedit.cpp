@@ -373,6 +373,7 @@ void SearchPlainTextEdit::receive_completerText(const QString &completer_text) {
     text_cursor.insertText(completer_text);
 
     if (this->search_completer->isDefaultCompletion()) {
+        text_cursor.insertText(QStringLiteral(":{}"));
         text_cursor.movePosition(QTextCursor::Left);
     }
 
