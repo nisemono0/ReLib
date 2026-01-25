@@ -151,6 +151,21 @@ bool SearchCompleter::isDefaultCompletion() {
     return false;
 }
 
+bool SearchCompleter::emitActivated() {
+    QModelIndex current_idx = this->popup()->currentIndex();
+
+    if (!current_idx.isValid()) {
+        return false;
+    }
+
+    QString current_idx_text = current_idx.data().toString();
+
+    emit activated(current_idx_text);
+    emit activated(current_idx);
+
+    return true;
+}
+
 bool SearchCompleter::hasEntry(SearchCompleter::CompleterRole role, const QString &entry) {
     if (this->completer_data[role].contains(entry, Qt::CaseInsensitive)) {
         return true;

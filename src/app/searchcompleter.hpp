@@ -46,6 +46,10 @@ public:
     void clear();
     // Returns true if using default completions
     bool isDefaultCompletion();
+    // Returns true and emits activated signals only
+    // if a completion item is selected, otherwise
+    // returns false
+    bool emitActivated();
 
 private:
     QStringListModel *completer_model;

@@ -186,9 +186,12 @@ void SearchPlainTextEdit::keyPressEvent(QKeyEvent *event) {
             case Qt::Key_Enter:
             case Qt::Key_Return:
             case Qt::Key_Escape:
+            case Qt::Key_Space:
             {
-                event->ignore();
-                return;
+                if (this->search_completer->emitActivated()) {
+                    return;
+                }
+                break;
             }
             case Qt::Key_Tab:
             {
