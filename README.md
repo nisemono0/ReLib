@@ -51,7 +51,7 @@ Tag namespace search has the following format:
 - `namespace:{term_1} namespace:{term_2}`
   - This returns entries that contain `term_1` <ins>**AND**</ins> `term_2`.
 
-Available namespaces: `file_hash` `title` `artist` `parody` `circle` `magazine` `event` `publisher` `tag`. <br>
+Available namespaces: `file_hash` `title` `artist` `parody` `circle` `magazine` `event` `publisher` `other`. <br>
   - When using the `file_hash` namespace, the rest are ignored.
 
 Autocompletion is triggered when inside a namespace search. <br>
