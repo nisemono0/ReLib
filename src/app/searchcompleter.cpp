@@ -191,7 +191,7 @@ void SearchCompleter::setupDefaultCompleterData() {
             QStringLiteral("magazine"),
             QStringLiteral("event"),
             QStringLiteral("publisher"),
-            QStringLiteral("tags"),
+            QStringLiteral("other"),
             });
 }
 

@@ -12,7 +12,7 @@ SearchPlainTextEdit::SearchPlainTextEdit(QWidget *parent) : QPlainTextEdit(paren
     this->setCompleter(new SearchCompleter(this));
 
     this->completer_regex = QRegularExpression(
-            QStringLiteral("((?:file_hash:|\\btitle:|\\bartist:|\\bparody:|\\bcircle:|\\bmagazine:|\\bevent:|\\bpublisher:|\\btags:)){([^}]+)}"),
+            QStringLiteral("((?:file_hash:|\\btitle:|\\bartist:|\\bparody:|\\bcircle:|\\bmagazine:|\\bevent:|\\bpublisher:|\\bother:)){([^}]+)}"),
             QRegularExpression::CaseInsensitiveOption);
     this->completer_regex.optimize();
 
@@ -154,7 +154,7 @@ SearchCompleter::CompleterRole SearchPlainTextEdit::getCompleterRoleFromNamespac
         return SearchCompleter::Publisher;
     }
 
-    if (matched_namespace.compare(QStringLiteral("tags:"), Qt::CaseInsensitive) == 0) {
+    if (matched_namespace.compare(QStringLiteral("other:"), Qt::CaseInsensitive) == 0) {
         return SearchCompleter::Tags;
     }
 
