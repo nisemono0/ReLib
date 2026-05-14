@@ -137,8 +137,12 @@ Keybind | Description
 
 ## Compile (Arch Linux)
 Install the dependencies then run: <br>
-`cmake -B build -DCMAKE_BUILD_TYPE=Release` <br>
-`cmake --build build` <br>
+```bash
+git clone https://github.com/nisemono0/ReLib.git && cd ./ReLib
+```
+```bash
+cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j
+```
 The binary is `./build/ReLib`. <br>
 
 ## Compile (Windows/MinGW)
