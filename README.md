@@ -130,20 +130,20 @@ Keybind | Description
 `Tab`, `Ctrl+J` | Select next completion
 `Shift+Tab`, `Ctrl+k` | Select previous completion
 
-## Dependencies (Arch Linux)
-`qt6-base` <br>
-`quazip-qt6` <br>
-`cmake (compile)` <br>
-
 ## Compile (Arch Linux)
-Install the dependencies then run: <br>
+Run the following commands: <br>
+- Install dependencies
+```bash
+sudo pacman -Syu git cmake gcc qt6-base quazip-qt6
+```
+- Clone and compile
 ```bash
 git clone https://github.com/nisemono0/ReLib.git && cd ./ReLib
 ```
 ```bash
 cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j
 ```
-The binary is `./build/ReLib`. <br>
+The binary is in `./build/ReLib`. <br>
 
 ## Compile (Windows/MinGW)
 For Windows `MSYS2` needs to be installed. <br>
