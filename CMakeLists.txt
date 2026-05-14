@@ -83,5 +83,15 @@ target_link_libraries(ReLib
 find_package(Qt6 REQUIRED COMPONENTS Sql)
 find_package(Qt6 REQUIRED COMPONENTS Concurrent)
 find_package(QuaZip-Qt6)
+
 target_include_directories(ReLib PUBLIC ${CMAKE_SOURCE_DIR}/src)
 target_link_libraries(ReLib PRIVATE Qt::Sql Qt::Concurrent QuaZip::QuaZip)
+
+if(MINGW)
+    message(STATUS "Building for Windows (mingw)")
+    if(CMAKE_BUILD_TYPE STREQUAL "Release")
+        set_property(TARGET ReLib PROPERTY WIN32_EXECUTABLE true)
+    endif()
+else()
+    message(STATUS "Building for Linux")
+endif()

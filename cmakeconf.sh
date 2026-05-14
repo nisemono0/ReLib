@@ -18,14 +18,23 @@ echo "# !!! cmakeconf.sh !!!" >> ./CMakeLists.txt
 echo "find_package(Qt6 REQUIRED COMPONENTS Sql)" >> ./CMakeLists.txt
 echo "find_package(Qt6 REQUIRED COMPONENTS Concurrent)" >> ./CMakeLists.txt
 echo "find_package(QuaZip-Qt6)" >> ./CMakeLists.txt
+echo >> ./CMakeLists.txt
 
 echo "target_include_directories($PROJ_NAME PUBLIC \${CMAKE_SOURCE_DIR}/src)" >> ./CMakeLists.txt
-
 echo "target_link_libraries($PROJ_NAME PRIVATE Qt::Sql Qt::Concurrent QuaZip::QuaZip)" >> ./CMakeLists.txt
 
-echo "[!!!] (Optional) Manually merge cmakeconf.sh added options in CMakeLists.txt"
+echo "
+if(MINGW)
+    message(STATUS \"Building for Windows (mingw)\")
+    if(CMAKE_BUILD_TYPE STREQUAL \"Release\")
+        set_property(TARGET "$PROJ_NAME" PROPERTY WIN32_EXECUTABLE true)
+    endif()
+else()
+    message(STATUS \"Building for Linux\")
+endif()" >> ./CMakeLists.txt
 
 if [ "$1" == "--compile" ]; then
     cmake -B build -DCMAKE_BUILD_TYPE=Release
     cmake --build build -j
 fi
+
