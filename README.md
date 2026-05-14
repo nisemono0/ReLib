@@ -141,8 +141,33 @@ Install the dependencies then run: <br>
 `cmake --build build` <br>
 The binary is `./build/ReLib`. <br>
 
-## Compile (Windows)
-In theory compiling should work on windows too. <br>
-Never tested, nor do I care if it works or not since I'm not using Windows. <br>
-
-
+## Compile (Windows/MinGW)
+For Windows `MSYS2` needs to be installed. <br>
+From a `MSYS2` environment, run the following commands: <br>
+- Install dependencies
+```bash
+pacman -Syu git mingw-w64-ucrt-x86_64-cmake mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-qt6-base mingw-w64-ucrt-x86_64-quazip
+```
+- Clone and compile
+```bash
+git clone https://github.com/nisemono0/ReLib.git && cd ./ReLib
+```
+```bash
+cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j
+```
+- Deploy
+```bash
+mkdir ./build/ReLibRelease/ && cd ./build/ReLibRelease && mv ../ReLib.exe .
+```
+```bash
+windeployqt ./ReLib.exe
+```
+```bash
+ldd ./ReLib.exe | grep /ucrt64 | awk '{print $3}' | xargs -i cp {} .
+```
+- Copy the program to desktop. Replace `<your-username-here>` with your Windows username
+```bash
+cd .. && mv ./ReLibRelease/ /C/Users/<your-username-here>/Desktop/
+```
+There should be a `ReLibRelease` folder on the Desktop now. <br>
+The `.exe` is `ReLib.exe` in the `ReLibRelease` folder.
