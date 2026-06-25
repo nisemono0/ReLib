@@ -36,7 +36,7 @@ public:
     bool isPopupVisible();
     // Hides the popup
     void hidePopup();
-    // Shows the popup and select the first entry
+    // Shows the popup
     void showPopup();
     // Select next popup entry
     void selectNextEntry();
