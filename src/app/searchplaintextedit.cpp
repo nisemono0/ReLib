@@ -186,9 +186,14 @@ void SearchPlainTextEdit::keyPressEvent(QKeyEvent *event) {
             case Qt::Key_Enter:
             case Qt::Key_Return:
             case Qt::Key_Escape:
-            case Qt::Key_Space:
             {
                 if (this->search_completer->emitActivated()) {
+                    return;
+                } else {
+                    // If no completion item is selected, hide
+                    // the popup and send returnPressed signal
+                    this->search_completer->hidePopup();
+                    emit returnPressed();
                     return;
                 }
                 break;
