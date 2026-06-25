@@ -291,6 +291,14 @@ void SearchPlainTextEdit::keyPressEvent(QKeyEvent *event) {
             }
             break;
         }
+        case Qt::Key_Space:
+        {
+            if (event->modifiers() & Qt::ControlModifier) {
+                this->search_completer->showPopup();
+                return;
+            }
+            break;
+        }
         // Simulate QLineEdit returnPressed signal
         case Qt::Key_Enter:
         case Qt::Key_Return:
