@@ -126,7 +126,7 @@ Keybind | Description
 ### Completer
 Keybind | Description
 |:-:|:-:|
-`Enter`, `Space` | Insert selected completion
+`Enter` | Insert selected completion
 `Tab`, `Ctrl+J` | Select next completion
 `Shift+Tab`, `Ctrl+k` | Select previous completion
 `Ctrl+Space` | Show the completion popup
